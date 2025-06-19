@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MapleMesh Auto Repair - Login/Register</title>
+    <!-- Tailwind CSS CDN for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+
+    <!-- React CDN -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <!-- Babel CDN for JSX transformation in the browser (for development only) -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Firebase SDKs - These are imported as modules -->
+    <script type="module">
+        // Import all necessary Firebase functions
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, Timestamp, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js"; // Added collection, addDoc
+
+        // Define global variables to hold Firebase instances and functions.
+        window.firebaseApp = null;
+        window.db = null;
+        window.auth = null;
+        window.firebase = {}; // Will hold all imported Firebase functions
+
+        // YOUR ACTUAL FIREBASE PROJECT CONFIGURATION (provided by you)
+        if (typeof window.__firebase_config === 'undefined') {
+            window.__firebase_config = JSON.stringify({
+                apiKey: "AIzaSyASOLpQiEsz35k8GgR1NOVu0oxEb8FE-gQ",
+                authDomain: "maplemeshautorepair.firebaseapp.com",
+                projectId: "maplemeshautorepair",
+                storageBucket: "maplemeshautorepair.firebasestorage.app",
+                messagingSenderId: "568507439306",
+                appId: "1:568507439306:web:b76cedda38553b795ebc33"
+            });
+        }
+        // This __app_id is used for Firestore collection paths (e.g., /artifacts/{__app_id}/...)
+        if (typeof window.__app_id === 'undefined') {
+            window.__app_id = 'maplemesh-autorepair-web'; // Keeping this unique ID for your app
+        }
+        // __initial_auth_token is usually provided by the Canvas environment, leave it as is.
+        if (typeof window.__initial_auth_token === 'undefined') {
+            window.__initial_auth_token = '';
+        }
+
+        // Variable to hold the callback for React to know Firebase is ready
+        window.firebaseReadyCallback = () => {}; 
+
+        // Initialize Firebase when the window fully loads
+        window.onload = async () => {
+            try {
+                const firebaseConfig = JSON.parse(window.__firebase_config);
+                window.firebaseApp = initializeApp(firebaseConfig);
+                window.db = getFirestore(window.firebaseApp);
+                window.auth = getAuth(window.firebaseApp);
+
+                // Make specific Firebase functions available globally for the React script block.
+                window.firebase = {
+                    initializeApp,
+                    getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut,
+                    getFirestore, doc, setDoc, Timestamp, collection, addDoc // Added collection, addDoc
+                };
+                console.log("Firebase services initialized.");
+
+                // Notify React that Firebase is ready to be used
+                if (window.firebaseReadyCallback) { 
+                    window.firebaseReadyCallback();
+                }
+
+            } catch (error) {
+                console.error("Failed to initialize Firebase:", error);
+                const rootDiv = document.getElementById('root');
+                if (rootDiv) {
+                    rootDiv.innerHTML = `
+                        <div class="flex flex-col items-center justify-center min-h-screen bg-red-100 p-4 rounded-lg shadow-xl">
+                            <p class="text-2xl font-bold text-red-800 mb-4">Error initializing Firebase!</p>
+                            <p class="text-lg text-red-700 text-center mb-2">Please check your Firebase configuration and network connection.</p>
+                            <p class="text-md text-red-600 text-center">Error details (check browser console for more):</p>
+                            <code class="bg-red-200 text-red-900 p-2 rounded mt-2 text-sm max-w-full overflow-auto break-all">${error.message || 'Unknown error'}</code>
+                        </div>
+                    `;
+                }
+            }
+        };
+    </script>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen flex items-center justify-center p-4">
+    <div id="root">
+        <!-- React app will be mounted here. A loading message is shown until React takes over. -->
+        <div class="flex items-center justify-center min-h-screen bg-gray-100">
+            <p class="text-xl text-gray-700">Loading authentication interface...</p>
+        </div
+    </div>
+
+    <!-- The main React application logic for login/registration -->
+    <script type="text/babel">
+        // Destructure React hooks from the global React object
+        const { useState, useEffect, createContext, useContext } = React;
+        const { createRoot } = ReactDOM; // Used to render the React app
+
+        // Create a Context to easily pass Firebase instances and modal functions down the component tree
+        const AppContext = createContext(null);
+
+        // --- AuthPage Component ---
+        // This component handles both login and new user registration with email/password.
+        const AuthPage = () => {
+            // Get Firebase instances and a utility function from the context
+            const { auth, db, openModal, setLoggedInUser } = useContext(AppContext);
+            const [email, setEmail] = useState('');
+            const [password, setPassword] = useState('');
+            const [isRegistering, setIsRegistering] = useState(false); // Toggle between login and register forms
+            const [role, setRole] = useState('owner'); // Default role for new registrations
+
+            // --- Car Owner Registration Fields ---
+            const [ownerFirstName, setOwnerFirstName] = useState('');
+            const [ownerLastName, setOwnerLastName] = useState('');
+            const [ownerPhoneNumber, setOwnerPhoneNumber] = useState('');
+            const [ownerAddress, setOwnerAddress] = useState(''); // Added for address
+
+            // First Car Details
+            const [carYear, setCarYear] = useState('');
+            const [carMake, setCarMake] = useState('');
+            const [carModel, setCarModel] = useState('');
+            const [carBuild, setCarBuild] = useState('');
+            const [carColor, setCarColor] = useState('');
+            const [carCondition, setCarCondition] = useState(''); // Text description of condition
+            const [carDescription, setCarDescription] = useState(''); // General notes about the car
+
+            // --- Technician Registration Fields ---
+            const [techFirstName, setTechFirstName] = useState('');
+            const [techLastName, setTechLastName] = useState('');
+            const [techPhoneNumber, setTechPhoneNumber] = useState(''); // Added for phone number
+            const [techAddress, setTechAddress] = useState(''); // Added for address
+            const [isLicensed, setIsLicensed] = useState(false); // Are you a licensed technician?
+            const [licenseDetails, setLicenseDetails] = useState(''); // For license details
+            const [yearsExperience, setYearsExperience] = useState(''); // How many years of experience?
+            const [selectedSkills, setSelectedSkills] = useState([]); // List of skills
+
+            // Available skills for technicians to choose from
+            const availableSkills = [
+                "Oil Change", "Tire Change/Rotation", "Brake Repair", "Engine Diagnostics",
+                "Transmission Repair", "HVAC Service", "Electrical System Repair", "Suspension/Steering",
+                "Exhaust System", "Battery Service", "Fluid Checks", "Alignment",
+                "Pre-purchase Inspection", "Emission Testing", "Vehicle Detailing" // Added more options
+            ];
+
+            // Handle skill checkbox changes for technicians
+            const handleSkillChange = (skill) => {
+                setSelectedSkills(prev =>
+                    prev.includes(skill)
+                        ? prev.filter(s => s !== skill)
+                        : [...prev, skill]
+                );
+            };
+
+            const handleAuth = async (e) => {
+                e.preventDefault();
+
+                if (!auth || !db) {
+                    openModal("Authentication service not ready. Please wait a moment.");
+                    return;
+                }
+
+                try {
+                    let userCredential;
+                    if (isRegistering) {
+                        // --- Registration Logic ---
+                        if (!email || !password) {
+                            openModal("Please enter your email and password.");
+                            return;
+                        }
+                        if (password.length < 6) {
+                            openModal("Password should be at least 6 characters.");
+                            return;
+                        }
+
+                        // Validate common fields for both roles
+                        if (role === 'owner' && (!ownerFirstName || !ownerLastName || !ownerPhoneNumber || !ownerAddress)) {
+                            openModal("Please fill in all your personal details for Car Owner registration.");
+                            return;
+                        }
+                        if (role === 'owner' && (!carYear || !carMake || !carModel || !carBuild || !carColor || !carCondition || !carDescription)) {
+                            openModal("Please fill in all your car details for Car Owner registration.");
+                            return;
+                        }
+                        if (role === 'mechanic' && (!techFirstName || !techLastName || !techPhoneNumber || !techAddress || yearsExperience === '' || selectedSkills.length === 0)) {
+                            openModal("Please fill in all your professional details for Technician registration, including skills and experience.");
+                            return;
+                        }
+                        if (role === 'mechanic' && isLicensed && !licenseDetails.trim()) {
+                            openModal("Please provide your license details.");
+                            return;
+                        }
+                        if (role === 'mechanic' && (isNaN(parseInt(yearsExperience)) || parseInt(yearsExperience) < 0)) {
+                             openModal("Please enter a valid number for years of experience.");
+                             return;
+                        }
+                        
+                        userCredential = await window.firebase.createUserWithEmailAndPassword(auth, email, password);
+                        const userId = userCredential.user.uid;
+                        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+                        // Save basic user profile (email and chosen role) to Firestore
+                        await window.firebase.setDoc(window.firebase.doc(db, `artifacts/${appId}/users/${userId}/profile`, userId), {
+                            email: email,
+                            role: role,
+                            createdAt: window.firebase.Timestamp.now()
+                        });
+
+                        // Save detailed profile based on role
+                        if (role === 'owner') {
+                            await window.firebase.setDoc(window.firebase.doc(db, `artifacts/${appId}/public/data/car_owner_details`, userId), {
+                                userId: userId,
+                                firstName: ownerFirstName,
+                                lastName: ownerLastName,
+                                phoneNumber: ownerPhoneNumber,
+                                address: ownerAddress,
+                                registeredAt: window.firebase.Timestamp.now()
+                            });
+                            // Save the first car details to the owner's private 'vehicles' subcollection
+                            await window.firebase.addDoc(window.firebase.collection(db, `artifacts/${appId}/users/${userId}/vehicles`), {
+                                ownerId: userId,
+                                year: parseInt(carYear),
+                                make: carMake,
+                                model: carModel,
+                                build: carBuild,
+                                color: carColor,
+                                condition: carCondition,
+                                description: carDescription,
+                                registeredAt: window.firebase.Timestamp.now()
+                            });
+                            openModal("Car Owner account and details registered successfully!");
+                        } else if (role === 'mechanic') {
+                            await window.firebase.setDoc(window.firebase.doc(db, `artifacts/${appId}/public/data/technician_details`, userId), {
+                                userId: userId,
+                                firstName: techFirstName,
+                                lastName: techLastName,
+                                phoneNumber: techPhoneNumber,
+                                address: techAddress,
+                                isLicensed: isLicensed,
+                                licenseDetails: isLicensed ? licenseDetails : '',
+                                yearsExperience: parseInt(yearsExperience),
+                                skills: selectedSkills,
+                                registeredAt: window.firebase.Timestamp.now()
+                            });
+                            openModal("Technician account and details registered successfully!");
+                        }
+
+                    } else {
+                        // --- Login Logic ---
+                        userCredential = await window.firebase.signInWithEmailAndPassword(auth, email, password);
+                        openModal("Login successful!");
+                    }
+                    // Update the App component's user state to reflect successful auth
+                    setLoggedInUser(userCredential.user);
+
+                } catch (error) {
+                    console.error("Authentication error:", error);
+                    let errorMessage = "Login/Registration unsuccessful. ";
+                    // Provide more specific error messages based on Firebase error codes
+                    if (error.code === 'auth/email-already-in-use') {
+                        errorMessage += "Email already in use. Try logging in.";
+                    } else if (error.code === 'auth/invalid-email') {
+                        errorMessage += "Invalid email address format.";
+                    } else if (error.code === 'auth/weak-password') {
+                        errorMessage += "Password should be at least 6 characters.";
+                    } else if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+                        errorMessage += "Invalid email or password.";
+                    } else {
+                        errorMessage += "An unexpected error occurred.";
+                    }
+                    openModal(errorMessage);
+                }
+            };
+
+            return (
+                <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+                    <div className="bg-white rounded-xl shadow-2xl p-8 max-w-lg w-full text-center">
+                        <h2 className="text-3xl font-bold text-gray-800 mb-6">
+                            {isRegistering ? 'Register Your Account' : 'Log In'}
+                        </h2>
+                        <form onSubmit={handleAuth} className="space-y-4 text-left">
+                            {/* Email and Password fields always visible */}
+                            <div>
+                                <label className="block text-gray-700 text-sm font-semibold mb-1">Email Address</label>
+                                <input
+                                    type="email"
+                                    placeholder="your.email@example.com"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                                    required
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-gray-700 text-sm font-semibold mb-1">Password</label>
+                                <input
+                                    type="password"
+                                    placeholder="minimum 6 characters"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                                    required
+                                />
+                            </div>
+
+                            {isRegistering && (
+                                <>
+                                    {/* Role Selection */}
+                                    <div className="mt-4">
+                                        <label className="block text-gray-700 text-sm font-semibold mb-2">
+                                            I am registering as a:
+                                        </label>
+                                        <div className="flex space-x-4">
+                                            <label className="inline-flex items-center">
+                                                <input
+                                                    type="radio"
+                                                    name="role"
+                                                    value="owner"
+                                                    checked={role === 'owner'}
+                                                    onChange={(e) => setRole(e.target.value)}
+                                                    className="form-radio text-blue-600 h-5 w-5"
+                                                />
+                                                <span className="ml-2 text-gray-700">Car Owner</span>
+                                            </label>
+                                            <label className="inline-flex items-center">
+                                                <input
+                                                    type="radio"
+                                                    name="role"
+                                                    value="mechanic"
+                                                    checked={role === 'mechanic'}
+                                                    onChange={(e) => setRole(e.target.value)}
+                                                    className="form-radio text-green-600 h-5 w-5"
+                                                />
+                                                <span className="ml-2 text-gray-700">Mechanic</span>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    {/* Conditional fields based on role */}
+                                    {role === 'owner' && (
+                                        <div className="space-y-4 p-4 bg-blue-50 rounded-lg shadow-inner mt-4">
+                                            <h3 className="text-xl font-semibold text-gray-700 mb-3">Your Personal Details</h3>
+                                            <input
+                                                type="text"
+                                                placeholder="First Name"
+                                                value={ownerFirstName}
+                                                onChange={(e) => setOwnerFirstName(e.target.value)}
+                                                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                                                required
+                                            />
+                                            <input
+                                                type="text"
+                                                placeholder="Last Name"
+                                                value={ownerLastName}
+                                                onChange={(e) => setOwnerLastName(e.target.value)}
+                                                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                                                required
+                                            />
+                                            <input
+                                                type="tel"
+                                                placeholder="Phone Number (e.g., 123-456-7890)"
+                                                value={ownerPhoneNumber}
+                                                onChange={(e) => setOwnerPhoneNumber(e.target.value)}
+                                                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                                                required
+                                            />
+                                            <textarea
+                                                placeholder="Full Address"
+                                                value={ownerAddress}
+                                                onChange={(e) => setOwnerAddress(e.target.value)}
+                                                rows="2"
+                                                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                                                required
+                                            ></textarea>
+
+                                            <h3 className="text-xl font-semibold text-gray-700 mb-3 mt-6">Your Car Details (First Car)</h3>
+                                            <input
+                                                type="number"
+                                                placeholder="Car Year (e.g., 2020)"
+                                                value={carYear}
+                                                onChange={(e) => setCarYear(e.target.value)}
+                                                min="1900" max="2099"
+                                                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                                                required
+                                            />
+                                            <input
+                                                type="text"
+                                                placeholder="Car Make (e.g., Honda)"
+                                                value={carMake}
+                                                onChange={(e) => setCarMake(e.target.value)}
+                                                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                                                required
+                                            />
+                                            <input
+                                                type="text"
+                                                placeholder="Car Model (e.g., Civic)"
+                                                value={carModel}
+                                                onChange={(e) => setCarModel(e.target.value)}
+                                                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                                                required
+                                            />
+                                            <input
+                                                type="text"
+                                                placeholder="Car Build (e.g., Sedan, SUV, Coupe)"
+                                                value={carBuild}
+                                                onChange={(e) => setCarBuild(e.target.value)}
+                                                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                                                required
+                                            />
+                                            <input
+                                                type="text"
+                                                placeholder="Car Color"
+                                                value={carColor}
+                                                onChange={(e) => setCarColor(e.target.value)}
+                                                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                                                required
+                                            />
+                                            <textarea
+                                                placeholder="Car Condition (e.g., Good, Fair, Minor dents)"
+                                                value={carCondition}
+                                                onChange={(e) => setCarCondition(e.target.value)}
+                                                rows="2"
+                                                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                                                required
+                                            ></textarea>
+                                            <textarea
+                                                placeholder="Additional Description about the car"
+                                                value={carDescription}
+                                                onChange={(e) => setCarDescription(e.target.value)}
+                                                rows="2"
+                                                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                                            ></textarea>
+                                        </div>
+                                    )}
+
+                                    {role === 'mechanic' && (
+                                        <div className="space-y-4 p-4 bg-green-50 rounded-lg shadow-inner mt-4">
+                                            <h3 className="text-xl font-semibold text-gray-700 mb-3">Your Professional Details</h3>
+                                            <input
+                                                type="text"
+                                                placeholder="First Name"
+                                                value={techFirstName}
+                                                onChange={(e) => setTechFirstName(e.target.value)}
+                                                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500"
+                                                required
+                                            />
+                                            <input
+                                                type="text"
+                                                placeholder="Last Name"
+                                                value={techLastName}
+                                                onChange={(e) => setTechLastName(e.target.value)}
+                                                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500"
+                                                required
+                                            />
+                                            <input
+                                                type="tel"
+                                                placeholder="Phone Number (e.g., 123-456-7890)"
+                                                value={techPhoneNumber}
+                                                onChange={(e) => setTechPhoneNumber(e.target.value)}
+                                                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500"
+                                                required
+                                            />
+                                            <textarea
+                                                placeholder="Full Address (e.g., 123 Repair Rd, City, Province)"
+                                                value={techAddress}
+                                                onChange={(e) => setTechAddress(e.target.value)}
+                                                rows="2"
+                                                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500"
+                                                required
+                                            ></textarea>
+                                            <input
+                                                type="number"
+                                                placeholder="Years of Verifiable Experience"
+                                                value={yearsExperience}
+                                                onChange={(e) => setYearsExperience(e.target.value)}
+                                                min="0"
+                                                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500"
+                                                required
+                                            />
+                                            <div className="flex items-center space-x-2 mt-4">
+                                                <input
+                                                    type="checkbox"
+                                                    id="isLicensed"
+                                                    checked={isLicensed}
+                                                    onChange={(e) => setIsLicensed(e.target.checked)}
+                                                    className="form-checkbox h-5 w-5 text-green-600 rounded"
+                                                />
+                                                <label htmlFor="isLicensed" className="text-gray-700 font-medium">Are you a licensed technician in your province/area?</label>
+                                            </div>
+                                            {isLicensed && (
+                                                <textarea
+                                                    placeholder="License Details (e.g., Red Seal, Provincial License Number)"
+                                                    value={licenseDetails}
+                                                    onChange={(e) => setLicenseDetails(e.target.value)}
+                                                    rows="2"
+                                                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500 mt-2"
+                                                    required={isLicensed}
+                                                ></textarea>
+                                            )}
+
+                                            <div className="mt-6">
+                                                <h3 className="text-xl font-semibold text-gray-700 mb-3">What can you fix? (Select all that apply)</h3>
+                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                                    {availableSkills.map(skill => (
+                                                        <label key={skill} className="inline-flex items-center p-2 bg-gray-100 rounded-lg cursor-pointer hover:bg-gray-200 transition-colors">
+                                                            <input
+                                                                type="checkbox"
+                                                                value={skill}
+                                                                checked={selectedSkills.includes(skill)}
+                                                                onChange={() => handleSkillChange(skill)}
+                                                                className="form-checkbox h-5 w-5 text-green-600 rounded"
+                                                            />
+                                                            <span className="ml-2 text-gray-700 text-sm">{skill}</span>
+                                                        </label>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+                                </>
+                            )}
+
+                            {/* Main action button (Login or Register) */}
+                            <button
+                                type="submit"
+                                className="w-full bg-blue-600 text-white p-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors shadow-md mt-6"
+                            >
+                                {isRegistering ? 'Register Account' : 'Log In'}
+                            </button>
+                        </form>
+
+                        {/* Toggle between Login and Register */}
+                        <button
+                            onClick={() => setIsRegistering(!isRegistering)}
+                            className="mt-6 text-blue-600 hover:underline text-sm font-medium"
+                        >
+                            {isRegistering ? 'Already have an account? Log In' : 'Need an account? Register'}
+                        </button>
+                        <a href="index.html" className="mt-4 block text-gray-600 hover:underline text-sm font-medium">
+                            Back to Welcome Page
+                        </a>
+                    </div>
+                </div>
+            );
+        };
+
+        // --- Main App Component ---
+        const App = () => {
+            const [user, setUser] = useState(null);
+            const [loadingFirebase, setLoadingFirebase] = useState(!window.firebaseApp); 
+            const [loadingAuthStatus, setLoadingAuthStatus] = useState(true); 
+            const [showModal, setShowModal] = useState(false);   
+            const [modalMessage, setModalMessage] = useState('');
+
+            // Callback to set Firebase ready state once window.onload completes
+            useEffect(() => {
+                if (loadingFirebase) {
+                    window.firebaseReadyCallback = () => {
+                        setLoadingFirebase(false);
+                    };
+                }
+                return () => {
+                    window.firebaseReadyCallback = null;
+                };
+            }, [loadingFirebase]);
+
+            // Effect to listen for changes in Firebase authentication state.
+            useEffect(() => {
+                if (loadingFirebase) return; 
+
+                const auth = window.firebase.getAuth(window.firebaseApp);
+                const unsubscribe = window.firebase.onAuthStateChanged(auth, (currentUser) => {
+                    setUser(currentUser); 
+                    setLoadingAuthStatus(false); 
+                });
+                return () => unsubscribe(); 
+            }, [loadingFirebase]);
+
+            // Modal utility functions
+            const openModal = (message) => {
+                setModalMessage(message);
+                setShowModal(true);
+            };
+
+            const closeModal = () => {
+                setShowModal(false);
+                setModalMessage('');
+            };
+
+            // Display loading messages
+            if (loadingFirebase) {
+                return (
+                    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+                        <p className="text-xl text-gray-700">Initializing Firebase services...</p>
+                    </div>
+                );
+            }
+
+            if (loadingAuthStatus) {
+                return (
+                    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+                        <p className="text-xl text-gray-700">Checking login status...</p>
+                    </div>
+                );
+            }
+
+            return (
+                <AppContext.Provider value={{ auth: window.firebase.getAuth(window.firebaseApp), db: window.firebase.getFirestore(window.firebaseApp), openModal, setLoggedInUser: setUser }}>
+                    {user ? (
+                        // If user is logged in, show success message and logout button
+                        <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-100 p-4 font-inter flex flex-col items-center justify-center">
+                            <div className="bg-white rounded-xl shadow-lg p-6 text-center max-w-lg w-full">
+                                <h2 className="text-3xl font-bold text-green-700 mb-4">
+                                    Login Successful!
+                                </h2>
+                                <p className="text-gray-700 mt-2">
+                                    Welcome, {user.email}.
+                                </p>
+                                <p className="text-gray-600 mt-4">
+                                    You can now log out or navigate back.
+                                </p>
+                                <button
+                                    onClick={async () => {
+                                        try {
+                                            await window.firebase.signOut(window.firebase.getAuth(window.firebaseApp));
+                                            openModal("Logged out successfully.");
+                                            setUser(null); // Clear user state
+                                        } catch (error) {
+                                            console.error("Error logging out:", error);
+                                            openModal("Failed to log out.");
+                                        }
+                                    }}
+                                    className="mt-6 px-6 py-3 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition-colors shadow-md"
+                                >
+                                    Log Out
+                                </button>
+                                <a href="index.html" className="mt-4 block text-blue-600 hover:underline text-sm font-medium">
+                                    Back to Landing Page
+                                </a>
+                            </div>
+                        </div>
+                    ) : (
+                        // If no user is logged in, show the authentication form
+                        <AuthPage />
+                    )}
+
+                    {/* Custom Modal for displaying messages (errors, success, etc.) */}
+                    {showModal && (
+                        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+                            <div className="bg-white rounded-xl shadow-2xl p-6 max-w-sm w-full text-center">
+                                <p className="text-lg font-medium text-gray-800 mb-4">{modalMessage}</p>
+                                <button
+                                    onClick={closeModal}
+                                    className="px-6 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+                                >
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                </AppContext.Provider>
+            );
+        };
+
+        // Render the main App component into the 'root' div of the HTML document
+        const container = document.getElementById('root');
+        const root = createRoot(container);
+        root.render(<App />);
+    </script>
+</body>
+</html>
