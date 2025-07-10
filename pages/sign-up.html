@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MapleMesh AutoRepair - Sign Up</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles for better UX */
+        body {
+            font-family: 'Inter', sans-serif;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Background image pseudo-element */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background-image: url('../assets/img/join_us.png');
+            background-size: cover;
+            background-position: center;
+            filter: blur(8px) brightness(0.9);
+            z-index: -1;
+        }
+
+        /* Ensure content is above the background */
+        .content-wrapper {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Hide number input spinners */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+        .error-message {
+            color: #ef4444; /* red-500 */
+            font-size: 0.75rem; /* text-xs */
+            margin-top: 0.25rem; /* mt-1 */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Main container -->
+    <div class="content-wrapper flex flex-col items-center justify-center min-h-screen py-12 px-4">
+
+        <!-- Main Card -->
+        <div id="signup-card" class="w-full max-w-lg bg-white rounded-xl shadow-2xl p-8 transition-all duration-300">
+
+            <!-- Step 1: Role Selection -->
+            <div id="role-selection">
+                <div class="text-center mb-6">
+                    <h2 class="text-3xl font-bold text-gray-900">Join Us</h2>
+                    <p class="text-gray-500 mt-2">How would you like to get started?</p>
+                </div>
+                <div class="space-y-4">
+                    <button id="show-customer-form" class="w-full text-left p-4 border rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <span class="text-lg font-semibold text-gray-800">I Want to Fix My Vehicle</span>
+                        <span class="block text-sm text-gray-500">Register as a vehicle owner to book services.</span>
+                    </button>
+                    <button id="show-technician-form" class="w-full text-left p-4 border rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <span class="text-lg font-semibold text-gray-800">I am a Technician</span>
+                        <span class="block text-sm text-gray-500">Register as a technician to offer your services.</span>
+                    </button>
+                </div>
+                 <div class="text-center mt-6">
+                    <p class="text-sm text-gray-600">
+                        Already have an account?
+                        <a href="sign-in.html" class="font-medium text-blue-600 hover:text-blue-500">
+                            Sign in
+                        </a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Step 2: Customer (Car Owner) Form -->
+            <div id="customer-form" class="hidden">
+                 <div class="text-center mb-6">
+                    <h2 class="text-3xl font-bold text-gray-900">Car Owner Registration</h2>
+                </div>
+                <form id="customer-registration-form" novalidate class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="c-first-name" class="block text-sm font-medium text-gray-700">First Name <span class="text-red-500">*</span></label>
+                            <input type="text" id="c-first-name" required class="mt-1 w-full px-4 py-2 border rounded-lg">
+                            <p class="error-message hidden"></p>
+                        </div>
+                        <div>
+                            <label for="c-last-name" class="block text-sm font-medium text-gray-700">Last Name <span class="text-red-500">*</span></label>
+                            <input type="text" id="c-last-name" required class="mt-1 w-full px-4 py-2 border rounded-lg">
+                            <p class="error-message hidden"></p>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="c-username" class="block text-sm font-medium text-gray-700">Choose a Username <span class="text-red-500">*</span></label>
+                        <input type="text" id="c-username" required class="mt-1 w-full px-4 py-2 border rounded-lg">
+                        <p class="error-message hidden"></p>
+                    </div>
+                    <div>
+                        <label for="c-password" class="block text-sm font-medium text-gray-700">Password <span class="text-red-500">*</span></label>
+                        <input type="password" id="c-password" required class="mt-1 w-full px-4 py-2 border rounded-lg">
+                        <p class="error-message hidden"></p>
+                    </div>
+                    <div>
+                        <label for="c-confirm-password" class="block text-sm font-medium text-gray-700">Confirm Password <span class="text-red-500">*</span></label>
+                        <input type="password" id="c-confirm-password" required class="mt-1 w-full px-4 py-2 border rounded-lg">
+                        <p class="error-message hidden"></p>
+                    </div>
+                    <div>
+                        <label for="c-email" class="block text-sm font-medium text-gray-700">Email Address <span class="text-red-500">*</span></label>
+                        <input type="email" id="c-email" required class="mt-1 w-full px-4 py-2 border rounded-lg">
+                        <p class="error-message hidden"></p>
+                    </div>
+                    <div>
+                        <label for="c-dob" class="block text-sm font-medium text-gray-700">Date of Birth <span class="text-red-500">*</span></label>
+                        <input type="date" id="c-dob" required class="mt-1 w-full px-4 py-2 border rounded-lg">
+                        <p class="error-message hidden"></p>
+                    </div>
+                    
+                    <div>
+                        <label for="c-address1" class="block text-sm font-medium text-gray-700">Address Line 1 <span class="text-red-500">*</span></label>
+                        <input type="text" id="c-address1" required class="mt-1 w-full px-4 py-2 border rounded-lg">
+                        <p class="error-message hidden"></p>
+                    </div>
+                    <div>
+                        <label for="c-address2" class="block text-sm font-medium text-gray-700">Address Line 2</label>
+                        <input type="text" id="c-address2" class="mt-1 w-full px-4 py-2 border rounded-lg">
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="c-country" class="block text-sm font-medium text-gray-700">Country <span class="text-red-500">*</span></label>
+                            <input type="text" id="c-country" required class="mt-1 w-full px-4 py-2 border rounded-lg">
+                            <p class="error-message hidden"></p>
+                        </div>
+                        <div>
+                            <label for="c-province" class="block text-sm font-medium text-gray-700">Province <span class="text-red-500">*</span></label>
+                            <input type="text" id="c-province" required class="mt-1 w-full px-4 py-2 border rounded-lg">
+                            <p class="error-message hidden"></p>
+                        </div>
+                    </div>
+                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="c-postal" class="block text-sm font-medium text-gray-700">Postal Code <span class="text-red-500">*</span></label>
+                            <input type="text" id="c-postal" required class="mt-1 w-full px-4 py-2 border rounded-lg">
+                            <p class="error-message hidden"></p>
+                        </div>
+                        <div>
+                            <label for="c-pobox" class="block text-sm font-medium text-gray-700">PO Box</label>
+                            <input type="text" id="c-pobox" class="mt-1 w-full px-4 py-2 border rounded-lg">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-sm font-medium text-gray-700">User Photo</label>
+                        <input type="file" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                    </div>
+
+                    <hr/>
+                    <h3 class="text-xl font-bold text-gray-800 text-center">Vehicle Details</h3>
+                    <p class="text-center text-sm text-gray-500 -mt-2">You can add more cars once you are registered using your profile.</p>
+                    <div>
+                        <label for="c-vehicle-model" class="block text-sm font-medium text-gray-700">Vehicle Model <span class="text-red-500">*</span></label>
+                        <input type="text" id="c-vehicle-model" required class="mt-1 w-full px-4 py-2 border rounded-lg" placeholder="e.g., Honda, Toyota">
+                        <p class="error-message hidden"></p>
+                    </div>
+                     <div>
+                        <label for="c-vehicle-year" class="block text-sm font-medium text-gray-700">Vehicle Year <span class="text-red-500">*</span></label>
+                        <input type="number" id="c-vehicle-year" required class="mt-1 w-full px-4 py-2 border rounded-lg" placeholder="e.g., 2022">
+                        <p class="error-message hidden"></p>
+                    </div>
+                     <div>
+                        <label for="c-vehicle-color" class="block text-sm font-medium text-gray-700">Vehicle Color <span class="text-red-500">*</span></label>
+                        <input type="text" id="c-vehicle-color" required class="mt-1 w-full px-4 py-2 border rounded-lg" placeholder="e.g., Blue, Black, White">
+                        <p class="error-message hidden"></p>
+                    </div>
+                     <div>
+                        <label for="c-vehicle-desc" class="block text-sm font-medium text-gray-700">Vehicle Description</label>
+                        <textarea id="c-vehicle-desc" rows="3" class="mt-1 w-full px-4 py-2 border rounded-lg" placeholder="e.g., Write about your vahicle"></textarea>
+                    </div>
+                    
+                    <div class="flex items-center gap-4 pt-4">
+                         <button type="button" class="back-button w-1/3 py-3 px-4 border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-100">Back</button>
+                         <button type="submit" class="w-2/3 py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">Sign Up</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Step 3: Technician Form -->
+            <div id="technician-form" class="hidden">
+                 <div class="text-center mb-6">
+                    <h2 class="text-3xl font-bold text-gray-900">Technician Registration</h2>
+                </div>
+                <form id="technician-registration-form" novalidate class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="t-first-name" class="block text-sm font-medium text-gray-700">First Name <span class="text-red-500">*</span></label>
+                            <input type="text" id="t-first-name" required class="mt-1 w-full px-4 py-2 border rounded-lg">
+                            <p class="error-message hidden"></p>
+                        </div>
+                        <div>
+                           <label for="t-last-name" class="block text-sm font-medium text-gray-700">Last Name <span class="text-red-500">*</span></label>
+                           <input type="text" id="t-last-name" required class="mt-1 w-full px-4 py-2 border rounded-lg">
+                           <p class="error-message hidden"></p>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="t-username" class="block text-sm font-medium text-gray-700">Choose a Username <span class="text-red-500">*</span></label>
+                        <input type="text" id="t-username" required class="mt-1 w-full px-4 py-2 border rounded-lg">
+                        <p class="error-message hidden"></p>
+                    </div>
+                    <div>
+                        <label for="t-password" class="block text-sm font-medium text-gray-700">Password <span class="text-red-500">*</span></label>
+                        <input type="password" id="t-password" required class="mt-1 w-full px-4 py-2 border rounded-lg">
+                        <p class="error-message hidden"></p>
+                    </div>
+                    <div>
+                        <label for="t-confirm-password" class="block text-sm font-medium text-gray-700">Confirm Password <span class="text-red-500">*</span></label>
+                        <input type="password" id="t-confirm-password" required class="mt-1 w-full px-4 py-2 border rounded-lg">
+                        <p class="error-message hidden"></p>
+                    </div>
+                    <div>
+                        <label for="t-email" class="block text-sm font-medium text-gray-700">Email Address <span class="text-red-500">*</span></label>
+                        <input type="email" id="t-email" required class="mt-1 w-full px-4 py-2 border rounded-lg">
+                        <p class="error-message hidden"></p>
+                    </div>
+                    <div>
+                        <label for="t-dob" class="block text-sm font-medium text-gray-700">Date of Birth <span class="text-red-500">*</span></label>
+                        <input type="date" id="t-dob" required class="mt-1 w-full px-4 py-2 border rounded-lg">
+                        <p class="error-message hidden"></p>
+                    </div>
+                    <div>
+                        <label for="t-address1" class="block text-sm font-medium text-gray-700">Address Line 1 <span class="text-red-500">*</span></label>
+                        <input type="text" id="t-address1" required class="mt-1 w-full px-4 py-2 border rounded-lg">
+                        <p class="error-message hidden"></p>
+                    </div>
+                    <div>
+                        <label for="t-address2" class="block text-sm font-medium text-gray-700">Address Line 2</label>
+                        <input type="text" id="t-address2" class="mt-1 w-full px-4 py-2 border rounded-lg">
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="t-country" class="block text-sm font-medium text-gray-700">Country <span class="text-red-500">*</span></label>
+                            <input type="text" id="t-country" required class="mt-1 w-full px-4 py-2 border rounded-lg">
+                            <p class="error-message hidden"></p>
+                        </div>
+                        <div>
+                            <label for="t-province" class="block text-sm font-medium text-gray-700">Province <span class="text-red-500">*</span></label>
+                            <input type="text" id="t-province" required class="mt-1 w-full px-4 py-2 border rounded-lg">
+                            <p class="error-message hidden"></p>
+                        </div>
+                    </div>
+                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="t-postal" class="block text-sm font-medium text-gray-700">Postal Code <span class="text-red-500">*</span></label>
+                            <input type="text" id="t-postal" required class="mt-1 w-full px-4 py-2 border rounded-lg">
+                            <p class="error-message hidden"></p>
+                        </div>
+                        <div>
+                            <label for="t-pobox" class="block text-sm font-medium text-gray-700">PO Box</label>
+                            <input type="text" id="t-pobox" class="mt-1 w-full px-4 py-2 border rounded-lg">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-sm font-medium text-gray-700">User Photo</label>
+                        <input type="file" class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                    </div>
+                    <div>
+                        <label for="t-experience" class="block text-sm font-medium text-gray-700">Years of Experience <span class="text-red-500">*</span></label>
+                        <input type="number" id="t-experience" required class="mt-1 w-full px-4 py-2 border rounded-lg" placeholder="e.g., 5">
+                        <p class="error-message hidden"></p>
+                    </div>
+                    <div>
+                        <label for="t-skills" class="block text-sm font-medium text-gray-700">Skills <span class="text-red-500">*</span></label>
+                        <textarea id="t-skills" required rows="3" class="mt-1 w-full px-4 py-2 border rounded-lg" placeholder="List at least 3 skills (Oil and Tire Change,Wiper Change)"></textarea>
+                        <p class="error-message hidden"></p>
+                        <p class="text-xs text-gray-500 mt-1">You can add more skills once you are registered and approved from your profile.</p>
+                    </div>
+                    <fieldset>
+                        <legend class="text-sm font-medium text-gray-700">Are you a licensed technician?</legend>
+                        <div class="mt-2 space-x-4">
+                            <label><input type="radio" name="licensed_tech" value="yes" class="mr-1"> Yes</label>
+                            <label><input type="radio" name="licensed_tech" value="no" class="mr-1" checked> No</label>
+                        </div>
+                    </fieldset>
+                    <div id="license-details" class="hidden space-y-4 border-t pt-4">
+                         <h3 class="text-lg font-bold text-gray-800">License Details</h3>
+                         <input type="text" placeholder="License Number" class="w-full px-4 py-2 border rounded-lg">
+                         <input type="text" placeholder="Issuing Authority" class="w-full px-4 py-2 border rounded-lg">
+                         <div>
+                            <label class="text-sm font-medium text-gray-700">License Expiry Date</label>
+                            <input type="date" class="w-full px-4 py-2 border rounded-lg">
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-4 pt-4">
+                         <button type="button" class="back-button w-1/3 py-3 px-4 border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-100">Back</button>
+                         <button type="submit" class="w-2/3 py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">Sign Up</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- UI Navigation Logic ---
+        const roleSelection = document.getElementById('role-selection');
+        const customerForm = document.getElementById('customer-form');
+        const technicianForm = document.getElementById('technician-form');
+        document.getElementById('show-customer-form').addEventListener('click', () => {
+            roleSelection.classList.add('hidden');
+            customerForm.classList.remove('hidden');
+        });
+        document.getElementById('show-technician-form').addEventListener('click', () => {
+            roleSelection.classList.add('hidden');
+            technicianForm.classList.remove('hidden');
+        });
+        document.querySelectorAll('.back-button').forEach(button => {
+            button.addEventListener('click', () => {
+                customerForm.classList.add('hidden');
+                technicianForm.classList.add('hidden');
+                roleSelection.classList.remove('hidden');
+            });
+        });
+        document.querySelectorAll('input[name="licensed_tech"]').forEach(radio => {
+            radio.addEventListener('change', (event) => {
+                if (event.target.value === 'yes') {
+                    document.getElementById('license-details').classList.remove('hidden');
+                } else {
+                    document.getElementById('license-details').classList.add('hidden');
+                }
+            });
+        });
+
+        // --- Validation Logic ---
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>]).{12,}$/;
+
+        function showError(input, message) {
+            const errorElement = input.nextElementSibling;
+            input.classList.add('border-red-500');
+            errorElement.textContent = message;
+            errorElement.classList.remove('hidden');
+        }
+
+        function clearError(input) {
+            const errorElement = input.nextElementSibling;
+            input.classList.remove('border-red-500');
+            errorElement.classList.add('hidden');
+        }
+
+        function validateRequired(inputId) {
+            const input = document.getElementById(inputId);
+            if (input.value.trim() === '') {
+                showError(input, 'This field is required.');
+                return false;
+            }
+            clearError(input);
+            return true;
+        }
+
+        function validateEmail(inputId) {
+            const input = document.getElementById(inputId);
+            if (!validateRequired(inputId)) return false;
+            if (!emailRegex.test(input.value)) {
+                showError(input, 'Please enter a valid email address.');
+                return false;
+            }
+            clearError(input);
+            return true;
+        }
+
+        function validatePassword(passwordId, confirmId) {
+            const passwordInput = document.getElementById(passwordId);
+            const confirmInput = document.getElementById(confirmId);
+            
+            if (!validateRequired(passwordId)) return false;
+
+            if (!passwordRegex.test(passwordInput.value)) {
+                showError(passwordInput, 'Password must be 12+ characters with uppercase, lowercase, number, and special character.');
+                return false;
+            }
+            clearError(passwordInput);
+
+            if (!validateRequired(confirmId)) return false;
+
+            if (passwordInput.value !== confirmInput.value) {
+                showError(confirmInput, 'Passwords do not match.');
+                return false;
+            }
+            clearError(confirmInput);
+            return true;
+        }
+
+        // --- Form Submission Handling ---
+        document.getElementById('customer-registration-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const checks = [
+                validateRequired('c-first-name'),
+                validateRequired('c-last-name'),
+                validateRequired('c-username'),
+                validateEmail('c-email'),
+                validatePassword('c-password', 'c-confirm-password'),
+                validateRequired('c-dob'),
+                validateRequired('c-address1'),
+                validateRequired('c-country'),
+                validateRequired('c-province'),
+                validateRequired('c-postal'),
+                validateRequired('c-vehicle-model'),
+                validateRequired('c-vehicle-year'),
+                validateRequired('c-vehicle-color')
+            ];
+
+            if (checks.every(Boolean)) {
+                alert('Customer registration successful!');
+                // this.submit(); // Uncomment to allow form submission
+            }
+        });
+
+        document.getElementById('technician-registration-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const checks = [
+                validateRequired('t-first-name'),
+                validateRequired('t-last-name'),
+                validateRequired('t-username'),
+                validateEmail('t-email'),
+                validatePassword('t-password', 't-confirm-password'),
+                validateRequired('t-dob'),
+                validateRequired('t-address1'),
+                validateRequired('t-country'),
+                validateRequired('t-province'),
+                validateRequired('t-postal'),
+                validateRequired('t-experience'),
+                validateRequired('t-skills')
+            ];
+            
+            if (checks.every(Boolean)) {
+                alert('Technician registration successful!');
+                 // this.submit(); // Uncomment to allow form submission
+            }
+        });
+
+    </script>
+</body>
+</html>
