@@ -1,0 +1,159 @@
+<!--
+=========================================================
+* Argon Dashboard 3 - v2.1.0
+=========================================================
+
+* Product Page: https://www.creative-tim.com/product/argon-dashboard
+* Copyright 2024 Creative Tim (https://www.creative-tim.com)
+* Licensed under MIT (https://www.creative-tim.com/license)
+* Coded by Creative Tim
+
+=========================================================
+
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
+  <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+  <title>
+    Argon Dashboard 3 by Creative Tim
+  </title>
+  <!--     Fonts and icons     -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+  <!-- Nucleo Icons -->
+  <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-icons.css" rel="stylesheet" />
+  <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-svg.css" rel="stylesheet" />
+  <!-- Font Awesome Icons -->
+  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+  <!-- CSS Files -->
+  <link id="pagestyle" href="../assets/css/argon-dashboard.css?v=2.1.0" rel="stylesheet" />
+</head>
+
+<body class="bg-gray-100">
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    <div class="container-fluid">
+      <ul class="nav nav-tabs w-100 justify-content-center">
+        <li class="nav-item">
+          <a class="nav-link" href="customer_dashboard.html">Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="customer_service.html">Service</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="customer_billing.html">Billing</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="customer_profile.html">Profile</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container py-4">
+    <div class="row mb-3">
+      <div class="col-md-7">
+        <div class="card mb-3">
+          <div class="card-header bg-white">
+            <strong>My Billing</strong>
+          </div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-md-12">
+                <div class="border rounded p-3 mb-2">
+                  <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span>
+                      <strong>Upcoming Services</strong><br>
+                      <small>Scheduled for: Friday, July 18, 2025 at <strong>8:00</strong></small>
+                    </span>
+                    <span class="badge bg-success">Confirmed</span>
+                  </div>
+                  <div class="mb-2">
+                    <strong>Service:</strong> Brake Pad &amp; Rotor Replacement<br>
+                    <strong>Vehicle:</strong> 2023 Honda Civic - L4K 2H8<br>
+                    <strong>Assigned Technician:</strong> <i class="fas fa-user"></i> David Lee
+                  </div>
+                  <button class="btn btn-warning btn-sm me-2">Reschedule</button>
+                  <button class="btn btn-danger btn-sm">Cancel Service</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Payment & Help -->
+      <div class="col-md-5">
+        <div class="card mb-3">
+          <div class="card-body">
+            <div class="border rounded p-3 mb-3">
+              <div class="mb-2">
+                <strong>Payment Method</strong><br>
+                Visa ending in <strong>6620</strong> <i class="fab fa-cc-visa"></i><br>
+                <small>Expires 12-2029</small>
+              </div>
+              <button class="btn btn-outline-primary btn-sm me-2">Update Card</button>
+              <button class="btn btn-outline-success btn-sm">Add New Card</button>
+            </div>
+            <div class="border rounded p-3">
+              <div class="mb-2">
+                <strong>Need Help?</strong><br>
+                <small>If you have any questions about your bill or a service, please contact us.</small>
+              </div>
+              <button class="btn btn-warning btn-sm"><i class="fas fa-headset"></i> Contact Support</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Billing History -->
+    <div class="card">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <span>Billing History</span>
+        <input type="search" class="form-control form-control-sm w-auto" placeholder="search" style="max-width:150px;">
+      </div>
+      <div class="card-body p-0">
+        <table class="table mb-0">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Service ID</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Receipt</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>June 12, 2025</td>
+              <td>#SVC-84321</td>
+              <td>$185.50</td>
+              <td><span class="badge bg-success">Paid</span></td>
+              <td><a href="#" class="btn btn-link btn-sm">Download</a></td>
+            </tr>
+            <tr>
+              <td>March 05, 2025</td>
+              <td>#SVC-79882</td>
+              <td>$75.00</td>
+              <td><span class="badge bg-success">Paid</span></td>
+              <td><a href="#" class="btn btn-link btn-sm">Download</a></td>
+            </tr>
+            <tr>
+              <td>December 20, 2024</td>
+              <td>#SVC-71543</td>
+              <td>$450.25</td>
+              <td><span class="badge bg-success">Paid</span></td>
+              <td><a href="#" class="btn btn-link btn-sm">Download</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

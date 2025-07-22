@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Service Center</title>
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+  <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-icons.css" rel="stylesheet" />
+  <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-svg.css" rel="stylesheet" />
+  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+  <link id="pagestyle" href="../assets/css/argon-dashboard.css?v=2.1.0" rel="stylesheet" />
+</head>
+<body class="bg-gray-100">
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    <div class="container-fluid">
+      <ul class="nav nav-tabs w-100 justify-content-center">
+        <li class="nav-item">
+          <a class="nav-link" href="customer_dashboard.html">Dashboard</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="#">Service</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="customer_billing.html">Billing</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="customer_profile.html">Profile</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container py-4">
+    <!-- My Service Center -->
+    <div class="card mb-3">
+      <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+        <span>My Service Center</span>
+        <button class="btn btn-danger btn-sm">Create New Request</button>
+      </div>
+      <div class="card-body">
+        <p class="mb-2 text-dark">Manage your active requests and view past services.</p>
+        <h6 class="mb-3">Active Requests</h6>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="border rounded p-2 mb-2">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <span><strong>2025 Toyota Rav4</strong><br>Oil Change &amp; Filter</span>
+                <span class="badge bg-success">Accepted</span>
+              </div>
+              <div class="mb-2 small">Your request has been accepted by John D. Service is scheduled for Jul 15, 2025.</div>
+              <button class="btn btn-outline-secondary btn-sm me-1">Review</button>
+              <button class="btn btn-outline-secondary btn-sm">Manage</button>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="border rounded p-2 mb-2">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <span><strong>2024 Honda CR-V</strong><br>Brake Inspection</span>
+                <span class="badge bg-warning text-dark">Under Review</span>
+              </div>
+              <div class="mb-2 small">A technician is reviewing your request for a brake inspection.</div>
+              <button class="btn btn-outline-secondary btn-sm me-1">Review</button>
+              <button class="btn btn-outline-secondary btn-sm">Manage</button>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="border rounded p-2 mb-2">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <span><strong>2025 Toyota Rav4</strong><br>Tire Rotation</span>
+                <span class="badge bg-primary">Awaiting Tech</span>
+              </div>
+              <div class="mb-2 small">Your request has been sent and is waiting for a technician to accept.</div>
+              <button class="btn btn-outline-secondary btn-sm me-1">Review</button>
+              <button class="btn btn-outline-secondary btn-sm">Manage</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Service History -->
+    <div class="card mb-3">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <span>My Service History</span>
+        <input type="search" class="form-control form-control-sm w-auto" placeholder="search" style="max-width:150px;">
+      </div>
+      <div class="card-body p-0">
+        <table class="table mb-0">
+          <thead>
+            <tr>
+              <th>CAR</th>
+              <th>SERVICE TYPE</th>
+              <th>TECHNICIAN</th>
+              <th>DATE</th>
+              <th>STATUS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>TOYOTA RAV4</td>
+              <td>Tire Rotation</td>
+              <td>John Smith</td>
+              <td>Dec 2</td>
+              <td><span class="badge bg-warning text-dark">Upcoming</span></td>
+            </tr>
+            <tr>
+              <td>TOYOTA RAV4</td>
+              <td>Tire Rotation, Oil Change</td>
+              <td>John Smith</td>
+              <td>Sep 13</td>
+              <td><span class="badge bg-success">Completed</span></td>
+            </tr>
+            <tr>
+              <td>Ford F-130</td>
+              <td>Oil Change</td>
+              <td>Maria Lopez</td>
+              <td>Jul 14</td>
+              <td><span class="badge bg-success">Completed</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div id="header"></div>
+<div id="footer"></div>
+<script>
+  fetch('customer_headerFooter.html')
+    .then(res => res.text())
+    .then(data => {
+      const parts = data.split('<!--FOOTER-->');
+      document.getElementById('header').innerHTML = parts[0];
+      document.getElementById('footer').innerHTML = parts[1] || '';
+    });
+</script>
+</body>
+</html>

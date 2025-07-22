@@ -1,0 +1,82 @@
+<div id="header"></div>
+<div id="footer"></div>
+<script>
+  fetch('customer_headerFooter.html')
+    .then(res => res.text())
+    .then(data => {
+      const parts = data.split('<!--FOOTER-->');
+      document.getElementById('header').innerHTML = parts[0];
+      document.getElementById('footer').innerHTML = parts[1] || '';
+    });
+</script>
+
+<!-- HEADER START -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+  <div class="container-fluid">
+    <!-- Brand -->
+    <a class="navbar-brand fw-bold me-3" href="customer_dashboard.html" style="font-size:1.7rem;">
+      MapleMesh <span class="fw-normal" style="font-size:1.1rem;">AutoRepair</span>
+    </a>
+    <!-- Main navigation -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="mainNavbar">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="customer_service.html">Service</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="customer_billing.html">Billing</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Explore</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Pricing</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav ms-auto align-items-center">
+        <!-- Login -->
+        <li class="nav-item me-2">
+          <a class="nav-link d-flex align-items-center" href="#">
+            <i class="fas fa-user fa-lg me-1"></i> Login
+          </a>
+        </li>
+        <!-- Support Dropdown -->
+        <li class="nav-item dropdown me-2">
+          <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="supportDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-life-ring fa-lg me-1"></i> Support
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="supportDropdown">
+            <li><a class="dropdown-item" href="#">Contact Support</a></li>
+            <li><a class="dropdown-item" href="#">FAQ</a></li>
+          </ul>
+        </li>
+        <!-- Book a call -->
+        <li class="nav-item me-2">
+          <a class="btn btn-light fw-bold px-3" href="#">Book a call</a>
+        </li>
+        <!-- Flag Icon -->
+        <li class="nav-item">
+          <span class="nav-link p-0">
+            <img src="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/flags/4x3/gb.svg" alt="English" style="width:32px;height:22px;border-radius:50%;border:2px solid #fff;">
+          </span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<!--FOOTER-->
+<!-- FOOTER START -->
+<footer class="footer py-3 bg-white mt-5 border-top">
+  <div class="container-fluid d-flex justify-content-between align-items-center">
+    <span class="text-muted">© 2025, made with by <strong>Creative Tim</strong> for a better web.</span>
+    <ul class="list-inline mb-0">
+      <li class="list-inline-item"><a href="#" class="text-muted">Creative Tim</a></li>
+      <li class="list-inline-item"><a href="#" class="text-muted">About Us</a></li>
+      <li class="list-inline-item"><a href="#" class="text-muted">Blog</a></li>
+      <li class="list-inline-item"><a href="#" class="text-muted">License</a></li>
+    </ul>
+  </div>
+</footer>
