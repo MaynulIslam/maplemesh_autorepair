@@ -48,7 +48,7 @@
         <!-- Welcome Message (Center) -->
         <div class="navbar-text d-none d-lg-block mx-auto text-center text-white">
           <h4 class="mb-0 fw-bold">Welcome Back!</h4>
-          <small>Your Trusted Auto Service Partner</small>
+          <small>Your Trusted Online Auto Service Partner</small>
         </div>
 
         <!-- Right-side Navigation Links -->
@@ -104,18 +104,60 @@
     <div class="container-fluid py-4">
       <!-- ===================== TOP STATS CARDS ROW ===================== -->
       <div class="row g-4 mb-4">
-        <!-- Car Info Box -->
+        <!-- Vehicle Carousel Box -->
         <div class="col-md-6 col-xl-4">
-          <div class="card h-100" id="car-info-box">
-            <div class="card-body">
-              <h6 class="vehicle-info">TOYOTA RAV4 <span class="text-muted">2024</span></h6>
-              <p class="text-success">
-                <i class="fas fa-clock me-2"></i>
-                Tire Rotation Due In 3 months
-              </p>
-              <button class="btn btn-primary">
-                <i class="fas fa-wrench me-2"></i>
-                Service Request
+          <div class="card h-100" id="vehicle-carousel-box">
+            <div id="vehicleCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+              <div class="carousel-inner">
+                <!-- Vehicle 1 -->
+                <div class="carousel-item active">
+                  <div class="card-body">
+                    <h6 class="vehicle-info">TOYOTA RAV4 <span class="text-muted">2024</span></h6>
+                    <p class="text-success">
+                      <i class="fas fa-clock me-2"></i>
+                      Tire Rotation Due In 3 months
+                    </p>
+                    <a href="customer_service.html" class="btn btn-primary">
+                      <i class="fas fa-wrench me-2"></i>
+                      Service Request
+                    </a>
+                  </div>
+                </div>
+                <!-- Vehicle 2 -->
+                <div class="carousel-item">
+                  <div class="card-body">
+                    <h6 class="vehicle-info">HONDA ACCORD <span class="text-muted">2023</span></h6>
+                    <p class="text-warning">
+                      <i class="fas fa-oil-can me-2"></i>
+                      Oil Change Due Next Week
+                    </p>
+                    <a href="customer_service.html" class="btn btn-primary">
+                      <i class="fas fa-wrench me-2"></i>
+                      Service Request
+                    </a>
+                  </div>
+                </div>
+                <!-- Vehicle 3 -->
+                <div class="carousel-item">
+                  <div class="card-body">
+                    <h6 class="vehicle-info">TESLA MODEL 3 <span class="text-muted">2025</span></h6>
+                    <p class="text-danger">
+                      <i class="fas fa-battery-three-quarters me-2"></i>
+                      Battery Check Overdue
+                    </p>
+                    <a href="customer_service.html" class="btn btn-primary">
+                      <i class="fas fa-wrench me-2"></i>
+                      Service Request
+                    </a>
+                  </div>
+                </div>
+              </div>
+              
+
+              <!-- Right Navigation Arrow Only (in middle) -->
+              <button class="carousel-control-next vehicle-next-btn" type="button" data-bs-target="#vehicleCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
               </button>
             </div>
           </div>
@@ -330,49 +372,27 @@
 
   <!-- Custom JavaScript -->
   <script>
-    // Table pagination functionality
+    // Initialize the vehicle carousel with custom options
     document.addEventListener('DOMContentLoaded', function() {
-      const tableContainer = document.getElementById('service-repair-table');
-      if (tableContainer) {
-        const scrollDotsContainer = document.getElementById('scroll-dots');
-        const rows = tableContainer.querySelectorAll('tbody tr');
-        const rowsPerView = 2;
-        const numViews = Math.ceil(rows.length / rowsPerView);
+      // Vehicle carousel configuration
+      const vehicleCarousel = document.getElementById('vehicleCarousel');
+      if (vehicleCarousel) {
+        const carousel = new bootstrap.Carousel(vehicleCarousel, {
+          interval: 5000,
+          touch: true,
+          pause: 'hover'
+        });
 
-        // Create pagination dots if elements exist
-        if (scrollDotsContainer && rows.length > 0) {
-          // Create dots
-          for (let i = 0; i < numViews; i++) {
-            const dot = document.createElement('div');
-            dot.classList.add('dot');
-            dot.addEventListener('click', () => {
-              scrollToView(i);
-            });
-            scrollDotsContainer.appendChild(dot);
+        // Optional: Add keyboard navigation for accessibility
+        document.addEventListener('keydown', function(e) {
+          if (document.activeElement.closest('#vehicleCarousel')) {
+            if (e.key === 'ArrowLeft') {
+              carousel.prev();
+            } else if (e.key === 'ArrowRight') {
+              carousel.next();
+            }
           }
-
-          const dots = scrollDotsContainer.querySelectorAll('.dot');
-
-          function scrollToView(viewIndex) {
-            const scrollTop = viewIndex * rowsPerView * rows[0].offsetHeight;
-            tableContainer.scrollTop = scrollTop;
-            updateActiveDot(viewIndex);
-          }
-
-          function updateActiveDot(viewIndex) {
-            dots.forEach((dot, index) => {
-              dot.classList.toggle('active', index === viewIndex);
-            });
-          }
-
-          tableContainer.addEventListener('scroll', () => {
-            const viewIndex = Math.round(tableContainer.scrollTop / (rowsPerView * rows[0].offsetHeight));
-            updateActiveDot(viewIndex);
-          });
-
-          // Initialize first dot as active
-          updateActiveDot(0);
-        }
+        });
       }
     });
 
