@@ -1,16 +1,10 @@
 <!--
 =========================================================
-* Argon Dashboard 3 - v2.1.0
+* MapleMesh AutoRepair Dashboard - v2.1.0
 =========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-dashboard
-* Copyright 2024 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://www.creative-tim.com/license)
-* Coded by Creative Tim
-
+* Last Updated: July 28, 2025
+* Developed by MapleMesh Development Team
 =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -18,142 +12,331 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
-  <link rel="icon" type="image/png" href="../assets/img/favicon.png">
-  <title>
-    Argon Dashboard 3 by Creative Tim
-  </title>
-  <!--     Fonts and icons     -->
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
-  <!-- Nucleo Icons -->
-  <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-icons.css" rel="stylesheet" />
-  <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-svg.css" rel="stylesheet" />
-  <!-- Font Awesome Icons -->
+  <title>MapleMesh AutoRepair - Billing</title>
+  
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <!-- Font Awesome -->
   <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
-  <!-- CSS Files -->
-  <link id="pagestyle" href="../assets/css/argon-dashboard.css?v=2.1.0" rel="stylesheet" />
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  
+  <!-- Custom CSS -->
+  <link href="../assets/custom/css/style.css" rel="stylesheet" />
 </head>
 
 <body class="bg-gray-100">
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
-    <div class="container-fluid">
-      <ul class="nav nav-tabs w-100 justify-content-center">
-        <li class="nav-item">
-          <a class="nav-link" href="customer_dashboard.html">Dashboard</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="customer_service.html">Service</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link active" href="customer_billing.html">Billing</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="customer_profile.html">Profile</a>
-        </li>
-      </ul>
-    </div>
-  </nav>
+  <!-- ===================== HEADER / NAVIGATION BAR ===================== -->
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+      <div class="container-fluid">
+        <!-- Brand -->
+        <a class="navbar-brand fw-bold me-3 d-flex flex-column align-items-start p-0" href="customer_dashboard.html">
+          <span>MapleMesh</span>
+          <span>AutoRepair</span>
+        </a>
 
-  <div class="container py-4">
-    <div class="row mb-3">
-      <div class="col-md-7">
-        <div class="card mb-3">
-          <div class="card-header bg-white">
-            <strong>My Billing</strong>
-          </div>
-          <div class="card-body">
-            <div class="row g-3">
-              <div class="col-md-12">
-                <div class="border rounded p-3 mb-2">
-                  <div class="d-flex justify-content-between align-items-center mb-1">
-                    <span>
-                      <strong>Upcoming Services</strong><br>
-                      <small>Scheduled for: Friday, July 18, 2025 at <strong>8:00</strong></small>
-                    </span>
-                    <span class="badge bg-success">Confirmed</span>
+        <!-- Left-side Navigation Links -->
+        <div class="navbar-nav d-none d-lg-flex me-auto">
+          <a class="nav-link fw-bold" href="customer_dashboard.html">Dashboard</a>
+          <a class="nav-link fw-bold" href="customer_service.html">Service</a>
+          <a class="nav-link fw-bold active" href="customer_billing.html">Billing</a>
+        </div>
+
+        <!-- Welcome Message (Center) -->
+        <div class="navbar-text d-none d-lg-block mx-auto text-center text-white">
+          <h4 class="mb-0 fw-bold">Welcome Back!</h4>
+          <small>Your Trusted Auto Service Partner</small>
+        </div>
+
+        <!-- Right-side Navigation Links -->
+        <div class="collapse navbar-collapse flex-grow-0" id="mainNavbar">
+          <ul class="navbar-nav align-items-center">
+            <li class="nav-item dropdown hover-dropdown">
+              <a class="nav-link fw-bold" href="customer_profile.html" id="profileLink">Profile</a>
+              <div class="dropdown-menu dropdown-menu-end" aria-labelledby="profileLink">
+                <div class="dropdown-header d-flex align-items-center p-3">
+                  <div class="avatar-circle me-3">
+                    <img src="../assets/img/avatar-placeholder.jpg" alt="Profile" class="avatar-img">
                   </div>
-                  <div class="mb-2">
-                    <strong>Service:</strong> Brake Pad &amp; Rotor Replacement<br>
-                    <strong>Vehicle:</strong> 2023 Honda Civic - L4K 2H8<br>
-                    <strong>Assigned Technician:</strong> <i class="fas fa-user"></i> David Lee
+                  <div>
+                    <h6 class="mb-0">John Doe</h6>
+                    <small class="text-muted">Customer since 2022</small>
                   </div>
-                  <button class="btn btn-warning btn-sm me-2">Reschedule</button>
-                  <button class="btn btn-danger btn-sm">Cancel Service</button>
                 </div>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="customer_profile.html">
+                  <i class="fas fa-user me-2 text-primary"></i>My Profile
+                </a>
+                <a class="dropdown-item" href="customer_service.html">
+                  <i class="fas fa-history me-2 text-primary"></i>Service History
+                </a>
+                <a class="dropdown-item" href="customer_billing.html">
+                  <i class="fas fa-credit-card me-2 text-primary"></i>Billing Settings
+                </a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">
+                  <i class="fas fa-question-circle me-2 text-primary"></i>Help & Support
+                </a>
+                <a class="dropdown-item" href="#">
+                  <i class="fas fa-sign-out-alt me-2 text-danger"></i>Sign Out
+                </a>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Mobile Toggle Button -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+                data-bs-target="#mainNavbar" aria-controls="mainNavbar" 
+                aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
+    </nav>
+  </header>
+  <!-- ===================== END HEADER / NAVIGATION BAR ===================== -->
+
+  <!-- Main Content Container -->
+  <div class="content-wrapper">
+    <div class="container-fluid py-4">
+      <!-- Page Title -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <h2 class="fw-bold">Billing & Payments</h2>
+        </div>
+      </div>
+
+      <!-- Billing Summary Cards -->
+      <div class="row g-4 mb-4">
+        <!-- Current Balance Card -->
+        <div class="col-md-6 col-xl-4">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title">Current Balance</h5>
+              <h2 class="fw-bold text-primary">$125.00</h2>
+              <p class="text-muted">Due on: August 15, 2025</p>
+              <button class="btn btn-primary">
+                <i class="fas fa-credit-card me-2"></i>Pay Now
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment Methods Card -->
+        <div class="col-md-6 col-xl-4">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title">Payment Methods</h5>
+              <div class="d-flex align-items-center mb-3">
+                <i class="fab fa-cc-visa fa-2x me-3 text-primary"></i>
+                <span>Visa ending in 4582</span>
+              </div>
+              <div class="d-flex align-items-center">
+                <i class="fab fa-cc-mastercard fa-2x me-3 text-primary"></i>
+                <span>MasterCard ending in 8724</span>
+              </div>
+              <button class="btn btn-light mt-3">
+                <i class="fas fa-plus me-2"></i>Add Payment Method
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Billing Settings Card -->
+        <div class="col-md-6 col-xl-4">
+          <div class="card h-100">
+            <div class="card-body">
+              <h5 class="card-title">Billing Settings</h5>
+              <p class="card-text">Manage your billing preferences and payment settings.</p>
+              <div class="form-check form-switch mb-3">
+                <input class="form-check-input" type="checkbox" id="autoPay" checked>
+                <label class="form-check-label" for="autoPay">Auto-pay enabled</label>
+              </div>
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="emailReceipts" checked>
+                <label class="form-check-label" for="emailReceipts">Email receipts</label>
+              </div>
+              <button class="btn btn-light mt-3">
+                <i class="fas fa-cog me-2"></i>Manage Settings
               </div>
             </div>
           </div>
         </div>
       </div>
-      <!-- Payment & Help -->
-      <div class="col-md-5">
-        <div class="card mb-3">
-          <div class="card-body">
-            <div class="border rounded p-3 mb-3">
-              <div class="mb-2">
-                <strong>Payment Method</strong><br>
-                Visa ending in <strong>6620</strong> <i class="fab fa-cc-visa"></i><br>
-                <small>Expires 12-2029</small>
+
+      <!-- Billing History Table -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <div class="card" id="service-repair-status-box">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h5>Billing History</h5>
+              <div class="search-box">
+                <input type="text" class="form-control" placeholder="Search invoices..." id="billingSearchInput">
+                <i class="fas fa-search"></i>
               </div>
-              <button class="btn btn-outline-primary btn-sm me-2">Update Card</button>
-              <button class="btn btn-outline-success btn-sm">Add New Card</button>
             </div>
-            <div class="border rounded p-3">
-              <div class="mb-2">
-                <strong>Need Help?</strong><br>
-                <small>If you have any questions about your bill or a service, please contact us.</small>
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                  <thead>
+                    <tr>
+                      <th>INVOICE #</th>
+                      <th>DATE</th>
+                      <th>SERVICE</th>
+                      <th>AMOUNT</th>
+                      <th>STATUS</th>
+                      <th>ACTION</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>INV-2025-068</td>
+                      <td>Jun 15, 2025</td>
+                      <td>Oil Change - TOYOTA RAV4</td>
+                      <td>$65.00</td>
+                      <td><span class="badge bg-success">Paid</span></td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-primary">View</button>
+                        <button class="btn btn-sm btn-outline-secondary">PDF</button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>INV-2025-054</td>
+                      <td>May 22, 2025</td>
+                      <td>Tire Rotation - TOYOTA RAV4</td>
+                      <td>$45.00</td>
+                      <td><span class="badge bg-success">Paid</span></td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-primary">View</button>
+                        <button class="btn btn-sm btn-outline-secondary">PDF</button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>INV-2025-032</td>
+                      <td>Apr 10, 2025</td>
+                      <td>Brake Inspection - TOYOTA RAV4</td>
+                      <td>$125.00</td>
+                      <td><span class="badge bg-warning text-dark">Pending</span></td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-primary">View</button>
+                        <button class="btn btn-sm btn-outline-secondary">PDF</button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>INV-2025-018</td>
+                      <td>Mar 05, 2025</td>
+                      <td>Battery Replacement - TOYOTA RAV4</td>
+                      <td>$210.00</td>
+                      <td><span class="badge bg-success">Paid</span></td>
+                      <td>
+                        <button class="btn btn-sm btn-outline-primary">View</button>
+                        <button class="btn btn-sm btn-outline-secondary">PDF</button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
-              <button class="btn btn-warning btn-sm"><i class="fas fa-headset"></i> Contact Support</button>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <!-- Billing History -->
-    <div class="card">
-      <div class="card-header d-flex justify-content-between align-items-center">
-        <span>Billing History</span>
-        <input type="search" class="form-control form-control-sm w-auto" placeholder="search" style="max-width:150px;">
-      </div>
-      <div class="card-body p-0">
-        <table class="table mb-0">
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Service ID</th>
-              <th>Amount</th>
-              <th>Status</th>
-              <th>Receipt</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>June 12, 2025</td>
-              <td>#SVC-84321</td>
-              <td>$185.50</td>
-              <td><span class="badge bg-success">Paid</span></td>
-              <td><a href="#" class="btn btn-link btn-sm">Download</a></td>
-            </tr>
-            <tr>
-              <td>March 05, 2025</td>
-              <td>#SVC-79882</td>
-              <td>$75.00</td>
-              <td><span class="badge bg-success">Paid</span></td>
-              <td><a href="#" class="btn btn-link btn-sm">Download</a></td>
-            </tr>
-            <tr>
-              <td>December 20, 2024</td>
-              <td>#SVC-71543</td>
-              <td>$450.25</td>
-              <td><span class="badge bg-success">Paid</span></td>
-              <td><a href="#" class="btn btn-link btn-sm">Download</a></td>
-            </tr>
-          </tbody>
-        </table>
+
+      <!-- Subscription and Promotions -->
+      <div class="row g-4">
+        <!-- Service Plans -->
+        <div class="col-md-7">
+          <div class="card" id="favorite-technicians-box">
+            <div class="card-header">
+              <h5>Service Plans & Subscriptions</h5>
+            </div>
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table mb-0">
+                  <thead>
+                    <tr>
+                      <th>PLAN</th>
+                      <th>PERIOD</th>
+                      <th>PRICE</th>
+                      <th>STATUS</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Premium Maintenance</td>
+                      <td>Annual</td>
+                      <td>$599/year</td>
+                      <td><span class="badge bg-success">Active</span></td>
+                    </tr>
+                    <tr>
+                      <td>Road-Side Assistance</td>
+                      <td>Monthly</td>
+                      <td>$15/month</td>
+                      <td><span class="badge bg-success">Active</span></td>
+                    </tr>
+                    <tr>
+                      <td>Extended Warranty</td>
+                      <td>3 Years</td>
+                      <td>$1,299</td>
+                      <td><span class="badge bg-secondary">Expired</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="p-3 d-flex justify-content-end">
+                <button class="btn btn-primary btn-sm">
+                  <i class="fas fa-plus me-2"></i>Add Service Plan
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Promotions Box -->
+        <div class="col-md-5">
+          <div id="promotions-box">
+            <div class="alert alert-info text-center mb-3">
+              SAVE 15% ON ANNUAL SERVICE PLANS!<br>
+              USE CODE: ANNUAL25
+            </div>
+            <div class="alert alert-warning text-center mb-2">
+              SIGN UP FOR AUTO-PAY AND GET $25 CREDIT ON YOUR NEXT SERVICE!
+            </div>
+            <div class="text-end text-muted small">
+              *Terms and conditions apply
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-</body>
 
+  <!-- Bootstrap JS Bundle (includes Popper) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Custom JavaScript -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Search functionality for Billing History
+      const searchInput = document.getElementById('billingSearchInput');
+      if (searchInput) {
+        searchInput.addEventListener('keyup', function() {
+          const searchValue = this.value.toLowerCase();
+          const billingRows = document.querySelectorAll('#service-repair-status-box tbody tr');
+          
+          billingRows.forEach(row => {
+            const billingText = row.textContent.toLowerCase();
+            if (billingText.includes(searchValue)) {
+              row.style.display = '';
+            } else {
+              row.style.display = 'none';
+            }
+          });
+        });
+      }
+    });
+  </script>
+</body>
 </html>

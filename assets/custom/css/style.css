@@ -1,0 +1,746 @@
+/* ===================== MapleMesh AutoRepair CSS =====================
+ * Author: MapleMesh Development Team
+ * Version: 2.0.0
+ * Last updated: July 28, 2025
+ * 
+ * Table of Contents:
+ * 1. Variables
+ * 2. Base Elements
+ * 3. Layout & Structure
+ * 4. Navigation
+ * 5. Cards
+ * 6. Tables
+ * 7. Components (Buttons, Badges, Forms)
+ * 8. Section-specific Styles
+ * 9. Responsive Design
+ * ================================================================== */
+
+/* ===================== 1. VARIABLES ===================== */
+:root {
+  /* Brand Colors */
+  --cartoon-primary: #041B15;    /* Dark green */
+  --cartoon-secondary: #0B3C30;  /* Slightly lighter green for gradient */
+  --cartoon-accent: #4cc9f0;     /* Sky blue */
+  --cartoon-success: #72b01d;    /* Lime green */
+  --cartoon-warning: #f7b801;    /* Sunny yellow */
+  --cartoon-danger: #f72585;     /* Hot pink */
+  --cartoon-info: #4cc9f0;       /* Light blue */
+  --cartoon-light: #f8f9fa;      /* Off white */
+  
+  /* Background colors */
+  --bg-main: #f0f7ff;            /* Light blue tint */
+  --bg-card: #ffffff;            /* White */
+  --bg-hover: #e9f5ff;           /* Light hover state */
+  
+  /* Text colors */
+  --text-dark: #2b2d42;          /* Deep navy */
+  --text-muted: #6c757d;         /* Soft gray */
+  --text-light: #ffffff;         /* White */
+
+  /* Spacing */
+  --spacing-xs: 0.25rem;         /* 4px */
+  --spacing-sm: 0.5rem;          /* 8px */
+  --spacing-md: 1rem;            /* 16px */
+  --spacing-lg: 1.5rem;          /* 24px */
+  --spacing-xl: 2rem;            /* 32px */
+
+  /* Border Radius */
+  --radius-xs: 3px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  /* Shadows */
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 8px 24px rgba(67, 97, 238, 0.1);
+  --shadow-lg: 0 12px 30px rgba(67, 97, 238, 0.15);
+}
+
+/* ===================== 2. BASE ELEMENTS ===================== */
+body {
+  background: var(--bg-main);
+  color: var(--text-dark);
+  font-family: 'Inter', sans-serif;
+  font-size: 17px; /* Increased base font size from default 16px */
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--cartoon-secondary);
+  font-weight: 700;
+  /* Scale headings proportionally to the new base font size */
+}
+
+/* Keep navigation font sizes the same */
+.navbar, .navbar-brand, .navbar-text, .navbar-nav .nav-link {
+  font-size: inherit; /* This preserves their current font sizes */
+}
+
+/* Adjust component font sizes */
+.card-header h5 {
+  color: var(--text-dark);
+  font-size: 1.2rem !important; /* Slightly larger section headings */
+  font-weight: 700;
+  margin: 0;
+  padding: 0;
+  line-height: 1.2;
+}
+
+.table th, 
+.table td {
+  font-size: 1rem !important; /* Increase table text */
+  padding: var(--spacing-sm) !important;
+  border: none;
+  vertical-align: middle;
+}
+
+.table thead th {
+  font-size: 0.9rem !important; /* Increase table headers */
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Adjust status content */
+#car-info-box .vehicle-info {
+  font-size: 1.3rem !important; /* Larger car info text */
+}
+
+#car-info-box .text-success,
+#car-info-box p {
+  font-size: 1rem !important; /* Larger status text */
+}
+
+.technician-count {
+  font-size: 2.2rem !important; /* Larger numbers */
+}
+
+.stats-label {
+  font-size: 1rem !important; /* Larger stats labels */
+}
+
+/* Adjust button and badge text sizes */
+.btn {
+  font-size: 0.95rem !important;
+}
+
+.badge {
+  font-size: 0.85rem !important;
+}
+
+/* Keep search box text proportionate */
+#service-repair-status-box .search-box input {
+  font-size: 0.85rem !important;
+  height: 36px; /* Slightly taller to fit larger text */
+}
+
+/* Promotions text */
+#promotions-box .alert {
+  font-size: 1.15rem !important;
+}
+
+/* ===================== 3. LAYOUT & STRUCTURE ===================== */
+.content-wrapper {
+  max-width: 1400px;  /* Limit width for readability on large screens */
+  margin: 0 auto;     /* Center the content */
+  padding: 0 var(--spacing-xl);  /* Consistent edge padding */
+}
+
+.container-fluid {
+  max-width: 100% !important;
+  padding-left: var(--spacing-xl) !important;
+  padding-right: var(--spacing-xl) !important;
+}
+
+/* Row spacing */
+.row.g-4 {
+  margin-bottom: var(--spacing-xl) !important; /* Consistent row spacing */
+}
+
+/* ===================== 4. NAVIGATION ===================== */
+.navbar {
+  background: linear-gradient(135deg, var(--cartoon-primary) 0%, var(--cartoon-secondary) 100%) !important;
+  box-shadow: var(--shadow-sm);
+  padding: var(--spacing-sm) var(--spacing-xl);
+  width: 100%;
+}
+
+.navbar-brand {
+  color: var(--text-light) !important;
+  font-weight: 900;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1;
+  min-width: 150px;
+}
+
+.navbar-brand span:first-child {
+  font-size: 1.4rem !important;
+  font-weight: 900 !important;
+}
+
+.navbar-brand span:last-child {
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+  color: var(--text-light) !important;
+}
+
+.navbar-text {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--text-light) !important;
+}
+
+.navbar-text h4,
+.navbar-text small {
+  color: var(--text-light) !important;
+}
+
+.navbar-collapse {
+  justify-content: flex-end;
+}
+
+.navbar-nav .nav-link {
+  color: rgba(255, 255, 255, 0.65) !important; /* Gray color */
+  font-size: 1.15rem !important;
+  font-weight: 600 !important;
+  padding: var(--spacing-sm) var(--spacing-md) !important;
+  transition: all 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+  color: var(--text-light) !important; /* White on hover */
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5); /* Glow effect */
+  transform: translateY(-1px);
+}
+
+/* Active link is white and glowing */
+.navbar-nav .nav-link.active,
+.navbar-nav.d-none.d-lg-flex .nav-link.active {
+  color: var(--text-light) !important; /* White for active link */
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.5); /* Glow effect */
+  position: relative;
+}
+
+/* Add underline indicator for active link */
+.navbar-nav .nav-link.active:after,
+.navbar-nav.d-none.d-lg-flex .nav-link.active:after {
+  content: '';
+  position: absolute;
+  bottom: 0.25rem;
+  left: var(--spacing-md);
+  right: var(--spacing-md);
+  height: 2px;
+  background-color: var(--text-light);
+  border-radius: 2px;
+}
+
+/* Dropdown styling */
+.dropdown-menu {
+  background: var(--cartoon-primary);
+  border: none;
+  box-shadow: var(--shadow-sm);
+}
+
+.dropdown-item {
+  color: var(--text-light) !important;
+}
+
+.dropdown-item:hover {
+  background: var(--cartoon-secondary);
+  color: var(--cartoon-accent) !important;
+}
+
+.dropdown-divider {
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Hover dropdown for Profile */
+.hover-dropdown {
+  position: relative;
+}
+
+.hover-dropdown .dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  min-width: 280px;
+  margin-top: 0.125rem;
+  padding: 0;
+  background-color: #136F63; /* Teal background color as requested */
+  border: none;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  animation: fadeIn 0.2s ease-in-out;
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.hover-dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Profile dropdown styling with new color scheme */
+.hover-dropdown .dropdown-header {
+  background-color: rgba(255, 255, 255, 0.1); /* Slightly lighter background */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  margin-bottom: 0;
+  color: white; /* White text */
+}
+
+.hover-dropdown .dropdown-header h6 {
+  font-weight: bold;
+  color: white;
+}
+
+.hover-dropdown .dropdown-header small {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.hover-dropdown .avatar-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid white;
+}
+
+.hover-dropdown .avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hover-dropdown .dropdown-item {
+  padding: 0.65rem 1.5rem;
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: rgba(255, 255, 255, 0.65) !important; /* Gray text by default */
+  transition: all 0.3s ease;
+}
+
+.hover-dropdown .dropdown-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--text-light) !important; /* White text on hover */
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3); /* Glow effect */
+  transform: translateY(-1px); /* Slight lift effect */
+}
+
+/* Make icons match the text color */
+.hover-dropdown .dropdown-item i {
+  width: 20px;
+  text-align: center;
+  color: inherit !important;
+}
+
+/* Override text-primary and text-danger to follow the same pattern */
+.hover-dropdown .dropdown-item .text-primary,
+.hover-dropdown .dropdown-item .text-danger {
+  color: inherit !important;
+}
+
+/* Keep header text white for better contrast */
+.hover-dropdown .dropdown-header h6 {
+  font-weight: bold;
+  color: white;
+}
+
+.hover-dropdown .dropdown-header small {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.hover-dropdown .dropdown-divider {
+  border-top-color: rgba(255, 255, 255, 0.15);
+}
+
+/* ===================== 5. CARDS ===================== */
+/* Base card styling */
+.card {
+  background: var(--bg-card);
+  border: none;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+.card-header {
+  background: var(--bg-card);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  padding: var(--spacing-sm) var(--spacing-md) !important;
+  border-radius: 0;
+}
+
+.card-body {
+  padding: var(--spacing-lg) !important;
+}
+
+/* Card header/title styling */
+.card-header h5 {
+  color: var(--text-dark);
+  font-size: 1.2rem !important; /* Slightly larger section headings */
+  font-weight: 700;
+  margin: 0;
+  padding: 0;
+  line-height: 1.2;
+}
+
+/* ===================== 6. TABLES ===================== */
+.table {
+  margin-bottom: 0;
+  --bs-table-bg: transparent;
+  --bs-table-striped-bg: #f8f9fa;
+}
+
+.table th, 
+.table td {
+  font-size: 1rem !important; /* Increase table text */
+  padding: var(--spacing-sm) !important;
+  border: none;
+  vertical-align: middle;
+}
+
+/* Table headers */
+.table thead tr {
+  background: var(--cartoon-primary);
+}
+
+.table thead th {
+  color: var(--text-light) !important;
+  font-weight: 600;
+  font-size: 0.9rem !important; /* Increase table headers */
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: none;
+}
+
+/* Table rows */
+.table tbody tr {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.table tbody tr:last-child {
+  border-bottom: none;
+}
+
+/* Text alignment for tables */
+.table th:nth-child(n+2),
+.table td:nth-child(n+2) {
+  text-align: center;
+}
+
+/* Table wrapper */
+.table-responsive {
+  margin-bottom: 0;
+}
+
+/* ===================== 7. COMPONENTS ===================== */
+/* --- 7.1 Buttons --- */
+.btn {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  font-size: 0.875rem;
+  border-radius: var(--radius-md);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--cartoon-primary) 0%, var(--cartoon-secondary) 100%);
+  border: none;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-danger {
+  background-color: var(--cartoon-danger);
+  border: none;
+}
+
+/* Button groups */
+.btn-group {
+  display: flex;
+  gap: var(--spacing-xs);
+  align-items: center;
+}
+
+/* Small action buttons */
+.btn-group .btn {
+  padding: 0.15rem 0.4rem !important;
+  font-size: 0.7rem !important;
+  min-width: 50px;
+}
+
+/* --- 7.2 Badges --- */
+.badge {
+  padding: 0.25rem 0.75rem !important;
+  font-size: 0.75rem !important;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+}
+
+/* Status badges */
+.badge.bg-success,
+.badge.bg-secondary,
+.badge.bg-warning,
+.badge.bg-danger {
+  padding: 0.25rem 0.75rem !important;
+  font-size: 0.75rem !important;
+}
+
+/* --- 7.3 Forms --- */
+.form-control {
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+}
+
+/* Search box */
+.search-box input {
+  background: var(--bg-main);
+  border: 2px solid var(--cartoon-accent);
+  border-radius: var(--radius-lg);
+}
+
+/* --- 7.4 Alerts --- */
+.alert {
+  border: none;
+  border-radius: var(--radius-lg);
+  font-size: 1.05rem;
+}
+
+/* ===================== 8. SECTION-SPECIFIC STYLES ===================== */
+/* --- 8.1 Car Info Box --- */
+#car-info-box {
+  min-height: 140px;
+}
+
+#car-info-box .vehicle-info {
+  color: var(--cartoon-primary);
+  font-size: 1.3rem !important; /* Larger car info text */
+  font-weight: 700;
+  margin-bottom: var(--spacing-xs);
+}
+
+#car-info-box .text-success {
+  color: var(--cartoon-success) !important;
+}
+
+#car-info-box p {
+  font-size: 1rem !important; /* Larger status text */
+}
+
+#car-info-box .btn-primary {
+  padding: 0.4rem 1rem;
+  font-size: 0.875rem !important;
+  line-height: 1.2;
+}
+
+/* --- 8.2 Technicians Availability Box --- */
+#technicians-availability-box {
+  min-height: 140px;
+}
+
+#technicians-availability-box h6 {
+  margin-bottom: var(--spacing-md);
+}
+
+.technician-count {
+  color: var(--cartoon-primary);
+  font-size: 2.2rem !important; /* Larger numbers */
+  margin-bottom: var(--spacing-xs);
+  font-weight: 700;
+}
+
+.stats-label {
+  font-size: 1rem !important; /* Larger stats labels */
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+/* --- 8.3 Quick Actions Box --- */
+#quick-actions-box h6 {
+  margin-bottom: var(--spacing-md);
+}
+
+#quick-actions-box .btn {
+  margin-bottom: var(--spacing-sm);
+}
+
+/* --- 8.4 Service & Repair Status Box --- */
+#service-repair-status-box {
+  background-color: var(--bg-card);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  margin-bottom: var(--spacing-xl) !important;
+}
+
+#service-repair-status-box .card-header {
+  padding: var(--spacing-sm) var(--spacing-md) !important;
+  min-height: unset !important;
+  display: flex;
+  align-items: center;
+  background: var(--bg-card) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+#service-repair-status-box .card-body {
+  padding: 0 !important;
+}
+
+#service-repair-status-box .table {
+  margin-bottom: 0;
+}
+
+/* Service & Repair Status search box */
+#service-repair-status-box .search-box {
+  position: relative;
+  max-width: 220px;
+}
+
+#service-repair-status-box .search-box input {
+  padding: 0.25rem 1rem 0.25rem 2rem;
+  font-size: 0.85rem !important;
+  height: 36px; /* Slightly taller to fit larger text */
+  border-radius: 16px;
+  background-color: var(--bg-main);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+#service-repair-status-box .search-box i {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+/* --- 8.5 Favorite Technicians Box --- */
+#favorite-technicians-box {
+  background-color: var(--bg-card);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  margin-bottom: var(--spacing-xl) !important;
+}
+
+#favorite-technicians-box .card-header {
+  padding: var(--spacing-sm) var(--spacing-md) !important;
+  min-height: unset !important;
+  background: var(--bg-card);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+#favorite-technicians-box .card-body {
+  padding: 0 !important;
+}
+
+#favorite-technicians-box .table {
+  margin-bottom: 0;
+}
+
+/* --- 8.6 Promotions Box --- */
+#promotions-box {
+  margin-bottom: 0 !important;
+}
+
+#promotions-box .alert {
+  border: none;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+#promotions-box .alert-info {
+  background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+  color: white;
+}
+
+#promotions-box .alert-warning {
+  background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+}
+
+/* --- 8.7 Consistent Section Headers --- */
+#service-repair-status-box .card-header h5,
+#favorite-technicians-box .card-header h5 {
+  color: var(--text-dark) !important;
+  font-size: 1.1rem !important;
+  font-weight: 700 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1.2 !important;
+}
+
+/* ===================== 9. RESPONSIVE DESIGN ===================== */
+@media (max-width: 991.98px) {
+  /* Smaller spacing variables */
+  :root {
+    --spacing-xl: 1.5rem;
+  }
+  
+  /* Adjust font sizes */
+  html { 
+    font-size: 16px; 
+  }
+  
+  /* Navbar adjustments */
+  .content-wrapper {
+    padding: 0 var(--spacing-md);
+  }
+  
+  .navbar-brand span:first-child { 
+    font-size: 1.1rem !important; 
+  }
+  
+  .navbar-brand span:last-child { 
+    font-size: 0.9rem !important; 
+  }
+  
+  .navbar-text {
+    display: none !important;
+  }
+  
+  .navbar-collapse {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    left: 0;
+    background: var(--cartoon-primary);
+    padding: var(--spacing-md);
+    border-radius: 0 0 var(--radius-md) var(--radius-md);
+    box-shadow: var(--shadow-md);
+    z-index: 1000;
+  }
+  
+  .navbar-nav {
+    width: 100%;
+  }
+  
+  .navbar-nav .nav-link {
+    padding: 0.75rem 1rem !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+}

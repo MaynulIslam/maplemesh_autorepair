@@ -1,16 +1,10 @@
 <!--
 =========================================================
-* Argon Dashboard 3 - v2.1.0
+* MapleMesh AutoRepair Dashboard - v2.1.0
 =========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-dashboard
-* Copyright 2024 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://www.creative-tim.com/license)
-* Coded by Creative Tim
-
+* Last Updated: July 28, 2025
+* Developed by MapleMesh Development Team
 =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -18,166 +12,389 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
-  <link rel="icon" type="image/png" href="../assets/img/favicon.png">
-  <title>
-    Argon Dashboard 3 by Creative Tim
-  </title>
-  <!--     Fonts and icons     -->
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
-  <!-- Nucleo Icons -->
-  <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-icons.css" rel="stylesheet" />
-  <link href="https://demos.creative-tim.com/argon-dashboard-pro/assets/css/nucleo-svg.css" rel="stylesheet" />
-  <!-- Font Awesome Icons -->
-  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
-  <!-- Bootstrap CSS (required for navbar dropdowns/toggler) -->
+  <title>MapleMesh AutoRepair - Customer Dashboard</title>
+  
+  <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- CSS Files -->
-  <link id="pagestyle" href="../assets/css/argon-dashboard.css?v=2.1.0" rel="stylesheet" />
+  
+  <!-- Font Awesome -->
+  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  
+  <!-- Custom CSS -->
+  <link href="../assets/custom/css/style.css" rel="stylesheet" />
 </head>
 
 <body class="bg-gray-100">
-  <!-- Header will be loaded here -->
-  <div id="header"></div>
+  <!-- ===================== HEADER / NAVIGATION BAR ===================== -->
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+      <div class="container-fluid">
+        <!-- Brand -->
+        <a class="navbar-brand fw-bold me-3 d-flex flex-column align-items-start p-0" href="customer_dashboard.html">
+          <span>MapleMesh</span>
+          <span>AutoRepair</span>
+        </a>
 
-  <div class="container py-4">
-    <div class="row mb-3">
-      <!-- Car Info -->
-      <div class="col-md-6">
-        <div class="card mb-3">
-          <div class="card-body d-flex align-items-center justify-content-between">
-            <div>
-              <h6 class="mb-1">TOYOTA RAV4 <span class="text-muted">2024</span></h6>
-              <p class="mb-0 text-success">Tire Rotation Due In 3 months</p>
-            </div>
-            <button class="btn btn-danger btn-sm">SERVICE REQUEST</button>
-          </div>
+        <!-- Left-side Navigation Links -->
+        <div class="navbar-nav d-none d-lg-flex me-auto">
+          <a class="nav-link fw-bold active" href="customer_dashboard.html">Dashboard</a>
+          <a class="nav-link fw-bold" href="customer_service.html">Service</a>
+          <a class="nav-link fw-bold" href="customer_billing.html">Billing</a>
         </div>
-      </div>
-      <!-- Technicians Availability -->
-      <div class="col-md-6">
-        <div class="card mb-3">
-          <div class="card-body">
-            <h6 class="mb-1">Technicians Availability</h6>
-            <p class="mb-0">28 Technicians <span class="text-warning"><i class="ni ni-satisfied"></i></span></p>
-            <p class="mb-0 text-success">5 On Call Available</p>
-          </div>
+
+        <!-- Welcome Message (Center) -->
+        <div class="navbar-text d-none d-lg-block mx-auto text-center text-white">
+          <h4 class="mb-0 fw-bold">Welcome Back!</h4>
+          <small>Your Trusted Auto Service Partner</small>
         </div>
-      </div>
-    </div>
 
-    <!-- Service & Repair Status -->
-    <div class="card mb-3">
-      <div class="card-header d-flex justify-content-between align-items-center">
-        <span>Service & Repair Status</span>
-        <input type="search" class="form-control form-control-sm w-auto" placeholder="search" style="max-width:150px;">
-      </div>
-      <ul class="list-group list-group-flush">
-        <li class="list-group-item d-flex align-items-center justify-content-between">
-          <span><i class="fas fa-check text-success me-2"></i> Tire Rotation - TOYOTA RAV4</span>
-          <span class="badge bg-success">Technician Assigned</span>
-          <span>
-            <button class="btn btn-link btn-sm"><i class="fas fa-arrow-up"></i></button>
-            <button class="btn btn-link btn-sm"><i class="fas fa-arrow-down"></i></button>
-            <button class="btn btn-link btn-sm"><i class="fas fa-check"></i></button>
-          </span>
-        </li>
-        <li class="list-group-item d-flex align-items-center justify-content-between">
-          <span><i class="fas fa-check text-success me-2"></i> Oil Change - TOYOTA RAV4</span>
-          <span class="badge bg-secondary">Pending</span>
-          <span>
-            <button class="btn btn-link btn-sm"><i class="fas fa-arrow-up"></i></button>
-            <button class="btn btn-link btn-sm"><i class="fas fa-arrow-down"></i></button>
-            <button class="btn btn-link btn-sm"><i class="fas fa-check"></i></button>
-          </span>
-        </li>
-      </ul>
-    </div>
+        <!-- Right-side Navigation Links -->
+        <div class="collapse navbar-collapse flex-grow-0" id="mainNavbar">
+          <ul class="navbar-nav align-items-center">
+            <li class="nav-item dropdown hover-dropdown">
+              <a class="nav-link fw-bold" href="customer_profile.html" id="profileLink">Profile</a>
+              <div class="dropdown-menu dropdown-menu-end" aria-labelledby="profileLink">
+                <div class="dropdown-header d-flex align-items-center p-3">
+                  <div class="avatar-circle me-3">
+                    <img src="../assets/img/avatar-placeholder.jpg" alt="Profile" class="avatar-img">
+                  </div>
+                  <div>
+                    <h6 class="mb-0">John Doe</h6>
+                    <small class="text-muted">Customer since 2022</small>
+                  </div>
+                </div>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="customer_profile.html">
+                  <i class="fas fa-user me-2 text-primary"></i>My Profile
+                </a>
+                <a class="dropdown-item" href="customer_service.html">
+                  <i class="fas fa-history me-2 text-primary"></i>Service History
+                </a>
+                <a class="dropdown-item" href="customer_billing.html">
+                  <i class="fas fa-credit-card me-2 text-primary"></i>Billing Settings
+                </a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">
+                  <i class="fas fa-question-circle me-2 text-primary"></i>Help & Support
+                </a>
+                <a class="dropdown-item" href="#">
+                  <i class="fas fa-sign-out-alt me-2 text-danger"></i>Sign Out
+                </a>
+              </div>
+            </li>
+          </ul>
+        </div>
 
-    <!-- Favorite Technicians -->
-    <div class="row">
-      <div class="col-md-7">
-        <div class="card mb-3">
-          <div class="card-header">
-            Find Your Favorite Technician Here
-          </div>
-          <div class="card-body p-0">
-            <table class="table mb-0">
-              <thead>
-                <tr>
-                  <th>TECHNICIAN</th>
-                  <th>STATUS</th>
-                  <th>EDIT</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>John Smith</td>
-                  <td><span class="badge bg-success">Active</span></td>
-                  <td>
-                    <button class="btn btn-outline-primary btn-sm">Add</button>
-                    <button class="btn btn-outline-secondary btn-sm">Remove</button>
-                    <button class="btn btn-outline-danger btn-sm">Delete</button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>James Kim</td>
-                  <td><span class="badge bg-success">Active</span></td>
-                  <td>
-                    <button class="btn btn-outline-primary btn-sm">Add</button>
-                    <button class="btn btn-outline-secondary btn-sm">Remove</button>
-                    <button class="btn btn-outline-danger btn-sm">Delete</button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Maria Lopez</td>
-                  <td><span class="badge bg-secondary">Not Available</span></td>
-                  <td>
-                    <button class="btn btn-outline-primary btn-sm">Add</button>
-                    <button class="btn btn-outline-secondary btn-sm">Remove</button>
-                    <button class="btn btn-outline-danger btn-sm">Delete</button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            <div class="px-3 pb-2 text-muted" style="font-size:0.9em;">
-              You can save one more favorite technician of yours
+        <!-- Mobile Toggle Button -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+                data-bs-target="#mainNavbar" aria-controls="mainNavbar" 
+                aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
+    </nav>
+  </header>
+  <!-- ===================== END HEADER / NAVIGATION BAR ===================== -->
+
+  <!-- Main Content Container -->
+  <div class="content-wrapper">
+    <div class="container-fluid py-4">
+      <!-- ===================== TOP STATS CARDS ROW ===================== -->
+      <div class="row g-4 mb-4">
+        <!-- Car Info Box -->
+        <div class="col-md-6 col-xl-4">
+          <div class="card h-100" id="car-info-box">
+            <div class="card-body">
+              <h6 class="vehicle-info">TOYOTA RAV4 <span class="text-muted">2024</span></h6>
+              <p class="text-success">
+                <i class="fas fa-clock me-2"></i>
+                Tire Rotation Due In 3 months
+              </p>
+              <button class="btn btn-primary">
+                <i class="fas fa-wrench me-2"></i>
+                Service Request
+              </button>
             </div>
           </div>
         </div>
-      </div>
-      <!-- Promotions -->
-      <div class="col-md-5">
-        <div class="mb-3">
-          <div class="alert alert-info text-center py-2 mb-2" style="font-size:0.95em;">
-            SAVE UPTO 50% ON YOUR FIRST CAR SERVICING!<br>
-            REFER YOUR FRIEND TODAY.
+        
+        <!-- Technicians Availability Box -->
+        <div class="col-md-6 col-xl-4">
+          <div class="card h-100" id="technicians-availability-box">
+            <div class="card-body">
+              <h6 class="text-primary mb-3">Technicians Availability</h6>
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h3 class="technician-count mb-0">28</h3>
+                  <p class="stats-label mb-0">Total Technicians</p>
+                </div>
+                <div>
+                  <h3 class="technician-count text-success mb-0">5</h3>
+                  <p class="stats-label mb-0">On Call Available</p>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="alert alert-warning text-center py-2 mb-2" style="font-size:0.95em;">
-            GET 30% DISCOUNT FROM SHELL WHEN YOU CHANGE ENGINE OIL THROUGH US!
-          </div>
-          <div class="text-end text-muted" style="font-size:0.8em;">
-            *Terms and conditions apply
+        </div>
+        
+        <!-- Quick Actions Box -->
+        <div class="col-md-6 col-xl-4">
+          <div class="card h-100" id="quick-actions-box">
+            <div class="card-body">
+              <h6 class="text-primary mb-3">Quick Actions</h6>
+              <div class="d-grid gap-2">
+                <button class="btn btn-primary">
+                  <i class="fas fa-plus me-2"></i>Book New Service
+                </button>
+                <button class="btn btn-light">
+                  <i class="fas fa-history me-2"></i>View History
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+      <!-- ===================== END TOP STATS CARDS ROW ===================== -->
+
+      <!-- ===================== SERVICE & REPAIR STATUS BOX ===================== -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <div class="card" id="service-repair-status-box">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h5>Service & Repair Status</h5>
+              <div class="search-box">
+                <input type="text" class="form-control" placeholder="Search services..." id="serviceSearchInput">
+                <i class="fas fa-search"></i>
+              </div>
+            </div>
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                  <thead>
+                    <tr>
+                      <th>SERVICES</th>
+                      <th>STATUS</th>
+                      <th>REAL TIME STATUS</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Tire Rotation - TOYOTA RAV4</td>
+                      <td>
+                        <span class="badge bg-success">Technician Assigned</span>
+                      </td>
+                      <td>
+                        <div class="btn-group">
+                          <button class="btn btn-link btn-sm"><i class="fas fa-arrow-up"></i></button>
+                          <button class="btn btn-link btn-sm"><i class="fas fa-arrow-down"></i></button>
+                          <button class="btn btn-link btn-sm"><i class="fas fa-check"></i></button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Oil Change - TOYOTA RAV4</td>
+                      <td>
+                        <span class="badge bg-secondary">Pending</span>
+                      </td>
+                      <td>
+                        <div class="btn-group">
+                          <button class="btn btn-link btn-sm"><i class="fas fa-arrow-up"></i></button>
+                          <button class="btn btn-link btn-sm"><i class="fas fa-arrow-down"></i></button>
+                          <button class="btn btn-link btn-sm"><i class="fas fa-check"></i></button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Brake Inspection - TOYOTA RAV4</td>
+                      <td>
+                        <span class="badge bg-warning text-dark">In Progress</span>
+                      </td>
+                      <td>
+                        <div class="btn-group">
+                          <button class="btn btn-link btn-sm"><i class="fas fa-arrow-up"></i></button>
+                          <button class="btn btn-link btn-sm"><i class="fas fa-arrow-down"></i></button>
+                          <button class="btn btn-link btn-sm"><i class="fas fa-check"></i></button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Battery Replacement - TOYOTA RAV4</td>
+                      <td>
+                        <span class="badge bg-danger">Overdue</span>
+                      </td>
+                      <td>
+                        <div class="btn-group">
+                          <button class="btn btn-link btn-sm"><i class="fas fa-arrow-up"></i></button>
+                          <button class="btn btn-link btn-sm"><i class="fas fa-arrow-down"></i></button>
+                          <button class="btn btn-link btn-sm"><i class="fas fa-check"></i></button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- ===================== END SERVICE & REPAIR STATUS BOX ===================== -->
+
+      <!-- ===================== BOTTOM SECTION ===================== -->
+      <div class="row g-4">
+        <!-- Favorite Technicians Box -->
+        <div class="col-md-7">
+          <div class="card" id="favorite-technicians-box">
+            <div class="card-header">
+              <h5>Find Your Favorite Technician Here</h5>
+            </div>
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table mb-0">
+                  <thead>
+                    <tr>
+                      <th>TECHNICIAN</th>
+                      <th>STATUS</th>
+                      <th>EDIT</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>John Smith</td>
+                      <td><span class="badge bg-success">Active</span></td>
+                      <td>
+                        <div class="btn-group">
+                          <button class="btn btn-outline-primary btn-sm">Add</button>
+                          <button class="btn btn-outline-secondary btn-sm">Remove</button>
+                          <button class="btn btn-outline-danger btn-sm">Delete</button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>James Kim</td>
+                      <td><span class="badge bg-success">Active</span></td>
+                      <td>
+                        <div class="btn-group">
+                          <button class="btn btn-outline-primary btn-sm">Add</button>
+                          <button class="btn btn-outline-secondary btn-sm">Remove</button>
+                          <button class="btn btn-outline-danger btn-sm">Delete</button>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Maria Lopez</td>
+                      <td><span class="badge bg-secondary">Not Available</span></td>
+                      <td>
+                        <div class="btn-group">
+                          <button class="btn btn-outline-primary btn-sm">Add</button>
+                          <button class="btn btn-outline-secondary btn-sm">Remove</button>
+                          <button class="btn btn-outline-danger btn-sm">Delete</button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="p-3 text-muted small">
+                You can save one more favorite technician of yours
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Promotions Box -->
+        <div class="col-md-5">
+          <div id="promotions-box">
+            <div class="alert alert-info text-center mb-3">
+              SAVE UPTO 50% ON YOUR FIRST CAR SERVICING!<br>
+              REFER YOUR FRIEND TODAY.
+            </div>
+            <div class="alert alert-warning text-center mb-2">
+              GET 30% DISCOUNT FROM SHELL WHEN YOU CHANGE ENGINE OIL THROUGH US!
+            </div>
+            <div class="text-end text-muted small">
+              *Terms and conditions apply
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- ===================== END BOTTOM SECTION ===================== -->
     </div>
   </div>
+  <!-- ===================== END MAIN CONTENT ===================== -->
 
-  <!-- Footer will be loaded here -->
-  <div id="footer"></div>
-
-  <!-- Bootstrap JS (required for navbar dropdowns/toggler) -->
+  <!-- Bootstrap JS Bundle (includes Popper) -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- Header/Footer loader -->
+
+  <!-- Custom JavaScript -->
   <script>
-    fetch('customer_headerFooter.html')
-      .then(res => res.text())
-      .then(data => {
-        const parts = data.split('<!--FOOTER-->');
-        document.getElementById('header').innerHTML = parts[0];
-        document.getElementById('footer').innerHTML = parts[1] || '';
-      });
+    // Table pagination functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const tableContainer = document.getElementById('service-repair-table');
+      if (tableContainer) {
+        const scrollDotsContainer = document.getElementById('scroll-dots');
+        const rows = tableContainer.querySelectorAll('tbody tr');
+        const rowsPerView = 2;
+        const numViews = Math.ceil(rows.length / rowsPerView);
+
+        // Create pagination dots if elements exist
+        if (scrollDotsContainer && rows.length > 0) {
+          // Create dots
+          for (let i = 0; i < numViews; i++) {
+            const dot = document.createElement('div');
+            dot.classList.add('dot');
+            dot.addEventListener('click', () => {
+              scrollToView(i);
+            });
+            scrollDotsContainer.appendChild(dot);
+          }
+
+          const dots = scrollDotsContainer.querySelectorAll('.dot');
+
+          function scrollToView(viewIndex) {
+            const scrollTop = viewIndex * rowsPerView * rows[0].offsetHeight;
+            tableContainer.scrollTop = scrollTop;
+            updateActiveDot(viewIndex);
+          }
+
+          function updateActiveDot(viewIndex) {
+            dots.forEach((dot, index) => {
+              dot.classList.toggle('active', index === viewIndex);
+            });
+          }
+
+          tableContainer.addEventListener('scroll', () => {
+            const viewIndex = Math.round(tableContainer.scrollTop / (rowsPerView * rows[0].offsetHeight));
+            updateActiveDot(viewIndex);
+          });
+
+          // Initialize first dot as active
+          updateActiveDot(0);
+        }
+      }
+    });
+
+    // Search functionality for Service & Repair Status
+    document.addEventListener('DOMContentLoaded', function() {
+      const searchInput = document.getElementById('serviceSearchInput');
+      if (searchInput) {
+        searchInput.addEventListener('keyup', function() {
+          const searchValue = this.value.toLowerCase();
+          const serviceRows = document.querySelectorAll('#service-repair-status-box tbody tr');
+          
+          serviceRows.forEach(row => {
+            const serviceText = row.querySelector('td:first-child').textContent.toLowerCase();
+            if (serviceText.includes(searchValue)) {
+              row.style.display = '';
+            } else {
+              row.style.display = 'none';
+            }
+          });
+        });
+      }
+    });
   </script>
 </body>
 </html>
