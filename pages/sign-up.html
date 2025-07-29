@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MapleMesh AutoRepair - Sign Up</title>
+    <title>Registration - MapleMesh AutoRepair</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts - Inter -->
@@ -13,336 +13,838 @@
     <!-- Font Awesome -->
     <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
     <script>
-        // Configure Tailwind with the company colors
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
                         primary: {
-                            DEFAULT: '#041B15',  /* Dark green */
-                            light: '#136F63',    /* Teal */
+                            DEFAULT: '#041B15',
+                            light: '#136F63',
                         },
-                        accent: '#4cc9f0',       /* Sky blue */
-                        success: '#72b01d',      /* Lime green */
-                        warning: '#f7b801',      /* Yellow */
-                        danger: '#f72585',       /* Pink */
                     }
                 }
             }
         }
     </script>
     <style>
-        /* Custom styles */
         body {
             font-family: 'Inter', sans-serif;
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        /* Background gradient */
-        body::before {
-            content: '';
-            position: fixed;
-            top: -10px;
-            left: -10px;
-            right: -10px;
-            bottom: -10px;
             background: linear-gradient(135deg, #041B15 0%, #0B3C30 50%, #136F63 100%);
-            z-index: -1;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
         }
-
-        /* Pattern overlay */
-        body::after {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-            opacity: 0.6;
-            z-index: -1;
+        
+        .registration-card {
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 1300px;
+            padding: 1.5rem;
         }
-
-        /* Ensure content is above the background */
-        .content-wrapper {
-            position: relative;
-            z-index: 1;
+        
+        /* Enhanced form section styling */
+        .form-section {
+            background: #ffffff;
+            border-radius: 0.5rem;
+            border: 1px solid #d1d5db;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            transition: all 0.2s ease;
         }
-
-        /* Custom input focus style */
-        .custom-input:focus {
+        
+        /* Add subtle hover effect */
+        .form-section:hover {
+            box-shadow: 0 6px 12px rgba(19, 111, 99, 0.1);
             border-color: #136F63;
-            box-shadow: 0 0 0 3px rgba(19, 111, 99, 0.2);
-            outline: none;
         }
-
-        /* Strength meter styles */
-        .strength-meter {
-            height: 5px;
-            background-color: #e5e7eb;
+        
+        /* Enhanced section title styling */
+        .section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #136F63;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
             position: relative;
-            margin-top: 8px;
-            border-radius: 3px;
+        }
+        
+        /* Add accent line under section title */
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 80px;
+            height: 2px;
+            background-color: #136F63;
+        }
+        
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .form-group {
+            flex: 1 1 0;
+            min-width: calc(50% - 0.75rem/2);
+        }
+        
+        .form-group.full {
+            flex-basis: 100%;
+            min-width: 100%;
+        }
+        
+        .form-group.third {
+            flex-basis: calc(33.333% - 0.75rem);
+            min-width: calc(33.333% - 0.75rem);
+        }
+        
+        .form-group.quarter {
+            flex-basis: calc(25% - 0.75rem);
+            min-width: calc(25% - 0.75rem);
+        }
+        
+        /* Enhanced form label styling */
+        .form-label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 0.25rem;
+        }
+        
+        /* Enhanced input styling */
+        .form-input, .form-select {
+            width: 100%;
+            padding: 0.625rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+            background-color: #f9fafb;
+        }
+        
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: #136F63;
+            box-shadow: 0 0 0 3px rgba(19, 111, 99, 0.1);
+            background-color: #ffffff;
+        }
+        
+        .form-input:hover, .form-select:hover {
+            border-color: #9ca3af;
+        }
+        
+        .form-submit {
+            width: 100%;
+            background: #136F63;
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-submit:hover {
+            background: #0d5951;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+            transform: translateY(-1px);
+        }
+        
+        .strength-meter {
+            height: 4px;
+            background: #e5e7eb;
+            margin-top: 0.25rem;
+            border-radius: 2px;
             overflow: hidden;
         }
-        .strength-meter-fill {
+        
+        .strength-fill {
             height: 100%;
-            border-radius: 3px;
-            transition: width 0.5s ease-in-out, background-color 0.5s ease-in-out;
+            width: 0%;
+            transition: width 0.3s, background-color 0.3s;
+        }
+        
+        .password-hint {
+            font-size: 0.7rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+        
+        /* Added for wider layout */
+        .section-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .specialty-option {
+            border: 1px solid #d1d5db;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            display: flex;
+            align-items: center;
+            transition: all 0.2s;
+        }
+        
+        .specialty-option:hover {
+            background-color: #f9fafb;
+        }
+        
+        .specialty-option input:checked + label {
+            font-weight: 500;
         }
     </style>
 </head>
 <body>
-
-    <!-- Main container -->
-    <div class="content-wrapper flex flex-col items-center justify-center min-h-screen p-4">
-
-        <!-- Logo -->
-        <div class="mb-6">
-            <div class="text-white text-center">
-                <h1 class="text-4xl font-bold">MapleMesh</h1>
-                <h2 class="text-2xl font-semibold">AutoRepair</h2>
-            </div>
+    <div class="registration-card">
+        <div class="text-center mb-4">
+            <h1 id="registration-title" class="text-xl font-bold text-gray-900">Registration</h1>
+            <p id="registration-subtitle" class="text-xs text-gray-500">Create your account</p>
+        </div>
+        
+        <!-- For development/testing: Form type switcher -->
+        <div class="flex justify-center mb-4 gap-4">
+            <button id="switch-to-owner" type="button" class="px-4 py-2 text-sm rounded bg-gray-200 hover:bg-gray-300">Switch to Vehicle Owner</button>
+            <button id="switch-to-technician" type="button" class="px-4 py-2 text-sm rounded bg-gray-200 hover:bg-gray-300">Switch to Technician</button>
         </div>
 
-        <!-- Sign-up Card -->
-        <div class="w-full max-w-lg bg-white rounded-xl shadow-2xl p-8">
-            <div class="text-center mb-6">
-                <h2 class="text-3xl font-bold text-gray-900">Create an Account</h2>
-                <p class="text-sm text-gray-600 mt-1">Join MapleMesh AutoRepair to manage your car's health</p>
-            </div>
-
-            <!-- Sign-up Form -->
-            <form id="sign-up-form" novalidate>
-                <div class="space-y-5">
-                    <!-- Name Inputs -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label for="first-name" class="block text-sm font-medium text-gray-700">First Name</label>
-                            <input type="text" id="first-name" name="first-name" class="custom-input mt-1 w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm" placeholder="John">
-                            <p id="first-name-error" class="text-red-500 text-xs mt-1 hidden"></p>
+        <!-- Vehicle Owner Registration Form -->
+        <div id="vehicle-owner-form" class="hidden">
+            <form id="owner-registration-form">
+                <!-- Top Row: Personal Information + Account Credentials side by side -->
+                <div class="section-container mb-4">
+                    <!-- Personal Information -->
+                    <div class="form-section h-full">
+                        <div class="section-title">
+                            <i class="fas fa-user-circle mr-2"></i> Personal Information
                         </div>
-                        <div>
-                            <label for="last-name" class="block text-sm font-medium text-gray-700">Last Name</label>
-                            <input type="text" id="last-name" name="last-name" class="custom-input mt-1 w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm" placeholder="Doe">
-                            <p id="last-name-error" class="text-red-500 text-xs mt-1 hidden"></p>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="owner-first-name">First Name</label>
+                                <input type="text" id="owner-first-name" class="form-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="owner-last-name">Last Name</label>
+                                <input type="text" id="owner-last-name" class="form-input" required>
+                            </div>
                         </div>
-                    </div>
-
-                    <!-- Email Input -->
-                    <div>
-                        <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
-                        <input type="email" id="email" name="email" class="custom-input mt-1 w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm" placeholder="johndoe@example.com">
-                        <p id="email-error" class="text-red-500 text-xs mt-1 hidden"></p>
-                    </div>
-
-                    <!-- Password Input -->
-                    <div>
-                        <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                        <div class="mt-1 relative">
-                            <input type="password" id="password" name="password" class="custom-input w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm" placeholder="Create a strong password">
-                            <button type="button" id="toggle-password" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-500">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </div>
-                        <div class="strength-meter mt-2">
-                            <div class="strength-meter-fill" id="strength-meter-fill"></div>
-                        </div>
-                        <p id="password-strength" class="text-xs mt-1 text-gray-500">Password strength: Too weak</p>
-                        <p id="password-error" class="text-red-500 text-xs mt-1 hidden"></p>
-                    </div>
-
-                    <!-- Confirm Password Input -->
-                    <div>
-                        <label for="confirm-password" class="block text-sm font-medium text-gray-700">Confirm Password</label>
-                        <input type="password" id="confirm-password" name="confirm-password" class="custom-input mt-1 w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm" placeholder="Confirm your password">
-                        <p id="confirm-password-error" class="text-red-500 text-xs mt-1 hidden"></p>
-                    </div>
-
-                    <!-- Terms and Conditions -->
-                    <div class="flex items-start">
-                        <div class="flex items-center h-5">
-                            <input id="terms" name="terms" type="checkbox" class="h-4 w-4 text-primary-light focus:ring-primary-light border-gray-300 rounded">
-                        </div>
-                        <div class="ml-3 text-sm">
-                            <label for="terms" class="font-medium text-gray-700">
-                                I agree to the <a href="#" class="text-primary-light hover:underline">Terms of Service</a> and <a href="#" class="text-primary-light hover:underline">Privacy Policy</a>
-                            </label>
-                            <p id="terms-error" class="text-red-500 text-xs mt-1 hidden"></p>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="owner-dob">Date of Birth</label>
+                                <input type="date" id="owner-dob" class="form-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="owner-user-id">User ID</label>
+                                <input type="text" id="owner-user-id" class="form-input" required>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Sign Up Button -->
-                    <div>
-                        <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-light hover:bg-primary transition duration-150 ease-in-out">
-                            Create Account
-                        </button>
+                    <!-- Account Credentials -->
+                    <div class="form-section h-full">
+                        <div class="section-title">
+                            <i class="fas fa-lock mr-2"></i> Account Credentials
+                        </div>
+                        <div class="form-group full">
+                            <label class="form-label" for="owner-email">Email Address</label>
+                            <input type="email" id="owner-email" class="form-input" required>
+                        </div>
+                        <div class="form-group full">
+                            <div class="password-container">
+                                <label class="form-label" for="owner-password">Password</label>
+                                <input type="password" id="owner-password" class="form-input password-input" required>
+                                <div class="strength-meter">
+                                    <div class="strength-fill" id="owner-strength-fill"></div>
+                                </div>
+                                <div class="password-hint" id="owner-password-hint">Password strength: Too weak</div>
+                            </div>
+                        </div>
+                        <div class="form-group full">
+                            <label class="form-label" for="owner-confirm-password">Confirm Password</label>
+                            <input type="password" id="owner-confirm-password" class="form-input" required>
+                        </div>
                     </div>
                 </div>
-            </form>
 
-            <!-- Bottom Links -->
-            <div class="text-center mt-6">
-                <p class="text-sm text-gray-600">
-                    Already have an account?
-                    <a href="sign-in.html" class="font-medium text-primary-light hover:underline">
-                        Sign in
-                    </a>
-                </p>
-            </div>
+                <!-- Address Information -->
+                <div class="form-section mb-4">
+                    <div class="section-title">
+                        <i class="fas fa-map-marker-alt mr-2"></i> Address Information
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <!-- Left Column -->
+                        <div>
+                            <div class="mb-3">
+                                <label class="form-label" for="owner-address-1">Address Line 1</label>
+                                <input type="text" id="owner-address-1" class="form-input" placeholder="Street address, P.O. box" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="owner-address-2">Address Line 2 (Optional)</label>
+                                <input type="text" id="owner-address-2" class="form-input" placeholder="Apartment, suite, unit, building, floor, etc.">
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label" for="owner-city">City</label>
+                                    <input type="text" id="owner-city" class="form-input" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="owner-province">Province/State</label>
+                                    <input type="text" id="owner-province" class="form-input" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Right Column -->
+                        <div>
+                            <div class="mb-3">
+                                <label class="form-label" for="owner-postal-code">Postal/ZIP Code</label>
+                                <input type="text" id="owner-postal-code" class="form-input" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="owner-country">Country</label>
+                                <select id="owner-country" class="form-select" required>
+                                    <option value="" disabled selected>Select country</option>
+                                    <option value="CA">Canada</option>
+                                    <option value="US">United States</option>
+                                    <option value="MX">Mexico</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="owner-phone">Phone Number</label>
+                                <input type="tel" id="owner-phone" class="form-input" placeholder="(555) 123-4567" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vehicle Information -->
+                <div class="form-section mb-4">
+                    <div class="section-title">
+                        <i class="fas fa-car mr-2"></i> Vehicle Information
+                    </div>
+                    <div class="grid grid-cols-4 gap-4 mb-3">
+                        <div>
+                            <label class="form-label" for="vehicle-make">Make</label>
+                            <select id="vehicle-make" class="form-select" required>
+                                <option value="" disabled selected>Select make</option>
+                                <option value="toyota">Toyota</option>
+                                <option value="honda">Honda</option>
+                                <option value="ford">Ford</option>
+                                <option value="chevrolet">Chevrolet</option>
+                                <option value="tesla">Tesla</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label" for="vehicle-model">Model</label>
+                            <input type="text" id="vehicle-model" class="form-input" required>
+                        </div>
+                        <div>
+                            <label class="form-label" for="vehicle-year">Year</label>
+                            <select id="vehicle-year" class="form-select" required>
+                                <option value="" disabled selected>Select year</option>
+                                <!-- Will be populated by JS -->
+                            </select>
+                        </div>
+                        <div>
+                            <label class="form-label" for="vehicle-color">Color</label>
+                            <input type="text" id="vehicle-color" class="form-input" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="form-label" for="vehicle-description">Vehicle Description</label>
+                        <textarea id="vehicle-description" class="form-input" rows="2" required></textarea>
+                        <div class="text-xs text-gray-500 mt-1 italic">
+                            <i class="fas fa-info-circle mr-1"></i> You can add more vehicles after completing registration.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-start mb-4">
+                    <input type="checkbox" id="owner-terms" class="mt-1 mr-2" required>
+                    <label for="owner-terms" class="text-xs">
+                        I agree to the <a href="#" class="text-primary-light hover:underline">Terms of Service</a> and 
+                        <a href="#" class="text-primary-light hover:underline">Privacy Policy</a>
+                    </label>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <button type="button" onclick="window.location.href='sign-in.html'" class="form-submit bg-gray-500 hover:bg-gray-600">Cancel</button>
+                    </div>
+                    <div>
+                        <button type="submit" class="form-submit">Create Account</button>
+                    </div>
+                </div>
+
+                <div class="text-center mt-4 text-xs text-gray-500">
+                    Already have an account? <a href="sign-in.html" class="text-primary-light hover:underline">Sign in</a>
+                </div>
+            </form>
         </div>
-        
-        <!-- Footer -->
-        <div class="mt-8 text-center text-white text-sm opacity-70">
-            <p>© 2025 MapleMesh AutoRepair. All rights reserved.</p>
+
+        <!-- Technician Registration Form -->
+        <div id="technician-form" class="hidden">
+            <form id="technician-registration-form">
+                <!-- Top Row: Personal Information + Account Credentials side by side -->
+                <div class="section-container mb-4">
+                    <!-- Personal Information -->
+                    <div class="form-section h-full">
+                        <div class="section-title">
+                            <i class="fas fa-user-circle mr-2"></i> Personal Information
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="tech-first-name">First Name</label>
+                                <input type="text" id="tech-first-name" class="form-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="tech-last-name">Last Name</label>
+                                <input type="text" id="tech-last-name" class="form-input" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="tech-dob">Date of Birth</label>
+                                <input type="date" id="tech-dob" class="form-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="tech-phone">Phone Number</label>
+                                <input type="tel" id="tech-phone" class="form-input" placeholder="(555) 123-4567" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Account Credentials -->
+                    <div class="form-section h-full">
+                        <div class="section-title">
+                            <i class="fas fa-lock mr-2"></i> Account Credentials
+                        </div>
+                        <div class="form-group full">
+                            <label class="form-label" for="tech-email">Email Address</label>
+                            <input type="email" id="tech-email" class="form-input" required>
+                        </div>
+                        <div class="form-group full">
+                            <div class="password-container">
+                                <label class="form-label" for="tech-password">Password</label>
+                                <input type="password" id="tech-password" class="form-input password-input" required>
+                                <div class="strength-meter">
+                                    <div class="strength-fill" id="tech-strength-fill"></div>
+                                </div>
+                                <div class="password-hint" id="tech-password-hint">Password strength: Too weak</div>
+                            </div>
+                        </div>
+                        <div class="form-group full">
+                            <label class="form-label" for="tech-confirm-password">Confirm Password</label>
+                            <input type="password" id="tech-confirm-password" class="form-input" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Business Information -->
+                <div class="form-section mb-4">
+                    <div class="section-title">
+                        <i class="fas fa-briefcase mr-2"></i> Business Information
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <div class="mb-3">
+                                <label class="form-label" for="business-name">Business Name</label>
+                                <input type="text" id="business-name" class="form-input" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="business-address">Business Address</label>
+                                <input type="text" id="business-address" class="form-input" required>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="form-label" for="tech-city">City</label>
+                                    <input type="text" id="tech-city" class="form-input" required>
+                                </div>
+                                <div>
+                                    <label class="form-label" for="tech-province">Province/State</label>
+                                    <input type="text" id="tech-province" class="form-input" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="mb-3">
+                                <label class="form-label" for="years-experience">Years of Experience</label>
+                                <input type="number" id="years-experience" min="0" class="form-input" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="tech-postal-code">Postal/ZIP Code</label>
+                                <input type="text" id="tech-postal-code" class="form-input" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="tech-country">Country</label>
+                                <select id="tech-country" class="form-select" required>
+                                    <option value="" disabled selected>Select country</option>
+                                    <option value="CA">Canada</option>
+                                    <option value="US">United States</option>
+                                    <option value="MX">Mexico</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Professional Information -->
+                <div class="form-section mb-4">
+                    <div class="section-title">
+                        <i class="fas fa-tools mr-2"></i> Professional Information
+                    </div>
+                    
+                    <!-- Certification Status -->
+                    <div class="mb-4">
+                        <label class="form-label">Are you a certified technician?</label>
+                        <div class="flex gap-6 mt-2">
+                            <div class="flex items-center">
+                                <input type="radio" id="certified-yes" name="is_certified" value="yes" class="mr-2" onchange="toggleCertificationFields(true)">
+                                <label for="certified-yes">Yes</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="radio" id="certified-no" name="is_certified" value="no" class="mr-2" onchange="toggleCertificationFields(false)">
+                                <label for="certified-no">No</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Certification Details (initially hidden) -->
+                    <div id="certification-details" class="mb-4 hidden">
+                        <div class="grid grid-cols-3 gap-4">
+                            <div>
+                                <label class="form-label" for="certification-number">Certification Number</label>
+                                <input type="text" id="certification-number" class="form-input">
+                            </div>
+                            <div>
+                                <label class="form-label" for="certification-authority">Certification Authority</label>
+                                <input type="text" id="certification-authority" class="form-input" placeholder="e.g. ASE, Red Seal">
+                            </div>
+                            <div>
+                                <label class="form-label" for="certification-expiry">Expiry Date</label>
+                                <input type="date" id="certification-expiry" class="form-input">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Areas of Expertise with Auto-adding Dropdown -->
+                    <div class="mb-4">
+                        <label class="form-label">Areas of Expertise</label>
+                        <div>
+                            <select id="expertise-dropdown" class="form-select" onchange="autoAddExpertise(this)">
+                                <option value="" disabled selected>Select an area of expertise</option>
+                                <option value="engine-repair">Engine Repair</option>
+                                <option value="brakes">Brakes</option>
+                                <option value="transmission">Transmission</option>
+                                <option value="electrical">Electrical Systems</option>
+                                <option value="ac-heating">A/C & Heating</option>
+                                <option value="tire-service">Tire Services</option>
+                                <option value="suspension">Suspension & Steering</option>
+                                <option value="diagnostics">Computer Diagnostics</option>
+                                <option value="oil-change">Oil Change & Maintenance</option>
+                                <option value="bodywork">Body Work</option>
+                                <option value="painting">Painting</option>
+                                <option value="glass">Glass Repair/Replacement</option>
+                            </select>
+                            <div class="text-xs text-gray-500 mt-1 mb-2">
+                                <i class="fas fa-info-circle mr-1"></i> Select your areas of expertise from the dropdown. Each selection will be automatically added.
+                            </div>
+                        </div>
+                        
+                        <!-- Selected Areas of Expertise -->
+                        <div id="selected-expertise" class="mt-2 p-3 border border-gray-300 rounded-md min-h-[100px] bg-gray-50">
+                            <p class="text-gray-500 text-sm italic" id="no-expertise-message">No areas of expertise selected yet.</p>
+                            <div id="expertise-tags" class="flex flex-wrap gap-2">
+                                <!-- Tags will be added here dynamically -->
+                            </div>
+                        </div>
+                        <input type="hidden" id="expertise-values" name="expertise_values">
+                    </div>
+                    
+                    <!-- Years of Experience -->
+                    <div class="mb-4">
+                        <label class="form-label" for="years-of-experience">Years of Experience as an Automobile Technician</label>
+                        <select id="years-of-experience" class="form-select" required>
+                            <option value="" disabled selected>Select years of experience</option>
+                            <option value="less-than-1">Less than 1 year</option>
+                            <option value="1-3">1-3 years</option>
+                            <option value="3-5">3-5 years</option>
+                            <option value="5-10">5-10 years</option>
+                            <option value="10-15">10-15 years</option>
+                            <option value="15-plus">15+ years</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Service Radius Options -->
+                    <div>
+                        <label class="form-label" for="service-radius">Service Radius</label>
+                        <select id="service-radius" name="service_radius" class="form-select" required>
+                            <option value="" disabled selected>Select service radius</option>
+                            <option value="25">25 km</option>
+                            <option value="50">50 km</option>
+                            <option value="100">100 km</option>
+                            <option value="150">150 km</option>
+                            <option value="200">200 km</option>
+                            <option value="250">250 km</option>
+                        </select>
+                        <div class="text-xs text-gray-500 mt-1 italic">
+                            <i class="fas fa-info-circle mr-1"></i> This is the maximum distance you are willing to travel to provide service.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex items-start mb-4">
+                    <input type="checkbox" id="tech-terms" class="mt-1 mr-2" required>
+                    <label for="tech-terms" class="text-xs">
+                        I agree to the <a href="#" class="text-primary-light hover:underline">Terms of Service</a>, 
+                        <a href="#" class="text-primary-light hover:underline">Privacy Policy</a> and
+                        <a href="#" class="text-primary-light hover:underline">Service Provider Guidelines</a>
+                    </label>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <button type="button" onclick="window.location.href='sign-in.html'" class="form-submit bg-gray-500 hover:bg-gray-600">Cancel</button>
+                    </div>
+                    <div>
+                        <button type="submit" class="form-submit">Create Account</button>
+                    </div>
+                </div>
+
+                <div class="text-center mt-4 text-xs text-gray-500">
+                    Already have an account? <a href="sign-in.html" class="text-primary-light hover:underline">Sign in</a>
+                </div>
+            </form>
         </div>
     </div>
-    
+
     <script>
-        // Form elements
-        const form = document.getElementById('sign-up-form');
-        const firstNameInput = document.getElementById('first-name');
-        const lastNameInput = document.getElementById('last-name');
-        const emailInput = document.getElementById('email');
-        const passwordInput = document.getElementById('password');
-        const confirmPasswordInput = document.getElementById('confirm-password');
-        const termsCheckbox = document.getElementById('terms');
-        const togglePassword = document.getElementById('toggle-password');
-        
-        // Error elements
-        const firstNameError = document.getElementById('first-name-error');
-        const lastNameError = document.getElementById('last-name-error');
-        const emailError = document.getElementById('email-error');
-        const passwordError = document.getElementById('password-error');
-        const confirmPasswordError = document.getElementById('confirm-password-error');
-        const termsError = document.getElementById('terms-error');
-        
-        // Strength meter elements
-        const strengthMeterFill = document.getElementById('strength-meter-fill');
-        const strengthText = document.getElementById('password-strength');
-        
-        // Email validation regex
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        
-        // Toggle password visibility
-        togglePassword.addEventListener('click', function() {
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
-            this.querySelector('i').className = type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
-        });
-        
-        // Password strength checker
-        passwordInput.addEventListener('input', checkPasswordStrength);
-        
-        function checkPasswordStrength() {
-            const password = passwordInput.value;
-            let strength = 0;
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check for user type in URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const userType = urlParams.get('type');
             
-            // Length check
-            if (password.length >= 8) strength += 25;
+            // Get form containers
+            const ownerFormContainer = document.getElementById('vehicle-owner-form');
+            const technicianFormContainer = document.getElementById('technician-form');
+            const pageTitle = document.getElementById('registration-title');
+            const pageSubtitle = document.getElementById('registration-subtitle');
             
-            // Character variety checks
-            if (/[A-Z]/.test(password)) strength += 25;  // Has uppercase
-            if (/[a-z]/.test(password)) strength += 25;  // Has lowercase
-            if (/[0-9]/.test(password)) strength += 15;  // Has number
-            if (/[^A-Za-z0-9]/.test(password)) strength += 10;  // Has special char
-            
-            // Update the strength meter
-            strengthMeterFill.style.width = `${strength}%`;
-            
-            // Set color based on strength
-            if (strength < 30) {
-                strengthMeterFill.style.backgroundColor = '#f72585'; // Danger/red
-                strengthText.textContent = 'Password strength: Too weak';
-            } else if (strength < 60) {
-                strengthMeterFill.style.backgroundColor = '#f7b801'; // Warning/yellow
-                strengthText.textContent = 'Password strength: Medium';
+            // Show appropriate form based on user type
+            if (userType === 'technician') {
+                ownerFormContainer.classList.add('hidden');
+                technicianFormContainer.classList.remove('hidden');
+                pageTitle.textContent = 'Technician Registration';
+                pageSubtitle.textContent = 'Create your account to start offering auto repair services';
             } else {
-                strengthMeterFill.style.backgroundColor = '#72b01d'; // Success/green
-                strengthText.textContent = 'Password strength: Strong';
+                // Default to vehicle owner form
+                ownerFormContainer.classList.remove('hidden');
+                technicianFormContainer.classList.add('hidden');
+                pageTitle.textContent = 'Vehicle Owner Registration';
+                pageSubtitle.textContent = 'Create your account to start booking auto services';
+            }
+            
+            // Populate year dropdown
+            const yearSelect = document.getElementById('vehicle-year');
+            if (yearSelect) {
+                const currentYear = new Date().getFullYear();
+                
+                for (let year = currentYear; year >= 1980; year--) {
+                    const option = document.createElement('option');
+                    option.value = year;
+                    option.textContent = year;
+                    yearSelect.appendChild(option);
+                }
+            }
+            
+            // Password strength meter functionality for both forms
+            const passwordInputs = document.querySelectorAll('.password-input');
+            
+            passwordInputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    const meterFill = this.closest('.password-container').querySelector('.strength-fill');
+                    const hintText = this.closest('.password-container').querySelector('.password-hint');
+                    updatePasswordStrength(this.value, meterFill, hintText);
+                });
+            });
+            
+            function updatePasswordStrength(password, meterFill, hintText) {
+                let strength = 0;
+                
+                if (password.length >= 8) strength += 25;
+                if (/[A-Z]/.test(password)) strength += 25;
+                if (/[a-z]/.test(password)) strength += 25;
+                if (/[0-9]/.test(password)) strength += 15;
+                if (/[^A-Za-z0-9]/.test(password)) strength += 10;
+                
+                meterFill.style.width = `${strength}%`;
+                
+                if (strength < 30) {
+                    meterFill.style.backgroundColor = '#f72585';
+                    hintText.textContent = 'Password strength: Too weak';
+                } else if (strength < 60) {
+                    meterFill.style.backgroundColor = '#f7b801';
+                    hintText.textContent = 'Password strength: Medium';
+                } else {
+                    meterFill.style.backgroundColor = '#72b01d';
+                    hintText.textContent = 'Password strength: Strong';
+                }
+            }
+            
+            // Form submissions
+            const ownerForm = document.getElementById('owner-registration-form');
+            if (ownerForm) {
+                ownerForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    // Validation would go here
+                    
+                    alert('Vehicle Owner account created successfully!');
+                    // Redirect to dashboard
+                    // window.location.href = 'customer_dashboard.html';
+                });
+            }
+            
+            const technicianForm = document.getElementById('technician-registration-form');
+            if (technicianForm) {
+                technicianForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    // Validation would go here
+                    
+                    alert('Technician account created successfully!');
+                    // Redirect to dashboard
+                    // window.location.href = 'technician_dashboard.html';
+                });
+            }
+            
+            // Toggle buttons to switch between forms (for testing purposes)
+            const switchToOwnerBtn = document.getElementById('switch-to-owner');
+            const switchToTechBtn = document.getElementById('switch-to-technician');
+            
+            if (switchToOwnerBtn) {
+                switchToOwnerBtn.addEventListener('click', function() {
+                    window.location.href = 'sign-up.html?type=owner';
+                });
+            }
+            
+            if (switchToTechBtn) {
+                switchToTechBtn.addEventListener('click', function() {
+                    window.location.href = 'sign-up.html?type=technician';
+                });
+            }
+        });
+
+        function toggleCertificationFields(isCertified) {
+            const certificationDetails = document.getElementById('certification-details');
+            
+            if (isCertified) {
+                certificationDetails.classList.remove('hidden');
+            } else {
+                certificationDetails.classList.add('hidden');
             }
         }
-        
-        // Form submission handler
-        form.addEventListener('submit', function(event) {
-            event.preventDefault();
-            
-            // Reset all error states
-            const errorElements = [firstNameError, lastNameError, emailError, passwordError, confirmPasswordError, termsError];
-            errorElements.forEach(el => el.classList.add('hidden'));
-            
-            // Remove red borders
-            const inputElements = [firstNameInput, lastNameInput, emailInput, passwordInput, confirmPasswordInput];
-            inputElements.forEach(el => el.classList.remove('border-red-500'));
-            
-            let isValid = true;
-            
-            // Validate First Name
-            if (!firstNameInput.value.trim()) {
-                firstNameError.textContent = 'First name is required';
-                firstNameError.classList.remove('hidden');
-                firstNameInput.classList.add('border-red-500');
-                isValid = false;
-            }
-            
-            // Validate Last Name
-            if (!lastNameInput.value.trim()) {
-                lastNameError.textContent = 'Last name is required';
-                lastNameError.classList.remove('hidden');
-                lastNameInput.classList.add('border-red-500');
-                isValid = false;
-            }
-            
-            // Validate Email
-            const emailValue = emailInput.value.trim();
-            if (!emailValue) {
-                emailError.textContent = 'Email address is required';
-                emailError.classList.remove('hidden');
-                emailInput.classList.add('border-red-500');
-                isValid = false;
-            } else if (!emailRegex.test(emailValue)) {
-                emailError.textContent = 'Please enter a valid email address';
-                emailError.classList.remove('hidden');
-                emailInput.classList.add('border-red-500');
-                isValid = false;
-            }
-            
-            // Validate Password
-            const passwordValue = passwordInput.value;
-            if (!passwordValue) {
-                passwordError.textContent = 'Password is required';
-                passwordError.classList.remove('hidden');
-                passwordInput.classList.add('border-red-500');
-                isValid = false;
-            } else if (passwordValue.length < 8) {
-                passwordError.textContent = 'Password must be at least 8 characters long';
-                passwordError.classList.remove('hidden');
-                passwordInput.classList.add('border-red-500');
-                isValid = false;
-            }
-            
-            // Validate Confirm Password
-            if (passwordValue !== confirmPasswordInput.value) {
-                confirmPasswordError.textContent = 'Passwords do not match';
-                confirmPasswordError.classList.remove('hidden');
-                confirmPasswordInput.classList.add('border-red-500');
-                isValid = false;
-            }
-            
-            // Validate Terms
-            if (!termsCheckbox.checked) {
-                termsError.textContent = 'You must agree to the Terms of Service';
-                termsError.classList.remove('hidden');
-                isValid = false;
-            }
-            
-            // If valid, submit the form or redirect
-            if (isValid) {
-                window.location.href = 'customer_dashboard.html';
-            }
-        });
-    </script>
 
+        function autoAddExpertise(selectElement) {
+            const selectedExpertiseContainer = document.getElementById('expertise-tags');
+            const noExpertiseMessage = document.getElementById('no-expertise-message');
+            
+            // Get the selected option
+            const selectedOption = selectElement.options[selectElement.selectedIndex];
+            
+            // If an actual option was selected (not the placeholder)
+            if (selectedOption.value) {
+                // Check if this expertise is already added (to prevent duplicates)
+                const existingTags = document.querySelectorAll('#expertise-tags > div');
+                let isDuplicate = false;
+                
+                existingTags.forEach(tag => {
+                    // Remove × and trim to get clean text
+                    const tagText = tag.textContent.trim().replace('×', '').trim();
+                    if (tagText === selectedOption.textContent) {
+                        isDuplicate = true;
+                        // Add a brief highlight effect to show it's already selected
+                        tag.classList.add('bg-yellow-500');
+                        setTimeout(() => {
+                            tag.classList.remove('bg-yellow-500');
+                            tag.classList.add('bg-primary-light');
+                        }, 1000);
+                    }
+                });
+                
+                // Only add if not a duplicate
+                if (!isDuplicate) {
+                    // Create a new tag for the selected expertise
+                    const tag = document.createElement('div');
+                    tag.className = 'bg-primary-light text-white rounded-full px-3 py-1 text-xs flex items-center gap-1';
+                    tag.textContent = selectedOption.textContent;
+
+                    // Add a remove button to the tag
+                    const removeBtn = document.createElement('button');
+                    removeBtn.type = 'button';
+                    removeBtn.className = 'text-white';
+                    removeBtn.innerHTML = '&times;';
+                    removeBtn.onclick = function() {
+                        selectedExpertiseContainer.removeChild(tag);
+                        
+                        // Show "no expertise" message if this was the last tag
+                        if (selectedExpertiseContainer.querySelectorAll('div').length === 0) {
+                            noExpertiseMessage.classList.remove('hidden');
+                        }
+                        
+                        // Update hidden input value
+                        updateExpertiseValues();
+                    };
+
+                    tag.appendChild(removeBtn);
+                    selectedExpertiseContainer.appendChild(tag);
+
+                    // Hide the "no expertise" message
+                    noExpertiseMessage.classList.add('hidden');
+                    
+                    // Update hidden input value
+                    updateExpertiseValues();
+                }
+                
+                // Reset the dropdown to the placeholder option
+                selectElement.selectedIndex = 0;
+            }
+        }
+
+        function updateExpertiseValues() {
+            const expertiseTags = document.querySelectorAll('#expertise-tags > div');
+            const expertiseValuesInput = document.getElementById('expertise-values');
+            const noExpertiseMessage = document.getElementById('no-expertise-message');
+
+            let values = [];
+            expertiseTags.forEach(tag => {
+                values.push(tag.textContent.trim().replace('×', '').trim());
+            });
+
+            expertiseValuesInput.value = values.join(',');
+            
+            // Toggle visibility of the "no expertise" message
+            if (values.length === 0) {
+                noExpertiseMessage.classList.remove('hidden');
+            } else {
+                noExpertiseMessage.classList.add('hidden');
+            }
+        }
+    </script>
 </body>
 </html>

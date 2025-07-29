@@ -49,9 +49,12 @@
             bottom: -10px;
             background: linear-gradient(135deg, #041B15 0%, #0B3C30 50%, #136F63 100%);
             z-index: -1;
+            /* Add a subtle blur effect directly to the background */
+            filter: blur(8px);
         }
 
-        /* Pattern overlay */
+        /* Remove the pattern overlay with plus signs */
+        /* Commenting out the body::after section that had the SVG pattern
         body::after {
             content: '';
             position: fixed;
@@ -63,6 +66,21 @@
             opacity: 0.6;
             z-index: -1;
         }
+        */
+
+        /* Add a subtle abstract background pattern (optional) */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.03) 0%, transparent 70%),
+                radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.03) 0%, transparent 70%);
+            z-index: -1;
+        }
 
         /* Ensure content is above the background */
         .content-wrapper {
@@ -70,11 +88,69 @@
             z-index: 1;
         }
 
+        /* Enhanced backdrop blur for elements that use backdrop-blur */
+        .backdrop-blur-sm {
+            backdrop-filter: blur(12px); /* Increase blur amount from 4px to 12px */
+        }
+
         /* Custom input focus style */
         .custom-input:focus {
             border-color: #136F63;
             box-shadow: 0 0 0 3px rgba(19, 111, 99, 0.2);
             outline: none;
+        }
+
+        /* Selection button hover effects */
+        .selection-btn {
+            transition: all 0.3s ease;
+        }
+
+        .selection-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Animation classes */
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out forwards;
+        }
+
+        .fade-out {
+            animation: fadeOut 0.3s ease-in-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        /* Modal backdrop with blur */
+        .modal-backdrop-blur {
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        
+        /* Content blur transition */
+        .content-blur-transition {
+            transition: filter 0.3s ease-in-out;
+        }
+        
+        /* Applied to main content when modal is open */
+        .content-blurred {
+            filter: blur(5px);
+            pointer-events: none; /* Prevents interaction with blurred content */
+        }
+        
+        /* Make modal sharper to contrast with blurred background */
+        .modal-sharp {
+            filter: none;
+            transform: scale(1.02); /* Slightly larger to stand out */
+            transition: transform 0.3s ease;
         }
     </style>
 </head>
@@ -94,9 +170,8 @@
         <!-- App Title and Description -->
         <div class="text-center mb-8 max-w-xl bg-black bg-opacity-20 p-6 rounded-xl backdrop-blur-sm">
             <p class="text-lg text-gray-200">
-                <strong class="font-bold">Connects you with trusted auto technicians near you.</strong>
-                <br>
-                Book reliable car services online, anytime, anywhere.
+                <span class="block text-2xl font-bold mb-2">Your Car's Health in One Place</span>
+                <span class="font-medium">Connect with trusted auto technicians near you.<br>Book reliable car services anytime, anywhere.</span>
             </p>
         </div>
 
@@ -149,13 +224,35 @@
 
                     <!-- Sign In Button -->
                     <div>
-                        <button type="submit"
+                        <button type="submit" 
                             class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-light hover:bg-primary transition duration-150 ease-in-out">
-                            Sign in
+                            <i class="fas fa-sign-in-alt mr-2"></i> Sign in
                         </button>
                     </div>
                 </div>
             </form>
+
+            <!-- Divider and Social Login Options -->
+            <div class="relative my-6">
+                <div class="absolute inset-0 flex items-center">
+                    <div class="w-full border-t border-gray-300"></div>
+                </div>
+                <div class="relative flex justify-center text-sm">
+                    <span class="px-2 bg-white text-gray-500">Or continue with</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-3">
+                <button type="button" class="flex justify-center items-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                    <i class="fab fa-google text-red-500"></i>
+                </button>
+                <button type="button" class="flex justify-center items-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                    <i class="fab fa-facebook-f text-blue-600"></i>
+                </button>
+                <button type="button" class="flex justify-center items-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                    <i class="fab fa-apple text-black"></i>
+                </button>
+            </div>
 
             <!-- Bottom Links -->
             <div class="text-center mt-6">
@@ -174,6 +271,43 @@
         </div>
     </div>
     
+    <!-- Sign Up Modal -->
+    <div id="signup-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-black bg-opacity-40" id="modal-backdrop"></div>
+        
+        <!-- Modal Content -->
+        <div class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md relative z-10">
+            <!-- Close Button -->
+            <button id="close-modal" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold text-gray-900">Join Us</h1>
+                <p class="text-gray-600 mt-2">How would you like to get started</p>
+            </div>
+            
+            <div class="space-y-4">
+                <!-- Vehicle Owner Button -->
+                <a href="sign-up.html?type=owner" class="selection-btn block w-full text-left p-4 bg-white border border-gray-300 rounded-lg hover:border-primary-light">
+                    <div class="flex flex-col">
+                        <span class="font-semibold text-gray-900">I want to fix my vehicle</span>
+                        <span class="text-sm text-gray-500">Register as a vehicle owner to book services</span>
+                    </div>
+                </a>
+                
+                <!-- Technician Button -->
+                <a href="sign-up.html?type=technician" class="selection-btn block w-full text-left p-4 bg-white border border-gray-300 rounded-lg hover:border-primary-light">
+                    <div class="flex flex-col">
+                        <span class="font-semibold text-gray-900">I am a technician</span>
+                        <span class="text-sm text-gray-500">Register as a technician to offer services</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Get the form and input elements
         const signInForm = document.getElementById('sign-in-form');
@@ -237,6 +371,91 @@
                 // Here you would typically send the data to the server
                 // For demo purposes, we'll redirect to the dashboard
                 window.location.href = 'customer_dashboard.html';
+            }
+        });
+
+        // Modal functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const signUpLink = document.querySelector('a[href="sign-up.html"]');
+            const modal = document.getElementById('signup-modal');
+            const closeModal = document.getElementById('close-modal');
+            const modalBackdrop = document.getElementById('modal-backdrop');
+            const mainContent = document.querySelector('.content-wrapper');
+            const modalContent = modal.querySelector('.bg-white');
+            
+            // Add the transition class to main content on page load
+            if (mainContent) {
+                mainContent.classList.add('content-blur-transition');
+            }
+            
+            // Update the sign-up link to open the modal instead of navigating
+            if (signUpLink) {
+                signUpLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    openModal();
+                });
+            }
+            
+            // Open modal and blur background
+            function openModal() {
+                modal.classList.remove('hidden');
+                modal.classList.add('fade-in');
+                modalBackdrop.classList.add('modal-backdrop-blur');
+                
+                // Blur the main content
+                if (mainContent) {
+                    mainContent.classList.add('content-blurred');
+                }
+                
+                // Make modal content sharp
+                if (modalContent) {
+                    modalContent.classList.add('modal-sharp');
+                }
+            }
+            
+            // Function to close the modal with animation
+            function closeModalFunction() {
+                modal.classList.add('fade-out');
+                
+                // Remove blur from main content
+                if (mainContent) {
+                    mainContent.classList.remove('content-blurred');
+                }
+                
+                // Remove sharp effect from modal
+                if (modalContent) {
+                    modalContent.classList.remove('modal-sharp');
+                }
+                
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('fade-in', 'fade-out');
+                    modalBackdrop.classList.remove('modal-backdrop-blur');
+                }, 300);
+            }
+            
+            // Close modal when clicking the X button
+            if (closeModal) {
+                closeModal.addEventListener('click', closeModalFunction);
+            }
+            
+            // Close modal when clicking the backdrop
+            if (modalBackdrop) {
+                modalBackdrop.addEventListener('click', closeModalFunction);
+            }
+            
+            // Close modal when ESC key is pressed
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+                    closeModalFunction();
+                }
+            });
+            
+            // Prevent clicks inside the modal from closing it
+            if (modalContent) {
+                modalContent.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                });
             }
         });
     </script>

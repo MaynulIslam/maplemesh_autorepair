@@ -869,3 +869,88 @@ h1, h2, h3, h4, h5, h6 {
     padding: 0 var(--spacing-xs);
   }
 }
+
+/* Profile page specific styling */
+.profile-photo {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border: 3px solid #fff;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* Form input styling for profile page */
+.form-control:disabled {
+  background-color: #f8f9fa;
+  opacity: 0.8;
+}
+
+/* Profile card headers */
+.card-header h5 {
+  margin-bottom: 0;
+  font-weight: 600;
+}
+
+/* Progress bar styling */
+.progress {
+  background-color: #e9ecef;
+  overflow: hidden;
+}
+
+/* Badge styling consistency */
+.badge.bg-success {
+  background-color: var(--success) !important;
+}
+
+.badge.bg-secondary {
+  background-color: var(--gray) !important;
+}
+
+/* Card consistency for profile page */
+#service-repair-status-box, 
+#favorite-technicians-box {
+  box-shadow: var(--shadow-sm);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+/* Table styling consistency */
+.table > :not(caption) > * > * {
+  padding: 0.75rem 1rem;
+}
+
+/* Button hover effects */
+.btn-outline-primary:hover {
+  background-color: var(--cartoon-primary);
+  border-color: var(--cartoon-primary);
+}
+
+/* Form switch styling */
+.form-check-input:checked {
+  background-color: var(--cartoon-primary);
+  border-color: var(--cartoon-primary);
+}
+
+/* Fix profile image wrapper */
+.profile-image-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.change-photo-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  text-align: center;
+  padding: 4px;
+  font-size: 12px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.profile-image-wrapper:hover .change-photo-overlay {
+  opacity: 1;
+}
