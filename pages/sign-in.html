@@ -19,7 +19,7 @@
                 extend: {
                     colors: {
                         primary: {
-                            DEFAULT: '#041B15',  /* Dark green */
+                            DEFAULT: '#E7ECEE',  /* Dark green */
                             light: '#136F63',    /* Teal */
                         },
                         accent: '#4cc9f0',       /* Sky blue */
@@ -152,6 +152,27 @@
             transform: scale(1.02); /* Slightly larger to stand out */
             transition: transform 0.3s ease;
         }
+
+        /* Add this new CSS rule for the sign-in box hover effect */
+        .signin-box-hover {
+            transition: all 0.3s ease-in-out;
+        }
+
+        .signin-box-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 10px 20px rgba(19, 111, 99, 0.1);
+            border: 2px solid rgba(19, 111, 99, 0.2);
+        }
+
+        /* Optional: Add a subtle glow effect */
+        .signin-box-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.15), 
+                0 10px 20px rgba(19, 111, 99, 0.1),
+                0 0 20px rgba(19, 111, 99, 0.15);
+            border: 2px solid rgba(19, 111, 99, 0.2);
+        }
     </style>
 </head>
 <body>
@@ -160,49 +181,41 @@
     <div class="content-wrapper flex flex-col items-center justify-center min-h-screen p-4">
 
         <!-- Logo -->
-        <div class="mb-6">
+        <div class="mb-12">
             <div class="text-white text-center">
                 <h1 class="text-4xl font-bold">MapleMesh</h1>
                 <h2 class="text-2xl font-semibold">AutoRepair</h2>
             </div>
         </div>
 
-        <!-- App Title and Description -->
-        <div class="text-center mb-8 max-w-xl bg-black bg-opacity-20 p-6 rounded-xl backdrop-blur-sm">
-            <p class="text-lg text-gray-200">
-                <span class="block text-2xl font-bold mb-2">Your Car's Health in One Place</span>
-                <span class="font-medium">Connect with trusted auto technicians near you.<br>Book reliable car services anytime, anywhere.</span>
-            </p>
-        </div>
-
         <!-- Sign-in Card -->
-        <div class="w-full max-w-md bg-white rounded-xl shadow-2xl p-8">
-            <div class="text-center mb-6">
-                <h2 class="text-3xl font-bold text-gray-900">Sign In</h2>
-                <p class="text-sm text-gray-600 mt-1">Enter your credentials to access your account</p>
+        <div class="signin-box-hover w-full max-w-sm bg-white rounded-xl shadow-2xl p-6">
+            <div class="text-center mb-4">
+                <h2 class="text-xl font-bold text-gray-900">Sign In</h2>
+                <p class="text-xs text-gray-600 mt-1">Enter your credentials to access your account</p>
             </div>
 
             <!-- Sign-in Form -->
             <form id="sign-in-form" novalidate>
-                <div class="space-y-6">
+                <div class="space-y-4">
                     <!-- Username or Email Input -->
                     <div>
-                        <label for="login" class="block text-sm font-medium text-gray-700">Username or Email</label>
+                        <label for="login" class="block text-xs font-medium text-gray-700">Username or Email</label>
                         <div class="mt-1">
                             <input id="login" name="login" type="text" autocomplete="username" required placeholder="Enter your username or Email"
-                                class="custom-input w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 transition duration-150 ease-in-out">
+                                class="custom-input w-full px-3 py-2 text-sm border border-gray-300 rounded-lg shadow-sm focus:ring-2 transition duration-150 ease-in-out">
                         </div>
                         <p id="login-error" class="text-red-500 text-xs mt-1 hidden"></p>
                     </div>
 
                     <!-- Password Input -->
                     <div>
-                        <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                        <label for="password" class="block text-xs font-medium text-gray-700">Password</label>
                         <div class="mt-1 relative">
                             <input id="password" name="password" type="password" autocomplete="current-password" required placeholder="Enter your Password"
-                                class="custom-input w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-2 transition duration-150 ease-in-out">
+                                class="custom-input w-full px-3 py-2 text-sm border border-gray-300 rounded-lg shadow-sm focus:ring-2 transition duration-150 ease-in-out">
                             <button type="button" id="toggle-password" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-500">
-                                <i class="fas fa-eye"></i>
+                                <i class="fas fa-eye text-sm"></i>
                             </button>
                         </div>
                          <p id="password-error" class="text-red-500 text-xs mt-1 hidden"></p>
@@ -212,11 +225,11 @@
                     <div class="flex items-center justify-between">
                         <div class="flex items-center">
                             <input id="remember-me" name="remember-me" type="checkbox"
-                                class="h-4 w-4 text-primary-light focus:ring-primary-light border-gray-300 rounded">
-                            <label for="remember-me" class="ml-2 block text-sm text-gray-900">Remember me</label>
+                                class="h-3 w-3 text-primary-light focus:ring-primary-light border-gray-300 rounded">
+                            <label for="remember-me" class="ml-2 block text-xs text-gray-900">Remember me</label>
                         </div>
                         <div>
-                            <a href="#" class="text-sm font-medium text-primary-light hover:text-primary">
+                            <a href="#" class="text-xs font-medium text-primary-light hover:text-primary">
                                 Forgot password?
                             </a>
                         </div>
@@ -225,38 +238,38 @@
                     <!-- Sign In Button -->
                     <div>
                         <button type="submit" 
-                            class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-light hover:bg-primary transition duration-150 ease-in-out">
-                            <i class="fas fa-sign-in-alt mr-2"></i> Sign in
+                            class="w-full flex justify-center py-2 px-3 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-primary-light hover:bg-primary transition duration-150 ease-in-out">
+                            <i class="fas fa-sign-in-alt mr-2 text-sm"></i> Sign in
                         </button>
                     </div>
                 </div>
             </form>
 
             <!-- Divider and Social Login Options -->
-            <div class="relative my-6">
+            <div class="relative my-4">
                 <div class="absolute inset-0 flex items-center">
                     <div class="w-full border-t border-gray-300"></div>
                 </div>
-                <div class="relative flex justify-center text-sm">
+                <div class="relative flex justify-center text-xs">
                     <span class="px-2 bg-white text-gray-500">Or continue with</span>
                 </div>
             </div>
 
-            <div class="grid grid-cols-3 gap-3">
-                <button type="button" class="flex justify-center items-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
-                    <i class="fab fa-google text-red-500"></i>
+            <div class="grid grid-cols-3 gap-2">
+                <button type="button" class="flex justify-center items-center py-2 px-2 border border-gray-300 rounded-md shadow-sm bg-white text-xs font-medium text-gray-700 hover:bg-gray-50">
+                    <i class="fab fa-google text-red-500 text-sm"></i>
                 </button>
-                <button type="button" class="flex justify-center items-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
-                    <i class="fab fa-facebook-f text-blue-600"></i>
+                <button type="button" class="flex justify-center items-center py-2 px-2 border border-gray-300 rounded-md shadow-sm bg-white text-xs font-medium text-gray-700 hover:bg-gray-50">
+                    <i class="fab fa-facebook-f text-blue-600 text-sm"></i>
                 </button>
-                <button type="button" class="flex justify-center items-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
-                    <i class="fab fa-apple text-black"></i>
+                <button type="button" class="flex justify-center items-center py-2 px-2 border border-gray-300 rounded-md shadow-sm bg-white text-xs font-medium text-gray-700 hover:bg-gray-50">
+                    <i class="fab fa-apple text-black text-sm"></i>
                 </button>
             </div>
 
             <!-- Bottom Links -->
-            <div class="text-center mt-6">
-                <p class="text-sm text-gray-600">
+            <div class="text-center mt-4">
+                <p class="text-xs text-gray-600">
                     Don't have an account?
                     <a href="sign-up.html" class="font-medium text-primary-light hover:underline">
                         Sign up
