@@ -302,7 +302,7 @@
             
             <div class="space-y-4">
                 <!-- Vehicle Owner Button -->
-                <a href="sign-up.html?type=owner" class="selection-btn block w-full text-left p-4 bg-white border border-gray-300 rounded-lg hover:border-primary-light">
+                <a href="#" id="owner-btn" class="selection-btn block w-full text-left p-4 bg-white border border-gray-300 rounded-lg hover:border-primary-light">
                     <div class="flex flex-col">
                         <span class="font-semibold text-gray-900">I want to fix my vehicle</span>
                         <span class="text-sm text-gray-500">Register as a vehicle owner to book services</span>
@@ -310,7 +310,7 @@
                 </a>
                 
                 <!-- Technician Button -->
-                <a href="sign-up.html?type=technician" class="selection-btn block w-full text-left p-4 bg-white border border-gray-300 rounded-lg hover:border-primary-light">
+                <a href="#" id="technician-btn" class="selection-btn block w-full text-left p-4 bg-white border border-gray-300 rounded-lg hover:border-primary-light">
                     <div class="flex flex-col">
                         <span class="font-semibold text-gray-900">I am a technician</span>
                         <span class="text-sm text-gray-500">Register as a technician to offer services</span>
@@ -321,73 +321,122 @@
     </div>
 
     <script>
-        // Get the form and input elements
-        const signInForm = document.getElementById('sign-in-form');
-        const loginInput = document.getElementById('login');
-        const passwordInput = document.getElementById('password');
-        const togglePassword = document.getElementById('toggle-password');
-        
-        // Get the error message paragraph elements
-        const loginError = document.getElementById('login-error');
-        const passwordError = document.getElementById('password-error');
+        const API_BASE_URL = 'http://localhost:8001';
 
-        // Regular expression for basic email validation
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        async function handleLogin(email, password) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password })
+                });
 
-        // Toggle password visibility
-        togglePassword.addEventListener('click', function() {
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
-            this.querySelector('i').className = type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
-        });
+                const result = await response.json();
 
-        signInForm.addEventListener('submit', function(event) {
-            // Prevent the form from submitting to the server
-            event.preventDefault();
+                if (response.ok) {
+                    // Store token in localStorage
+                    localStorage.setItem('access_token', result.access_token);
+                    localStorage.setItem('user_info', JSON.stringify(result.user));
+                    
+                    alert('Login successful!');
+                    // Redirect based on user type
+                    if (result.user.user_type === 'customer') {
+                        window.location.href = 'customer_dashboard.html';
+                    } else {
+                        window.location.href = 'technician_dashboard.html';
+                    }
+                } else {
+                    // Updated error handling
+                    if (result.detail === "User Name or Password is incorrect Please try again") {
+                        alert("User Name or Password is incorrect Please try again");
+                    } else {
+                        alert(result.detail || 'Login failed');
+                    }
+                    throw new Error(result.detail || 'Login failed');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                alert('Login failed: ' + error.message);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get the form and input elements
+            const signInForm = document.getElementById('sign-in-form');
+            const loginInput = document.getElementById('login');
+            const passwordInput = document.getElementById('password');
+            const togglePassword = document.getElementById('toggle-password');
             
-            // Reset previous error states
-            let isValid = true;
-            loginError.classList.add('hidden');
-            loginInput.classList.remove('border-red-500');
-            passwordError.classList.add('hidden');
-            passwordInput.classList.remove('border-red-500');
+            // Get the error message paragraph elements
+            const loginError = document.getElementById('login-error');
+            const passwordError = document.getElementById('password-error');
 
-            // --- Validation for Username or Email ---
-            const loginValue = loginInput.value.trim();
-            if (loginValue === '') {
-                loginError.textContent = 'This field is required.';
-                loginError.classList.remove('hidden');
-                loginInput.classList.add('border-red-500');
-                isValid = false;
-            } else if (loginValue.includes('@')) {
-                // If it contains '@', validate as an email
-                if (!emailRegex.test(loginValue)) {
-                    loginError.textContent = 'Please enter a valid email address.';
+            // Regular expression for basic email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            // Toggle password visibility
+            togglePassword.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                this.querySelector('i').className = type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
+            });
+
+            signInForm.addEventListener('submit', async function(event) {
+                // Prevent the form from submitting to the server
+                event.preventDefault();
+                
+                // Reset previous error states
+                let isValid = true;
+                loginError.classList.add('hidden');
+                loginInput.classList.remove('border-red-500');
+                passwordError.classList.add('hidden');
+                passwordInput.classList.remove('border-red-500');
+
+                // --- Validation for Username or Email ---
+                const loginValue = loginInput.value.trim();
+                if (loginValue === '') {
+                    loginError.textContent = 'This field is required.';
                     loginError.classList.remove('hidden');
                     loginInput.classList.add('border-red-500');
                     isValid = false;
+                } else if (loginValue.includes('@')) {
+                    // If it contains '@', validate as an email
+                    if (!emailRegex.test(loginValue)) {
+                        loginError.textContent = 'Please enter a valid email address.';
+                        loginError.classList.remove('hidden');
+                        loginInput.classList.add('border-red-500');
+                        isValid = false;
+                    }
                 }
-            }
 
-            // --- Validation for Password ---
-            const passwordValue = passwordInput.value.trim();
-            if (passwordValue === '') {
-                passwordError.textContent = 'Password is required.';
-                passwordError.classList.remove('hidden');
-                passwordInput.classList.add('border-red-500');
-                isValid = false;
-            }
+                // --- Validation for Password ---
+                const passwordValue = passwordInput.value.trim();
+                if (passwordValue === '') {
+                    passwordError.textContent = 'Password is required.';
+                    passwordError.classList.remove('hidden');
+                    passwordInput.classList.add('border-red-500');
+                    isValid = false;
+                }
 
-            // If all checks pass, the form is valid
-            if (isValid) {
-                // Here you would typically send the data to the server
-                // For demo purposes, we'll redirect to the dashboard
-                window.location.href = 'customer_dashboard.html';
-            }
-        });
+                // If all checks pass, the form is valid
+                if (isValid) {
+                    // Call the handleLogin function from registration.js
+                    try {
+                        const email = loginInput.value;
+                        const password = passwordInput.value;
+                        
+                        // Call the handleLogin function
+                        await handleLogin(email, password);
+                    } catch (error) {
+                        console.error('Login error:', error);
+                        alert('Login failed: ' + error.message);
+                    }
+                }
+            });
 
-        // Modal functionality
-        document.addEventListener('DOMContentLoaded', function() {
+            // Modal functionality
             const signUpLink = document.querySelector('a[href="sign-up.html"]');
             const modal = document.getElementById('signup-modal');
             const closeModal = document.getElementById('close-modal');
@@ -469,6 +518,16 @@
                     e.stopPropagation();
                 });
             }
+
+            // Add these lines inside your DOMContentLoaded event
+            document.getElementById('owner-btn').addEventListener('click', function(e) {
+                e.preventDefault();
+                window.location.href = 'sign-up.html?type=owner';
+            });
+            document.getElementById('technician-btn').addEventListener('click', function(e) {
+                e.preventDefault();
+                window.location.href = 'sign-up.html?type=technician';
+            });
         });
     </script>
 

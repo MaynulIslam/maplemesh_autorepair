@@ -20,6 +20,7 @@
                         primary: {
                             DEFAULT: '#041B15',
                             light: '#136F63',
+                            dark: '#0d5951'
                         },
                     }
                 }
@@ -46,7 +47,6 @@
             padding: 1.5rem;
         }
         
-        /* Enhanced form section styling */
         .form-section {
             background: #ffffff;
             border-radius: 0.5rem;
@@ -57,13 +57,11 @@
             transition: all 0.2s ease;
         }
         
-        /* Add subtle hover effect */
         .form-section:hover {
             box-shadow: 0 6px 12px rgba(19, 111, 99, 0.1);
             border-color: #136F63;
         }
         
-        /* Enhanced section title styling */
         .section-title {
             font-size: 1rem;
             font-weight: 600;
@@ -74,7 +72,6 @@
             position: relative;
         }
         
-        /* Add accent line under section title */
         .section-title::after {
             content: '';
             position: absolute;
@@ -112,7 +109,6 @@
             min-width: calc(25% - 0.75rem);
         }
         
-        /* Enhanced form label styling */
         .form-label {
             display: block;
             font-size: 0.8rem;
@@ -121,7 +117,6 @@
             margin-bottom: 0.25rem;
         }
         
-        /* Enhanced input styling */
         .form-input, .form-select {
             width: 100%;
             padding: 0.625rem;
@@ -139,10 +134,6 @@
             background-color: #ffffff;
         }
         
-        .form-input:hover, .form-select:hover {
-            border-color: #9ca3af;
-        }
-        
         .form-submit {
             width: 100%;
             background: #136F63;
@@ -153,13 +144,10 @@
             font-weight: 500;
             cursor: pointer;
             transition: all 0.15s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         
         .form-submit:hover {
             background: #0d5951;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
-            transform: translateY(-1px);
         }
         
         .strength-meter {
@@ -176,13 +164,6 @@
             transition: width 0.3s, background-color 0.3s;
         }
         
-        .password-hint {
-            font-size: 0.7rem;
-            color: #6b7280;
-            margin-top: 0.25rem;
-        }
-        
-        /* Added for wider layout */
         .section-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -191,23 +172,6 @@
         
         .hidden {
             display: none;
-        }
-        
-        .specialty-option {
-            border: 1px solid #d1d5db;
-            padding: 0.5rem;
-            border-radius: 0.375rem;
-            display: flex;
-            align-items: center;
-            transition: all 0.2s;
-        }
-        
-        .specialty-option:hover {
-            background-color: #f9fafb;
-        }
-        
-        .specialty-option input:checked + label {
-            font-weight: 500;
         }
     </style>
 </head>
@@ -220,14 +184,13 @@
         
         <!-- For development/testing: Form type switcher -->
         <div class="flex justify-center mb-4 gap-4">
-            <button id="switch-to-owner" type="button" class="px-4 py-2 text-sm rounded bg-gray-200 hover:bg-gray-300">Switch to Vehicle Owner</button>
-            <button id="switch-to-technician" type="button" class="px-4 py-2 text-sm rounded bg-gray-200 hover:bg-gray-300">Switch to Technician</button>
+            <button id="switch-to-owner" type="button" class="px-4 py-2 text-sm rounded bg-gray-200 hover:bg-gray-300">I want to fix my vehicle</button>
+            <button id="switch-to-technician" type="button" class="px-4 py-2 text-sm rounded bg-gray-200 hover:bg-gray-300">I am a Technician</button>
         </div>
 
         <!-- Vehicle Owner Registration Form -->
         <div id="vehicle-owner-form" class="hidden">
             <form id="owner-registration-form">
-                <!-- Top Row: Personal Information + Account Credentials side by side -->
                 <div class="section-container mb-4">
                     <!-- Personal Information -->
                     <div class="form-section h-full">
@@ -250,8 +213,14 @@
                                 <input type="date" id="owner-dob" class="form-input" required>
                             </div>
                             <div class="form-group">
-                                <label class="form-label" for="owner-user-id">User ID</label>
-                                <input type="text" id="owner-user-id" class="form-input" required>
+                                <label class="form-label" for="owner-phone">Phone Number</label>
+                                <input type="tel" id="owner-phone" class="form-input" placeholder="(555) 123-4567" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group full">
+                                <label class="form-label" for="owner-username">User Name</label>
+                                <input type="text" id="owner-username" class="form-input" required>
                             </div>
                         </div>
                     </div>
@@ -272,7 +241,7 @@
                                 <div class="strength-meter">
                                     <div class="strength-fill" id="owner-strength-fill"></div>
                                 </div>
-                                <div class="password-hint" id="owner-password-hint">Password strength: Too weak</div>
+                                <div class="text-xs text-gray-500 mt-1" id="owner-password-hint">Password strength: Too weak</div>
                             </div>
                         </div>
                         <div class="form-group full">
@@ -288,15 +257,14 @@
                         <i class="fas fa-map-marker-alt mr-2"></i> Address Information
                     </div>
                     <div class="grid grid-cols-2 gap-4">
-                        <!-- Left Column -->
                         <div>
                             <div class="mb-3">
                                 <label class="form-label" for="owner-address-1">Address Line 1</label>
-                                <input type="text" id="owner-address-1" class="form-input" placeholder="Street address, P.O. box" required>
+                                <input type="text" id="owner-address-1" class="form-input" required>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="owner-address-2">Address Line 2 (Optional)</label>
-                                <input type="text" id="owner-address-2" class="form-input" placeholder="Apartment, suite, unit, building, floor, etc.">
+                                <input type="text" id="owner-address-2" class="form-input">
                             </div>
                             <div class="form-row">
                                 <div class="form-group">
@@ -309,8 +277,6 @@
                                 </div>
                             </div>
                         </div>
-                        
-                        <!-- Right Column -->
                         <div>
                             <div class="mb-3">
                                 <label class="form-label" for="owner-postal-code">Postal/ZIP Code</label>
@@ -324,10 +290,6 @@
                                     <option value="US">United States</option>
                                     <option value="MX">Mexico</option>
                                 </select>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label" for="owner-phone">Phone Number</label>
-                                <input type="tel" id="owner-phone" class="form-input" placeholder="(555) 123-4567" required>
                             </div>
                         </div>
                     </div>
@@ -358,7 +320,6 @@
                             <label class="form-label" for="vehicle-year">Year</label>
                             <select id="vehicle-year" class="form-select" required>
                                 <option value="" disabled selected>Select year</option>
-                                <!-- Will be populated by JS -->
                             </select>
                         </div>
                         <div>
@@ -369,9 +330,6 @@
                     <div>
                         <label class="form-label" for="vehicle-description">Vehicle Description</label>
                         <textarea id="vehicle-description" class="form-input" rows="2" required></textarea>
-                        <div class="text-xs text-gray-500 mt-1 italic">
-                            <i class="fas fa-info-circle mr-1"></i> You can add more vehicles after completing registration.
-                        </div>
                     </div>
                 </div>
 
@@ -384,12 +342,8 @@
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <button type="button" onclick="window.location.href='sign-in.html'" class="form-submit bg-gray-500 hover:bg-gray-600">Cancel</button>
-                    </div>
-                    <div>
-                        <button type="submit" class="form-submit">Create Account</button>
-                    </div>
+                    <button type="button" onclick="window.location.href='sign-in.html'" class="form-submit bg-gray-500 hover:bg-gray-600">Cancel</button>
+                    <button type="submit" class="form-submit">Create Account</button>
                 </div>
 
                 <div class="text-center mt-4 text-xs text-gray-500">
@@ -401,7 +355,6 @@
         <!-- Technician Registration Form -->
         <div id="technician-form" class="hidden">
             <form id="technician-registration-form">
-                <!-- Top Row: Personal Information + Account Credentials side by side -->
                 <div class="section-container mb-4">
                     <!-- Personal Information -->
                     <div class="form-section h-full">
@@ -428,6 +381,12 @@
                                 <input type="tel" id="tech-phone" class="form-input" placeholder="(555) 123-4567" required>
                             </div>
                         </div>
+                        <div class="form-row">
+                            <div class="form-group full">
+                                <label class="form-label" for="tech-username">User Name</label>
+                                <input type="text" id="tech-username" class="form-input" required>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Account Credentials -->
@@ -446,7 +405,7 @@
                                 <div class="strength-meter">
                                     <div class="strength-fill" id="tech-strength-fill"></div>
                                 </div>
-                                <div class="password-hint" id="tech-password-hint">Password strength: Too weak</div>
+                                <div class="text-xs text-gray-500 mt-1" id="tech-password-hint">Password strength: Too weak</div>
                             </div>
                         </div>
                         <div class="form-group full">
@@ -511,7 +470,6 @@
                         <i class="fas fa-tools mr-2"></i> Professional Information
                     </div>
                     
-                    <!-- Certification Status -->
                     <div class="mb-4">
                         <label class="form-label">Are you a certified technician?</label>
                         <div class="flex gap-6 mt-2">
@@ -526,7 +484,6 @@
                         </div>
                     </div>
                     
-                    <!-- Certification Details (initially hidden) -->
                     <div id="certification-details" class="mb-4 hidden">
                         <div class="grid grid-cols-3 gap-4">
                             <div>
@@ -544,58 +501,33 @@
                         </div>
                     </div>
                     
-                    <!-- Areas of Expertise with Auto-adding Dropdown -->
                     <div class="mb-4">
                         <label class="form-label">Areas of Expertise</label>
-                        <div>
-                            <select id="expertise-dropdown" class="form-select" onchange="autoAddExpertise(this)">
-                                <option value="" disabled selected>Select an area of expertise</option>
-                                <option value="engine-repair">Engine Repair</option>
-                                <option value="brakes">Brakes</option>
-                                <option value="transmission">Transmission</option>
-                                <option value="electrical">Electrical Systems</option>
-                                <option value="ac-heating">A/C & Heating</option>
-                                <option value="tire-service">Tire Services</option>
-                                <option value="suspension">Suspension & Steering</option>
-                                <option value="diagnostics">Computer Diagnostics</option>
-                                <option value="oil-change">Oil Change & Maintenance</option>
-                                <option value="bodywork">Body Work</option>
-                                <option value="painting">Painting</option>
-                                <option value="glass">Glass Repair/Replacement</option>
-                            </select>
-                            <div class="text-xs text-gray-500 mt-1 mb-2">
-                                <i class="fas fa-info-circle mr-1"></i> Select your areas of expertise from the dropdown. Each selection will be automatically added.
-                            </div>
-                        </div>
+                        <select id="expertise-dropdown" class="form-select" onchange="autoAddExpertise(this)">
+                            <option value="" disabled selected>Select an area of expertise</option>
+                            <option value="engine-repair">Engine Repair</option>
+                            <option value="brakes">Brakes</option>
+                            <option value="transmission">Transmission</option>
+                            <option value="electrical">Electrical Systems</option>
+                            <option value="ac-heating">A/C & Heating</option>
+                            <option value="tire-service">Tire Services</option>
+                            <option value="suspension">Suspension & Steering</option>
+                            <option value="diagnostics">Computer Diagnostics</option>
+                            <option value="oil-change">Oil Change & Maintenance</option>
+                            <option value="bodywork">Body Work</option>
+                            <option value="painting">Painting</option>
+                            <option value="glass">Glass Repair/Replacement</option>
+                        </select>
                         
-                        <!-- Selected Areas of Expertise -->
                         <div id="selected-expertise" class="mt-2 p-3 border border-gray-300 rounded-md min-h-[100px] bg-gray-50">
                             <p class="text-gray-500 text-sm italic" id="no-expertise-message">No areas of expertise selected yet.</p>
-                            <div id="expertise-tags" class="flex flex-wrap gap-2">
-                                <!-- Tags will be added here dynamically -->
-                            </div>
+                            <div id="expertise-tags" class="flex flex-wrap gap-2"></div>
                         </div>
-                        <input type="hidden" id="expertise-values" name="expertise_values">
                     </div>
                     
-                    <!-- Years of Experience -->
-                    <div class="mb-4">
-                        <label class="form-label" for="years-of-experience">Years of Experience as an Automobile Technician</label>
-                        <select id="years-of-experience" class="form-select" required>
-                            <option value="" disabled selected>Select years of experience</option>
-                            <option value="less-than-1">Less than 1 year</option>
-                            <option value="1-3">1-3 years</option>
-                            <option value="3-5">3-5 years</option>
-                            <option value="5-10">5-10 years</option>
-                            <option value="10-15">10-15 years</option>
-                            <option value="15-plus">15+ years</option>
-                        </select>
-                    </div>
-                    
-                    <!-- Service Radius Options -->
                     <div>
                         <label class="form-label" for="service-radius">Service Radius</label>
-                        <select id="service-radius" name="service_radius" class="form-select" required>
+                        <select id="service-radius" class="form-select" required>
                             <option value="" disabled selected>Select service radius</option>
                             <option value="25">25 km</option>
                             <option value="50">50 km</option>
@@ -604,9 +536,6 @@
                             <option value="200">200 km</option>
                             <option value="250">250 km</option>
                         </select>
-                        <div class="text-xs text-gray-500 mt-1 italic">
-                            <i class="fas fa-info-circle mr-1"></i> This is the maximum distance you are willing to travel to provide service.
-                        </div>
                     </div>
                 </div>
 
@@ -620,12 +549,8 @@
                 </div>
 
                 <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <button type="button" onclick="window.location.href='sign-in.html'" class="form-submit bg-gray-500 hover:bg-gray-600">Cancel</button>
-                    </div>
-                    <div>
-                        <button type="submit" class="form-submit">Create Account</button>
-                    </div>
+                    <button type="button" onclick="window.location.href='sign-in.html'" class="form-submit bg-gray-500 hover:bg-gray-600">Cancel</button>
+                    <button type="submit" class="form-submit">Create Account</button>
                 </div>
 
                 <div class="text-center mt-4 text-xs text-gray-500">
@@ -635,216 +560,394 @@
         </div>
     </div>
 
+    <script src="../js/registration.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Check for user type in URL parameters
-            const urlParams = new URLSearchParams(window.location.search);
-            const userType = urlParams.get('type');
-            
-            // Get form containers
-            const ownerFormContainer = document.getElementById('vehicle-owner-form');
-            const technicianFormContainer = document.getElementById('technician-form');
-            const pageTitle = document.getElementById('registration-title');
-            const pageSubtitle = document.getElementById('registration-subtitle');
-            
-            // Show appropriate form based on user type
-            if (userType === 'technician') {
-                ownerFormContainer.classList.add('hidden');
-                technicianFormContainer.classList.remove('hidden');
-                pageTitle.textContent = 'Technician Registration';
-                pageSubtitle.textContent = 'Create your account to start offering auto repair services';
-            } else {
-                // Default to vehicle owner form
-                ownerFormContainer.classList.remove('hidden');
-                technicianFormContainer.classList.add('hidden');
-                pageTitle.textContent = 'Vehicle Owner Registration';
-                pageSubtitle.textContent = 'Create your account to start booking auto services';
-            }
-            
-            // Populate year dropdown
-            const yearSelect = document.getElementById('vehicle-year');
-            if (yearSelect) {
-                const currentYear = new Date().getFullYear();
-                
-                for (let year = currentYear; year >= 1980; year--) {
-                    const option = document.createElement('option');
-                    option.value = year;
-                    option.textContent = year;
-                    yearSelect.appendChild(option);
-                }
-            }
-            
-            // Password strength meter functionality for both forms
-            const passwordInputs = document.querySelectorAll('.password-input');
-            
-            passwordInputs.forEach(input => {
-                input.addEventListener('input', function() {
-                    const meterFill = this.closest('.password-container').querySelector('.strength-fill');
-                    const hintText = this.closest('.password-container').querySelector('.password-hint');
-                    updatePasswordStrength(this.value, meterFill, hintText);
-                });
-            });
-            
-            function updatePasswordStrength(password, meterFill, hintText) {
-                let strength = 0;
-                
-                if (password.length >= 8) strength += 25;
-                if (/[A-Z]/.test(password)) strength += 25;
-                if (/[a-z]/.test(password)) strength += 25;
-                if (/[0-9]/.test(password)) strength += 15;
-                if (/[^A-Za-z0-9]/.test(password)) strength += 10;
-                
-                meterFill.style.width = `${strength}%`;
-                
-                if (strength < 30) {
-                    meterFill.style.backgroundColor = '#f72585';
-                    hintText.textContent = 'Password strength: Too weak';
-                } else if (strength < 60) {
-                    meterFill.style.backgroundColor = '#f7b801';
-                    hintText.textContent = 'Password strength: Medium';
-                } else {
-                    meterFill.style.backgroundColor = '#72b01d';
-                    hintText.textContent = 'Password strength: Strong';
-                }
-            }
-            
-            // Form submissions
+        document.addEventListener('DOMContentLoaded', function () {
             const ownerForm = document.getElementById('owner-registration-form');
-            if (ownerForm) {
-                ownerForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    // Validation would go here
-                    
-                    alert('Vehicle Owner account created successfully!');
-                    // Redirect to dashboard
-                    // window.location.href = 'customer_dashboard.html';
-                });
-            }
-            
             const technicianForm = document.getElementById('technician-registration-form');
-            if (technicianForm) {
-                technicianForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    // Validation would go here
-                    
-                    alert('Technician account created successfully!');
-                    // Redirect to dashboard
-                    // window.location.href = 'technician_dashboard.html';
-                });
+
+            // Validation functions
+            async function checkEmailExists(email) {
+                try {
+                    const response = await fetch(`http://localhost:8001/api/auth/check-email`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ email: email })
+                    });
+                    const data = await response.json();
+                    return data.exists;
+                } catch (error) {
+                    console.error('Error checking email:', error);
+                    return false;
+                }
+            }
+
+            async function checkUsernameExists(username) {
+                try {
+                    const response = await fetch(`http://localhost:8001/api/auth/check-username`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ username: username })
+                    });
+                    const data = await response.json();
+                    return data.exists;
+                } catch (error) {
+                    console.error('Error checking username:', error);
+                    return false;
+                }
+            }
+
+            function showValidationMessage(inputId, message, isError = true) {
+                const input = document.getElementById(inputId);
+                const existingMessage = input.parentNode.querySelector('.validation-message');
+                
+                if (existingMessage) {
+                    existingMessage.remove();
+                }
+                
+                if (message) {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = `validation-message text-xs mt-1 ${isError ? 'text-red-500' : 'text-green-500'}`;
+                    messageDiv.textContent = message;
+                    input.parentNode.appendChild(messageDiv);
+                    input.style.borderColor = isError ? '#ef4444' : '#10b981';
+                } else {
+                    input.style.borderColor = '#d1d5db';
+                }
+            }
+
+            // Email validation for Owner form
+            const ownerEmailInput = document.getElementById('owner-email');
+            let ownerEmailTimeout;
+            ownerEmailInput.addEventListener('input', function() {
+                clearTimeout(ownerEmailTimeout);
+                const email = this.value.trim();
+                
+                if (email && email.includes('@')) {
+                    ownerEmailTimeout = setTimeout(async () => {
+                        const exists = await checkEmailExists(email);
+                        if (exists) {
+                            showValidationMessage('owner-email', 'This email is already being used.', true);
+                        } else {
+                            showValidationMessage('owner-email', 'Email is available.', false);
+                        }
+                    }, 500);
+                } else {
+                    showValidationMessage('owner-email', '');
+                }
+            });
+
+            // Username validation for Owner form
+            const ownerUsernameInput = document.getElementById('owner-username');
+            let ownerUsernameTimeout;
+            ownerUsernameInput.addEventListener('input', function() {
+                clearTimeout(ownerUsernameTimeout);
+                const username = this.value.trim();
+                
+                if (username.length >= 3) {
+                    ownerUsernameTimeout = setTimeout(async () => {
+                        const exists = await checkUsernameExists(username);
+                        if (exists) {
+                            showValidationMessage('owner-username', 'This username is already being used.', true);
+                        } else {
+                            showValidationMessage('owner-username', 'Username is available.', false);
+                        }
+                    }, 500);
+                } else if (username.length > 0) {
+                    showValidationMessage('owner-username', 'Username must be at least 3 characters.', true);
+                } else {
+                    showValidationMessage('owner-username', '');
+                }
+            });
+
+            // Password confirmation for Owner form
+            const ownerPasswordInput = document.getElementById('owner-password');
+            const ownerConfirmPasswordInput = document.getElementById('owner-confirm-password');
+            
+            function validateOwnerPasswordMatch() {
+                const password = ownerPasswordInput.value;
+                const confirmPassword = ownerConfirmPasswordInput.value;
+                
+                if (confirmPassword && password !== confirmPassword) {
+                    showValidationMessage('owner-confirm-password', 'Passwords do not match.', true);
+                    return false;
+                } else if (confirmPassword && password === confirmPassword) {
+                    showValidationMessage('owner-confirm-password', 'Passwords match.', false);
+                    return true;
+                } else {
+                    showValidationMessage('owner-confirm-password', '');
+                    return true;
+                }
             }
             
-            // Toggle buttons to switch between forms (for testing purposes)
+            ownerPasswordInput.addEventListener('input', validateOwnerPasswordMatch);
+            ownerConfirmPasswordInput.addEventListener('input', validateOwnerPasswordMatch);
+
+            // Email validation for Technician form
+            const techEmailInput = document.getElementById('tech-email');
+            let techEmailTimeout;
+            techEmailInput.addEventListener('input', function() {
+                clearTimeout(techEmailTimeout);
+                const email = this.value.trim();
+                
+                if (email && email.includes('@')) {
+                    techEmailTimeout = setTimeout(async () => {
+                        const exists = await checkEmailExists(email);
+                        if (exists) {
+                            showValidationMessage('tech-email', 'This email is already being used.', true);
+                        } else {
+                            showValidationMessage('tech-email', 'Email is available.', false);
+                        }
+                    }, 500);
+                } else {
+                    showValidationMessage('tech-email', '');
+                }
+            });
+
+            // Username validation for Technician form
+            const techUsernameInput = document.getElementById('tech-username');
+            let techUsernameTimeout;
+            techUsernameInput.addEventListener('input', function() {
+                clearTimeout(techUsernameTimeout);
+                const username = this.value.trim();
+                
+                if (username.length >= 3) {
+                    techUsernameTimeout = setTimeout(async () => {
+                        const exists = await checkUsernameExists(username);
+                        if (exists) {
+                            showValidationMessage('tech-username', 'This username is already being used.', true);
+                        } else {
+                            showValidationMessage('tech-username', 'Username is available.', false);
+                        }
+                    }, 500);
+                } else if (username.length > 0) {
+                    showValidationMessage('tech-username', 'Username must be at least 3 characters.', true);
+                } else {
+                    showValidationMessage('tech-username', '');
+                }
+            });
+
+            // Password confirmation for Technician form
+            const techPasswordInput = document.getElementById('tech-password');
+            const techConfirmPasswordInput = document.getElementById('tech-confirm-password');
+            
+            function validateTechPasswordMatch() {
+                const password = techPasswordInput.value;
+                const confirmPassword = techConfirmPasswordInput.value;
+                
+                if (confirmPassword && password !== confirmPassword) {
+                    showValidationMessage('tech-confirm-password', 'Passwords do not match.', true);
+                    return false;
+                } else if (confirmPassword && password === confirmPassword) {
+                    showValidationMessage('tech-confirm-password', 'Passwords match.', false);
+                    return true;
+                } else {
+                    showValidationMessage('tech-confirm-password', '');
+                    return true;
+                }
+            }
+            
+            techPasswordInput.addEventListener('input', validateTechPasswordMatch);
+            techConfirmPasswordInput.addEventListener('input', validateTechPasswordMatch);
+
+            // Form submission handlers with validation
+            ownerForm.addEventListener('submit', function (event) {
+                event.preventDefault();
+                
+                const errorMessages = document.querySelectorAll('.validation-message.text-red-500');
+                if (errorMessages.length > 0) {
+                    alert('Please fix the validation errors before submitting.');
+                    return;
+                }
+                
+                if (!validateOwnerPasswordMatch()) {
+                    alert('Please make sure passwords match.');
+                    return;
+                }
+                
+                const formData = {
+                    first_name: document.getElementById('owner-first-name').value,
+                    last_name: document.getElementById('owner-last-name').value,
+                    username: document.getElementById('owner-username').value,
+                    email: document.getElementById('owner-email').value,
+                    password: document.getElementById('owner-password').value,
+                    dob: document.getElementById('owner-dob').value,
+                    address_line_1: document.getElementById('owner-address-1').value,
+                    address_line_2: document.getElementById('owner-address-2').value,
+                    city: document.getElementById('owner-city').value,
+                    province: document.getElementById('owner-province').value,
+                    postal_code: document.getElementById('owner-postal-code').value,
+                    country: document.getElementById('owner-country').value,
+                    phone: document.getElementById('owner-phone').value,
+                    vehicle_make: document.getElementById('vehicle-make').value,
+                    vehicle_model: document.getElementById('vehicle-model').value,
+                    vehicle_year: parseInt(document.getElementById('vehicle-year').value),
+                    vehicle_color: document.getElementById('vehicle-color').value,
+                    vehicle_description: document.getElementById('vehicle-description').value
+                };
+                handleCustomerRegistration(formData);
+            });
+
+            technicianForm.addEventListener('submit', function (event) {
+                event.preventDefault();
+                
+                const errorMessages = document.querySelectorAll('.validation-message.text-red-500');
+                if (errorMessages.length > 0) {
+                    alert('Please fix the validation errors before submitting.');
+                    return;
+                }
+                
+                if (!validateTechPasswordMatch()) {
+                    alert('Please make sure passwords match.');
+                    return;
+                }
+                
+                const formData = {
+                    first_name: document.getElementById('tech-first-name').value,
+                    last_name: document.getElementById('tech-last-name').value,
+                    username: document.getElementById('tech-username').value,
+                    email: document.getElementById('tech-email').value,
+                    password: document.getElementById('tech-password').value,
+                    phone: document.getElementById('tech-phone').value,
+                    dob: document.getElementById('tech-dob').value,
+                    business_name: document.getElementById('business-name').value,
+                    business_address: document.getElementById('business-address').value,
+                    city: document.getElementById('tech-city').value,
+                    province: document.getElementById('tech-province').value,
+                    postal_code: document.getElementById('tech-postal-code').value,
+                    country: document.getElementById('tech-country').value,
+                    years_experience: parseInt(document.getElementById('years-experience').value),
+                    is_certified: document.querySelector('input[name="is_certified"]:checked').value,
+                    certification_number: document.getElementById('certification-number').value || null,
+                    certification_authority: document.getElementById('certification-authority').value || null,
+                    certification_expiry: document.getElementById('certification-expiry').value || null,
+                    areas_of_expertise: Array.from(document.querySelectorAll('#expertise-tags .expertise-tag')).map(tag => tag.textContent.replace('×', '').trim()),
+                    service_radius: parseInt(document.getElementById('service-radius').value)
+                };
+                handleTechnicianRegistration(formData);
+            });
+
+            // Form switching logic
             const switchToOwnerBtn = document.getElementById('switch-to-owner');
-            const switchToTechBtn = document.getElementById('switch-to-technician');
-            
-            if (switchToOwnerBtn) {
-                switchToOwnerBtn.addEventListener('click', function() {
-                    window.location.href = 'sign-up.html?type=owner';
-                });
-            }
-            
-            if (switchToTechBtn) {
-                switchToTechBtn.addEventListener('click', function() {
-                    window.location.href = 'sign-up.html?type=technician';
-                });
-            }
-        });
+            const switchToTechnicianBtn = document.getElementById('switch-to-technician');
+            const ownerFormDiv = document.getElementById('vehicle-owner-form');
+            const technicianFormDiv = document.getElementById('technician-form');
+            const registrationTitle = document.getElementById('registration-title');
+            const registrationSubtitle = document.getElementById('registration-subtitle');
 
-        function toggleCertificationFields(isCertified) {
-            const certificationDetails = document.getElementById('certification-details');
-            
-            if (isCertified) {
-                certificationDetails.classList.remove('hidden');
+            function showOwnerForm() {
+                ownerFormDiv.classList.remove('hidden');
+                technicianFormDiv.classList.add('hidden');
+                registrationTitle.textContent = 'Vehicle Owner Registration';
+                registrationSubtitle.textContent = 'Create your vehicle owner account';
+                switchToOwnerBtn.classList.add('bg-primary-light', 'text-white');
+                switchToTechnicianBtn.classList.remove('bg-primary-light', 'text-white');
+            }
+
+            function showTechnicianForm() {
+                ownerFormDiv.classList.add('hidden');
+                technicianFormDiv.classList.remove('hidden');
+                registrationTitle.textContent = 'Technician Registration';
+                registrationSubtitle.textContent = 'Create your technician account';
+                switchToTechnicianBtn.classList.add('bg-primary-light', 'text-white');
+                switchToOwnerBtn.classList.remove('bg-primary-light', 'text-white');
+            }
+
+            switchToOwnerBtn.addEventListener('click', showOwnerForm);
+            switchToTechnicianBtn.addEventListener('click', showTechnicianForm);
+
+            // Show form based on URL parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            const formType = urlParams.get('type');
+
+            if (formType === 'technician') {
+                showTechnicianForm();
             } else {
-                certificationDetails.classList.add('hidden');
+                showOwnerForm();
             }
-        }
 
-        function autoAddExpertise(selectElement) {
-            const selectedExpertiseContainer = document.getElementById('expertise-tags');
-            const noExpertiseMessage = document.getElementById('no-expertise-message');
-            
-            // Get the selected option
-            const selectedOption = selectElement.options[selectElement.selectedIndex];
-            
-            // If an actual option was selected (not the placeholder)
-            if (selectedOption.value) {
-                // Check if this expertise is already added (to prevent duplicates)
-                const existingTags = document.querySelectorAll('#expertise-tags > div');
-                let isDuplicate = false;
-                
-                existingTags.forEach(tag => {
-                    // Remove × and trim to get clean text
-                    const tagText = tag.textContent.trim().replace('×', '').trim();
-                    if (tagText === selectedOption.textContent) {
-                        isDuplicate = true;
-                        // Add a brief highlight effect to show it's already selected
-                        tag.classList.add('bg-yellow-500');
-                        setTimeout(() => {
-                            tag.classList.remove('bg-yellow-500');
-                            tag.classList.add('bg-primary-light');
-                        }, 1000);
-                    }
-                });
-                
-                // Only add if not a duplicate
-                if (!isDuplicate) {
-                    // Create a new tag for the selected expertise
+            // Password strength meter
+            function updatePasswordStrength(passwordInput, strengthFill, strengthHint) {
+                const password = passwordInput.value;
+                let strength = 0;
+                if (password.length >= 8) strength++;
+                if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
+                if (password.match(/[0-9]/)) strength++;
+                if (password.match(/[^a-zA-Z0-9]/)) strength++;
+
+                const strengthLevels = {
+                    0: { width: '25%', color: '#ef4444', text: 'Too weak' },
+                    1: { width: '25%', color: '#ef4444', text: 'Weak' },
+                    2: { width: '50%', color: '#f59e0b', text: 'Medium' },
+                    3: { width: '75%', color: '#10b981', text: 'Strong' },
+                    4: { width: '100%', color: '#10b981', text: 'Very Strong' }
+                };
+
+                strengthFill.style.width = strengthLevels[strength].width;
+                strengthFill.style.backgroundColor = strengthLevels[strength].color;
+                strengthHint.textContent = `Password strength: ${strengthLevels[strength].text}`;
+            }
+
+            const ownerStrengthFill = document.getElementById('owner-strength-fill');
+            const ownerStrengthHint = document.getElementById('owner-password-hint');
+            ownerPasswordInput.addEventListener('input', () => updatePasswordStrength(ownerPasswordInput, ownerStrengthFill, ownerStrengthHint));
+
+            const techStrengthFill = document.getElementById('tech-strength-fill');
+            const techStrengthHint = document.getElementById('tech-password-hint');
+            techPasswordInput.addEventListener('input', () => updatePasswordStrength(techPasswordInput, techStrengthFill, techStrengthHint));
+
+            // Populate vehicle year dropdown
+            const yearSelect = document.getElementById('vehicle-year');
+            const currentYear = new Date().getFullYear();
+            for (let year = currentYear; year >= 1980; year--) {
+                const option = document.createElement('option');
+                option.value = year;
+                option.textContent = year;
+                yearSelect.appendChild(option);
+            }
+
+            // Toggle certification fields
+            window.toggleCertificationFields = function(show) {
+                const detailsDiv = document.getElementById('certification-details');
+                detailsDiv.classList.toggle('hidden', !show);
+            }
+
+            // Auto-add expertise
+            const expertiseSet = new Set();
+            window.autoAddExpertise = function(select) {
+                const value = select.value;
+                const text = select.options[select.selectedIndex].text;
+                if (value && !expertiseSet.has(value)) {
+                    expertiseSet.add(value);
+                    const tagsContainer = document.getElementById('expertise-tags');
+                    const noExpertiseMessage = document.getElementById('no-expertise-message');
+                    noExpertiseMessage.classList.add('hidden');
+
                     const tag = document.createElement('div');
-                    tag.className = 'bg-primary-light text-white rounded-full px-3 py-1 text-xs flex items-center gap-1';
-                    tag.textContent = selectedOption.textContent;
+                    tag.className = 'expertise-tag bg-primary-light text-white text-sm font-medium px-3 py-1 rounded-full flex items-center';
+                    tag.textContent = text;
 
-                    // Add a remove button to the tag
                     const removeBtn = document.createElement('button');
                     removeBtn.type = 'button';
-                    removeBtn.className = 'text-white';
+                    removeBtn.className = 'ml-2 text-white hover:text-gray-200';
                     removeBtn.innerHTML = '&times;';
                     removeBtn.onclick = function() {
-                        selectedExpertiseContainer.removeChild(tag);
-                        
-                        // Show "no expertise" message if this was the last tag
-                        if (selectedExpertiseContainer.querySelectorAll('div').length === 0) {
+                        expertiseSet.delete(value);
+                        tag.remove();
+                        if (expertiseSet.size === 0) {
                             noExpertiseMessage.classList.remove('hidden');
                         }
-                        
-                        // Update hidden input value
-                        updateExpertiseValues();
                     };
-
                     tag.appendChild(removeBtn);
-                    selectedExpertiseContainer.appendChild(tag);
-
-                    // Hide the "no expertise" message
-                    noExpertiseMessage.classList.add('hidden');
-                    
-                    // Update hidden input value
-                    updateExpertiseValues();
+                    tagsContainer.appendChild(tag);
                 }
-                
-                // Reset the dropdown to the placeholder option
-                selectElement.selectedIndex = 0;
+                select.value = '';
             }
-        }
-
-        function updateExpertiseValues() {
-            const expertiseTags = document.querySelectorAll('#expertise-tags > div');
-            const expertiseValuesInput = document.getElementById('expertise-values');
-            const noExpertiseMessage = document.getElementById('no-expertise-message');
-
-            let values = [];
-            expertiseTags.forEach(tag => {
-                values.push(tag.textContent.trim().replace('×', '').trim());
-            });
-
-            expertiseValuesInput.value = values.join(',');
-            
-            // Toggle visibility of the "no expertise" message
-            if (values.length === 0) {
-                noExpertiseMessage.classList.remove('hidden');
-            } else {
-                noExpertiseMessage.classList.add('hidden');
-            }
-        }
+        });
     </script>
 </body>
 </html>
