@@ -7,7 +7,8 @@ from db_config import user_auth_collection, customer_profile_collection, technic
 from datetime import datetime, timezone
 from bson import ObjectId
 import logging
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
+from typing import Optional
 
 app = FastAPI(title="MapleMesh AutoRepair API", version="1.0.0")
 
@@ -36,17 +37,17 @@ app.add_middleware(
 # Security
 security = HTTPBearer()
 
-def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
-    """Get current authenticated user"""
-    token = credentials.credentials
-    payload = verify_token(token)
-    if payload is None:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid authentication credentials",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    return payload
+async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    """Get current authenticated user from JWT token"""
+    try:
+        token = credentials.credentials
+        payload = verify_token(token)
+        user_id = payload.get("sub")
+        if user_id is None:
+            raise HTTPException(status_code=401, detail="Invalid token")
+        return {"user_id": user_id}
+    except Exception as e:
+        raise HTTPException(status_code=401, detail="Invalid token")
 
 @app.get("/")
 async def root():
@@ -305,6 +306,138 @@ async def check_username_exists(request: UsernameCheckRequest):
         return CheckResponse(exists=existing_user is not None)
     except Exception as e:
         logging.error(f"Username check error: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+# Add these models for profile management
+class ProfileUpdateRequest(BaseModel):
+    first_name: str
+    last_name: str
+    email: EmailStr
+    phone: str
+    address_line_1: str
+    address_line_2: Optional[str] = None
+    city: str
+    province: str
+    postal_code: str
+    country: str
+
+class ProfileResponse(BaseModel):
+    user_id: str
+    first_name: str
+    last_name: str
+    username: str
+    email: str
+    phone: str
+    address_line_1: str
+    address_line_2: Optional[str] = None
+    city: str
+    province: str
+    postal_code: str
+    country: str
+    member_since: str
+    membership_level: str = "Bronze"
+    loyalty_points: int = 0
+
+# Get user profile endpoint
+@app.get("/api/customer/profile", response_model=ProfileResponse)
+async def get_customer_profile(current_user: dict = Depends(get_current_user)):
+    """Get customer profile information"""
+    try:
+        print(f"Getting profile for user ID: {current_user['user_id']}")
+        
+        # Get user from authentication collection
+        user = user_auth_collection.find_one({"_id": ObjectId(current_user["user_id"])})
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        # Get customer profile from customer collection
+        customer_profile = customer_profile_collection.find_one({"user_id": current_user["user_id"]})
+        if not customer_profile:
+            raise HTTPException(status_code=404, detail="Customer profile not found")
+        
+        # Extract data from nested structure
+        personal_info = customer_profile.get("personal_information", {})
+        address_info = customer_profile.get("address_information", {})
+        
+        # Format member since date
+        created_at = user.get("created_at")
+        if created_at:
+            if isinstance(created_at, str):
+                member_since = created_at[:4]  # Extract year from string
+            else:
+                member_since = str(created_at.year)  # Extract year from datetime
+        else:
+            member_since = "2025"
+        
+        return ProfileResponse(
+            user_id=current_user["user_id"],
+            first_name=personal_info.get("first_name", ""),
+            last_name=personal_info.get("last_name", ""),
+            username=personal_info.get("username", ""),
+            email=user.get("email", ""),
+            phone=personal_info.get("phone_number", ""),
+            address_line_1=address_info.get("address_line1", ""),
+            address_line_2=address_info.get("address_line2", ""),
+            city=address_info.get("city", ""),
+            province=address_info.get("province_state", ""),
+            postal_code=address_info.get("postal_zip_code", ""),
+            country=address_info.get("country", ""),
+            member_since=member_since,
+            membership_level=customer_profile.get("loyalty_status", {}).get("membership_level", "Bronze"),
+            loyalty_points=customer_profile.get("loyalty_status", {}).get("points", 0)
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Get profile error: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+# Update user profile endpoint
+@app.put("/api/customer/profile")
+async def update_customer_profile(
+    profile_data: ProfileUpdateRequest, 
+    current_user: dict = Depends(get_current_user)
+):
+    """Update customer profile information"""
+    try:
+        print(f"Updating profile for user ID: {current_user['user_id']}")
+        print(f"Profile data: {profile_data.dict()}")
+        
+        # Update email in user_auth_collection
+        user_auth_collection.update_one(
+            {"_id": ObjectId(current_user["user_id"])},
+            {
+                "$set": {
+                    "email": profile_data.email,
+                    "updated_at": datetime.now(timezone.utc)
+                }
+            }
+        )
+        
+        # Update profile in customer_profile_collection
+        customer_profile_collection.update_one(
+            {"user_id": current_user["user_id"]},
+            {
+                "$set": {
+                    "personal_information.first_name": profile_data.first_name,
+                    "personal_information.last_name": profile_data.last_name,
+                    "personal_information.phone_number": profile_data.phone,
+                    "address_information.address_line1": profile_data.address_line_1,
+                    "address_information.address_line2": profile_data.address_line_2,
+                    "address_information.city": profile_data.city,
+                    "address_information.province_state": profile_data.province,
+                    "address_information.postal_zip_code": profile_data.postal_code,
+                    "address_information.country": profile_data.country,
+                    "updated_at": datetime.now(timezone.utc)
+                }
+            }
+        )
+        
+        return {"message": "Profile updated successfully"}
+        
+    except Exception as e:
+        logging.error(f"Update profile error: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
 
 if __name__ == "__main__":

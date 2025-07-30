@@ -66,70 +66,31 @@ class Token(BaseModel):
     token_type: str
     user: UserResponse
 
-from pydantic import BaseModel, EmailStr, Field
-from typing import Optional, List
-from datetime import datetime
-from enum import Enum
-
-class UserType(str, Enum):
-    CUSTOMER = "customer"
-    TECHNICIAN = "technician"
-
-# Customer Registration Models
-class CustomerRegistration(BaseModel):
+class ProfileUpdateRequest(BaseModel):
     first_name: str
     last_name: str
-    username: str
     email: EmailStr
-    password: str
-    dob: str                        # ✓ matches frontend
-    address_line_1: str             # ✓ matches frontend
+    phone: str
+    address_line_1: str
     address_line_2: Optional[str] = None
     city: str
-    province: str                   # ✓ matches frontend
-    postal_code: str                # ✓ matches frontend
+    province: str
+    postal_code: str
     country: str
-    phone: str                      # ✓ matches frontend
-    vehicle_make: str
-    vehicle_model: str
-    vehicle_year: int
-    vehicle_color: str              # ✓ matches frontend
-    vehicle_description: str
 
-# Technician Registration Models
-class TechnicianRegistration(BaseModel):
+class ProfileResponse(BaseModel):
+    user_id: str
     first_name: str
     last_name: str
     username: str
-    email: EmailStr
-    password: str
-    phone: str                      # ✓ matches frontend
-    dob: str                        # ✓ matches frontend
-    business_name: str
-    business_address: str
+    email: str
+    phone: str
+    address_line_1: str
+    address_line_2: Optional[str] = None
     city: str
-    province: str                   # ✓ matches frontend
-    postal_code: str                # ✓ matches frontend
+    province: str
+    postal_code: str
     country: str
-    years_experience: int           # ✓ matches frontend
-    is_certified: str
-    certification_number: Optional[str] = None
-    certification_authority: Optional[str] = None
-    certification_expiry: Optional[str] = None
-    areas_of_expertise: List[str] = []
-    service_radius: int
-
-class UserLogin(BaseModel):
-    email: str
-    password: str
-
-class UserResponse(BaseModel):
-    id: str
-    email: str
-    user_type: str
-    created_at: datetime
-
-class Token(BaseModel):
-    access_token: str
-    token_type: str
-    user: UserResponse
+    member_since: str
+    membership_level: str = "Bronze"
+    loyalty_points: int = 0

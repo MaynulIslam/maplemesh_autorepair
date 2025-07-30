@@ -58,12 +58,12 @@
               <a class="nav-link fw-bold active" href="customer_profile.html" id="profileLink">Profile</a>
               <div class="dropdown-menu dropdown-menu-end" aria-labelledby="profileLink">
                 <div class="dropdown-header d-flex align-items-center p-3">
-                  <div class="avatar-circle me-3">
-                    <img src="../assets/img/avatar-placeholder.jpg" alt="Profile" class="avatar-img">
+                  <div class="avatar-square me-3">
+                    <i class="fas fa-user avatar-icon"></i>
                   </div>
                   <div>
-                    <h6 class="mb-0">John Doe</h6>
-                    <small class="text-muted">Customer since 2022</small>
+                    <h6 class="mb-0" id="nav-profile-name">Loading...</h6>
+                    <small class="text-muted" id="nav-member-since">Customer since...</small>
                   </div>
                 </div>
                 <div class="dropdown-divider"></div>
@@ -111,19 +111,15 @@
           <div class="card h-100">
             <div class="card-body text-center">
               <div class="profile-image-wrapper mb-3">
-                <img src="../assets/img/avatar-placeholder.jpg" alt="Profile" class="rounded-circle profile-photo">
+                <div class="profile-photo-square">
+                  <i class="fas fa-user profile-icon"></i>
+                </div>
                 <div class="change-photo-overlay">
                   <i class="fas fa-camera"></i> Change Photo
                 </div>
               </div>
-              <h4 class="mb-1">John Doe</h4>
-              <p class="text-muted">Customer since 2022</p>
-              <button class="btn btn-primary w-100 mb-2">
-                <i class="fas fa-camera me-2"></i>Change Photo
-              </button>
-              <button class="btn btn-outline-secondary w-100">
-                <i class="fas fa-lock me-2"></i>Change Password
-              </button>
+              <h4 class="mb-1" id="profile-name">Loading...</h4>
+              <p class="text-muted mb-3" id="member-since">Customer since...</p>
             </div>
           </div>
         </div>
@@ -131,37 +127,72 @@
         <!-- Right Column: Personal Information -->
         <div class="col-md-8">
           <div class="card h-100">
-            <div class="card-header d-flex justify-content-between align-items-center">
+            <div class="card-header">
               <h5>Personal Information</h5>
-              <button class="btn btn-sm btn-primary edit-btn">Edit</button>
             </div>
             <div class="card-body">
-              <form>
+              <form id="profile-form">
+                <!-- First Name and Last Name side by side -->
                 <div class="row mb-3">
                   <div class="col-md-6">
-                    <label for="firstName" class="form-label">First Name</label>
-                    <input type="text" class="form-control" id="firstName" value="John" disabled>
+                    <input type="text" class="form-control" id="firstName" placeholder="First Name" disabled>
                   </div>
                   <div class="col-md-6">
-                    <label for="lastName" class="form-label">Last Name</label>
-                    <input type="text" class="form-control" id="lastName" value="Doe" disabled>
+                    <input type="text" class="form-control" id="lastName" placeholder="Last Name" disabled>
                   </div>
                 </div>
+
+                <!-- Email and Phone side by side -->
                 <div class="row mb-3">
                   <div class="col-md-6">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="email" class="form-control" id="email" value="john.doe@example.com" disabled>
+                    <input type="email" class="form-control" id="email" placeholder="Email" disabled>
                   </div>
                   <div class="col-md-6">
-                    <label for="phone" class="form-label">Phone</label>
-                    <input type="tel" class="form-control" id="phone" value="(555) 123-4567" disabled>
+                    <input type="tel" class="form-control" id="phone" placeholder="Phone" disabled>
                   </div>
                 </div>
+
+                <!-- Change Password section -->
                 <div class="row mb-3">
-                  <div class="col-md-12">
-                    <label for="address" class="form-label">Address</label>
-                    <input type="text" class="form-control" id="address" value="123 Main Street, Anytown, CA 91234" disabled>
+                  <div class="col-md-6">
+                    <input type="password" class="form-control" id="currentPassword" placeholder="••••••" disabled>
                   </div>
+                  <div class="col-md-6">
+                    <input type="password" class="form-control" id="newPassword" placeholder="New Password" disabled>
+                  </div>
+                </div>
+
+                <!-- Address Line 1, Address Line 2, and City side by side -->
+                <div class="row mb-3">
+                  <div class="col-md-4">
+                    <input type="text" class="form-control" id="address_line_1" placeholder="Address Line 1" disabled>
+                  </div>
+                  <div class="col-md-4">
+                    <input type="text" class="form-control" id="address_line_2" placeholder="Address Line 2 (Optional)" disabled>
+                  </div>
+                  <div class="col-md-4">
+                    <input type="text" class="form-control" id="city" placeholder="City" disabled>
+                  </div>
+                </div>
+
+                <!-- Province, Postal Code, and Country side by side -->
+                <div class="row mb-4">
+                  <div class="col-md-4">
+                    <input type="text" class="form-control" id="province" placeholder="Province/State" disabled>
+                  </div>
+                  <div class="col-md-4">
+                    <input type="text" class="form-control" id="postal_code" placeholder="Postal Code" disabled>
+                  </div>
+                  <div class="col-md-4">
+                    <input type="text" class="form-control" id="country" placeholder="Country" disabled>
+                  </div>
+                </div>
+
+                <!-- Edit Button at bottom right -->
+                <div class="d-flex justify-content-end">
+                  <button type="button" class="btn edit-btn" style="background-color: #344966; border-color: #a4b494; color: white;">
+                    <i class="fas fa-edit me-2"></i>Update Information
+                  </button>
                 </div>
               </form>
             </div>
@@ -278,73 +309,47 @@
 
       <!-- Third Row: Loyalty Status and Contact Preferences -->
       <div class="row g-4">
-        <!-- Loyalty Status Card -->
-        <div class="col-md-6">
-          <div class="card">
-            <div class="card-header">
-              <h5>Loyalty Status</h5>
-            </div>
-            <div class="card-body">
-              <div class="text-center mb-3">
-                <h5>Gold Member</h5>
-                <div class="progress" style="height: 10px;">
-                  <div class="progress-bar bg-warning" role="progressbar" style="width: 75%;" 
-                       aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <small class="text-muted">150 more points until Platinum</small>
-              </div>
-              <div class="d-flex justify-content-between mb-2">
-                <span>Total Points:</span>
-                <span class="fw-bold">350</span>
-              </div>
-              <div class="d-flex justify-content-between">
-                <span>Available Rewards:</span>
-                <span class="fw-bold">3</span>
-              </div>
-              <button class="btn btn-outline-primary btn-sm w-100 mt-3">
-                <i class="fas fa-gift me-2"></i>View Rewards
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Contact Preferences Card -->
-        <div class="col-md-6">
+        <!-- Contact Preferences Card - Full Width -->
+        <div class="col-md-12">
           <div class="card">
             <div class="card-header">
               <h5>Contact Preferences</h5>
             </div>
             <div class="card-body">
-              <div class="mb-3">
-                <div class="form-check form-switch">
-                  <input class="form-check-input" type="checkbox" id="emailNotifications" checked>
-                  <label class="form-check-label" for="emailNotifications">
-                    Email Notifications
-                  </label>
+              <div class="row">
+                <div class="col-md-4 mb-3">
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="emailNotifications" checked>
+                    <label class="form-check-label" for="emailNotifications">
+                      <strong>Email Notifications</strong>
+                    </label>
+                  </div>
+                  <small class="text-muted">Receive service reminders, special offers and updates</small>
                 </div>
-                <small class="text-muted">Receive service reminders, special offers and updates</small>
-              </div>
-              <div class="mb-3">
-                <div class="form-check form-switch">
-                  <input class="form-check-input" type="checkbox" id="smsNotifications" checked>
-                  <label class="form-check-label" for="smsNotifications">
-                    SMS Notifications
-                  </label>
+                <div class="col-md-4 mb-3">
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="smsNotifications" checked>
+                    <label class="form-check-label" for="smsNotifications">
+                      <strong>SMS Notifications</strong>
+                    </label>
+                  </div>
+                  <small class="text-muted">Receive text alerts about your service appointments</small>
                 </div>
-                <small class="text-muted">Receive text alerts about your service appointments</small>
-              </div>
-              <div class="mb-3">
-                <div class="form-check form-switch">
-                  <input class="form-check-input" type="checkbox" id="marketingEmails">
-                  <label class="form-check-label" for="marketingEmails">
-                    Marketing Emails
-                  </label>
+                <div class="col-md-4 mb-3">
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="marketingEmails">
+                    <label class="form-check-label" for="marketingEmails">
+                      <strong>Marketing Emails</strong>
+                    </label>
+                  </div>
+                  <small class="text-muted">Receive promotional offers and newsletters</small>
                 </div>
-                <small class="text-muted">Receive promotional offers and newsletters</small>
               </div>
-              <button class="btn btn-primary btn-sm w-100 mt-3">
-                <i class="fas fa-save me-2"></i>Save Preferences
-              </button>
+              <div class="text-center mt-3">
+                <button class="btn btn-primary">
+                  <i class="fas fa-save me-2"></i>Save Preferences
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -355,13 +360,152 @@
   <!-- Add JavaScript for form editing -->
   <script>
     document.addEventListener('DOMContentLoaded', function() {
-      // Profile editing functionality
+      const API_BASE_URL = 'http://localhost:8001';
+      let userProfile = null;
+      
+      // Check if user is logged in
+      const token = localStorage.getItem('access_token');
+      if (!token) {
+        window.location.href = 'sign-in.html';
+        return;
+      }
+      
+      // Load user profile data
+      async function loadUserProfile() {
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/customer/profile`, {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          });
+          
+          if (response.status === 401) {
+            localStorage.removeItem('access_token');
+            window.location.href = 'sign-in.html';
+            return;
+          }
+          
+          if (!response.ok) {
+            throw new Error('Failed to load profile');
+          }
+          
+          userProfile = await response.json();
+          populateProfileData(userProfile);
+          
+        } catch (error) {
+          console.error('Error loading profile:', error);
+          showAlert('Error loading profile data', 'danger');
+        }
+      }
+      
+      // Populate form with profile data
+      function populateProfileData(profile) {
+        // Update profile name and member since
+        document.getElementById('profile-name').textContent = `${profile.first_name} ${profile.last_name}`;
+        document.getElementById('member-since').textContent = `Customer since ${profile.member_since}`;
+        document.getElementById('nav-profile-name').textContent = `${profile.first_name} ${profile.last_name}`;
+        document.getElementById('nav-member-since').textContent = `Customer since ${profile.member_since}`;
+        
+        // Populate form fields
+        document.getElementById('firstName').value = profile.first_name || '';
+        document.getElementById('lastName').value = profile.last_name || '';
+        document.getElementById('email').value = profile.email || '';
+        document.getElementById('phone').value = profile.phone || '';
+        document.getElementById('address_line_1').value = profile.address_line_1 || '';
+        document.getElementById('address_line_2').value = profile.address_line_2 || '';
+        document.getElementById('city').value = profile.city || '';
+        document.getElementById('province').value = profile.province || '';
+        document.getElementById('postal_code').value = profile.postal_code || '';
+        document.getElementById('country').value = profile.country || '';
+        
+        // Reset password fields
+        document.getElementById('currentPassword').value = '';
+        document.getElementById('newPassword').value = '';
+      }
+      
+      // Save profile data
+      async function saveProfileData() {
+        try {
+          const formData = {
+            first_name: document.getElementById('firstName').value,
+            last_name: document.getElementById('lastName').value,
+            email: document.getElementById('email').value,
+            phone: document.getElementById('phone').value,
+            address_line_1: document.getElementById('address_line_1').value,
+            address_line_2: document.getElementById('address_line_2').value,
+            city: document.getElementById('city').value,
+            province: document.getElementById('province').value,
+            postal_code: document.getElementById('postal_code').value,
+            country: document.getElementById('country').value
+          };
+          
+          // Check if user wants to change password
+          const currentPassword = document.getElementById('currentPassword').value;
+          const newPassword = document.getElementById('newPassword').value;
+          
+          if (currentPassword || newPassword) {
+            if (!currentPassword) {
+              showAlert('Please enter your current password', 'warning');
+              return;
+            }
+            if (!newPassword) {
+              showAlert('Please enter a new password', 'warning');
+              return;
+            }
+            formData.current_password = currentPassword;
+            formData.new_password = newPassword;
+          }
+          
+          const response = await fetch(`${API_BASE_URL}/api/customer/profile`, {
+            method: 'PUT',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+          });
+          
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.detail || 'Failed to save profile');
+          }
+          
+          // Update local profile data
+          userProfile = { ...userProfile, ...formData };
+          populateProfileData(userProfile);
+          
+          showAlert('Profile updated successfully!', 'success');
+          
+        } catch (error) {
+          console.error('Error saving profile:', error);
+          showAlert(error.message || 'Error saving profile data', 'danger');
+        }
+      }
+      
+      // Show alert message
+      function showAlert(message, type) {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `alert alert-${type} mt-3 fade show`;
+        alertDiv.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>${message}`;
+        
+        const form = document.getElementById('profile-form');
+        form.appendChild(alertDiv);
+        
+        setTimeout(() => {
+          alertDiv.classList.remove('show');
+          setTimeout(() => alertDiv.remove(), 300);
+        }, 3000);
+      }
+      
+      // Profile editing functionality with updated button text
       const editButton = document.querySelector('.edit-btn');
-      const formInputs = document.querySelectorAll('.card-body form input');
+      const formInputs = document.querySelectorAll('#profile-form input');
       
       if (editButton && formInputs.length > 0) {
-        editButton.addEventListener('click', function() {
-          const isEditing = this.textContent === 'Edit';
+        editButton.addEventListener('click', async function() {
+          const isEditing = this.innerHTML.includes('Update Information');
           
           if (isEditing) {
             // Enable form fields
@@ -369,35 +513,110 @@
               input.disabled = false;
               input.classList.add('border-primary');
             });
-            this.textContent = 'Save';
-            this.classList.replace('btn-primary', 'btn-success');
+            this.innerHTML = '<i class="fas fa-save me-2"></i>Save Changes';
+            this.classList.add('btn-success');
+            this.style.backgroundColor = '#28a745';
+            this.style.borderColor = '#28a745';
           } else {
-            // Disable form fields and "save" changes
+            // Save changes
+            this.disabled = true;
+            this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving...';
+            
+            await saveProfileData();
+            
+            // Disable form fields
             formInputs.forEach(input => {
               input.disabled = true;
               input.classList.remove('border-primary');
             });
-            this.textContent = 'Edit';
-            this.classList.replace('btn-success', 'btn-primary');
-            
-            // Show save confirmation
-            const alertDiv = document.createElement('div');
-            alertDiv.className = 'alert alert-success mt-3 fade show';
-            alertDiv.innerHTML = '<i class="fas fa-check-circle me-2"></i>Your profile information has been updated.';
-            
-            const form = document.querySelector('.card-body form');
-            form.appendChild(alertDiv);
-            
-            // Remove alert after 3 seconds
-            setTimeout(() => {
-              alertDiv.classList.remove('show');
-              setTimeout(() => alertDiv.remove(), 300);
-            }, 3000);
+            this.innerHTML = '<i class="fas fa-edit me-2"></i>Update Information';
+            this.classList.remove('btn-success');
+            this.style.backgroundColor = '#344966';
+            this.style.borderColor = '#a4b494';
+            this.disabled = false;
           }
         });
       }
+      
+      // Load profile data on page load
+      loadUserProfile();
     });
   </script>
+
+  <!-- Add this CSS to enhance the placeholder styling -->
+  <style>
+    .edit-btn {
+      background-color: #344966 !important;
+      border-color: #a4b494 !important;
+      color: white !important;
+      font-weight: 500;
+      padding: 8px 20px;
+      border-radius: 6px;
+      transition: all 0.3s ease;
+    }
+
+    .edit-btn:hover {
+      background-color: #2a3b52 !important;
+      border-color: #8fa084 !important;
+      color: white !important;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(52, 73, 102, 0.3);
+    }
+
+    .edit-btn:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 4px rgba(52, 73, 102, 0.3);
+    }
+
+    .edit-btn.btn-success {
+      background-color: #28a745 !important;
+      border-color: #28a745 !important;
+    }
+
+    .edit-btn.btn-success:hover {
+      background-color: #218838 !important;
+      border-color: #1e7e34 !important;
+    }
+
+    /* Enhanced placeholder styling */
+    .form-control::placeholder {
+      color: #6c757d;
+      opacity: 0.8;
+      font-weight: 500;
+    }
+
+    .form-control:disabled {
+      background-color: #f8f9fa;
+      border-color: #dee2e6;
+      color: #495057;
+    }
+
+    .form-control:disabled::placeholder {
+      color: #6c757d;
+      opacity: 0.6;
+    }
+
+    .form-control:not(:disabled) {
+      border-color: #344966;
+      box-shadow: 0 0 0 0.2rem rgba(52, 73, 102, 0.25);
+    }
+
+    .form-control:not(:disabled):focus {
+      border-color: #2a3b52;
+      box-shadow: 0 0 0 0.2rem rgba(52, 73, 102, 0.35);
+    }
+
+    /* Better spacing for the form */
+    #profile-form .row {
+      margin-bottom: 1rem;
+    }
+
+    #profile-form .form-control {
+      padding: 12px 15px;
+      font-size: 14px;
+      border-radius: 8px;
+    }
+  </style>
 </body>
 
 </html>
