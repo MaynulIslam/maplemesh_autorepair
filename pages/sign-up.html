@@ -883,6 +883,55 @@
                 select.value = '';
             }
 
+            // Add these functions to your script section
+            async function handleCustomerRegistration(formData) {
+                try {
+                    const response = await fetch('http://localhost:8001/api/auth/register/customer', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(formData)
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        alert('Registration successful! Please sign in with your credentials.');
+                        window.location.href = 'sign-in.html';
+                    } else {
+                        const errorData = await response.json();
+                        alert('Registration failed: ' + errorData.detail);
+                    }
+                } catch (error) {
+                    console.error('Registration error:', error);
+                    alert('Registration failed. Please try again.');
+                }
+            }
+
+            async function handleTechnicianRegistration(formData) {
+                try {
+                    const response = await fetch('http://localhost:8001/api/auth/register/technician', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(formData)
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        alert('Registration successful! Please sign in with your credentials.');
+                        window.location.href = 'sign-in.html';
+                    } else {
+                        const errorData = await response.json();
+                        alert('Registration failed: ' + errorData.detail);
+                    }
+                } catch (error) {
+                    console.error('Registration error:', error);
+                    alert('Registration failed. Please try again.');
+                }
+            }
+
             // Form switching logic and all other existing functionality...
             // (Include all your existing JavaScript code here)
         });

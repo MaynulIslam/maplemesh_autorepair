@@ -288,25 +288,17 @@ class CheckResponse(BaseModel):
     exists: bool
 
 # Add these endpoints before your existing endpoints
-@app.post("/api/auth/check-email", response_model=CheckResponse)
-async def check_email_exists(request: EmailCheckRequest):
-    """Check if email already exists in database"""
-    try:
-        existing_user = user_auth_collection.find_one({"email": request.email})
-        return CheckResponse(exists=existing_user is not None)
-    except Exception as e:
-        logging.error(f"Email check error: {e}")
-        raise HTTPException(status_code=500, detail="Internal server error")
+@app.post("/api/auth/check-email")
+async def check_email_exists(email_check: dict):
+    email = email_check.get("email")
+    existing_user = user_auth_collection.find_one({"email": email})
+    return {"exists": existing_user is not None}
 
-@app.post("/api/auth/check-username", response_model=CheckResponse)
-async def check_username_exists(request: UsernameCheckRequest):
-    """Check if username already exists in database"""
-    try:
-        existing_user = user_auth_collection.find_one({"username": request.username})
-        return CheckResponse(exists=existing_user is not None)
-    except Exception as e:
-        logging.error(f"Username check error: {e}")
-        raise HTTPException(status_code=500, detail="Internal server error")
+@app.post("/api/auth/check-username")
+async def check_username_exists(username_check: dict):
+    username = username_check.get("username")
+    existing_user = user_auth_collection.find_one({"username": username})
+    return {"exists": existing_user is not None}
 
 # Add these models for profile management
 class ProfileUpdateRequest(BaseModel):
