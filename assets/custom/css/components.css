@@ -1,0 +1,355 @@
+/* Component Base Styles */
+.component-wrapper {
+  position: relative;
+}
+
+.component-loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Card Component Styles */
+.dashboard-card {
+  transition: all 0.3s ease;
+  border: 1px solid #dee2e6;
+  border-radius: 0.375rem;
+}
+
+.dashboard-card:hover {
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.dashboard-card .card-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dashboard-card .card-header h6 {
+  font-weight: 600;
+  letter-spacing: 0.025em;
+}
+
+/* Data Table Component Styles */
+.data-table-wrapper {
+  overflow-x: auto;
+}
+
+.data-table {
+  min-width: 100%;
+}
+
+.data-table th {
+  font-weight: 600;
+  font-size: 0.875rem;
+  padding: 0.5rem;
+  border: 1px solid #dee2e6;
+}
+
+.data-table td {
+  padding: 0.5rem;
+  font-size: 0.875rem;
+  border: 1px solid #dee2e6;
+}
+
+/* Checkbox List Component Styles */
+.checkbox-list-wrapper {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.checkbox-list .form-check {
+  padding-left: 1.5em;
+}
+
+.checkbox-list .form-check-input {
+  margin-top: 0.25rem;
+}
+
+.checkbox-list .form-check-label {
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+/* Job Listing Component Styles */
+.job-listing-wrapper {
+  border: 1px solid #e9ecef;
+  border-radius: 0.375rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+}
+
+.job-listing .btn-group {
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.job-listing .pagination {
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+/* Activity List Component Styles */
+.activity-list li {
+  padding: 0.25rem 0;
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.activity-list li i {
+  width: 1.2em;
+  margin-right: 0.5rem;
+}
+
+/* Technician Profile Styles */
+.skill-item {
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 1rem;
+}
+
+.skill-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.star-rating {
+  display: flex;
+  gap: 2px;
+}
+
+.star-rating i {
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.star-rating i:hover {
+  transform: scale(1.1);
+}
+
+.certificate-item {
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  background-color: #f8f9fa;
+  margin-bottom: 0.5rem;
+}
+
+.certificate-icon {
+  width: 24px;
+  text-align: center;
+}
+
+.verification-icons i {
+  font-size: 1.2rem;
+}
+
+/* Wallet Styles */
+.wallet-balance {
+  color: #2c3e50;
+  font-weight: 700;
+}
+
+.earning-count {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.earning-label {
+  color: #6c757d;
+  font-size: 0.875rem;
+}
+
+.earning-icon {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Tab Navigation Styles */
+.nav-tabs {
+  border-bottom: 2px solid #dee2e6;
+}
+
+.nav-tabs .nav-link {
+  border: none;
+  background: none;
+  color: #6c757d;
+  font-weight: 500;
+  padding: 1rem 2rem;
+  margin-bottom: -2px;
+  border-bottom: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.nav-tabs .nav-link:hover {
+  color: #0d6efd;
+  border-color: transparent;
+  background-color: #f8f9fa;
+}
+
+.nav-tabs .nav-link.active {
+  color: #0d6efd;
+  background-color: #0d6efd;
+  color: white;
+  border-color: #0d6efd;
+  border-radius: 0.375rem 0.375rem 0 0;
+}
+
+/* Transaction Table Styles */
+.table th {
+  background-color: #f8f9fa;
+  border-top: none;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: #495057;
+  padding: 1rem 0.75rem;
+}
+
+.table td {
+  padding: 1rem 0.75rem;
+  vertical-align: middle;
+}
+
+/* Search Box Styles */
+.search-box {
+  position: relative;
+  width: 250px;
+}
+
+.search-box input {
+  padding-right: 2.5rem;
+  border: 1px solid #ced4da;
+  border-radius: 0.375rem;
+}
+
+.search-box i {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6c757d;
+}
+
+/* Avatar Styles */
+.avatar-circle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid #e9ecef;
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Badge Styles */
+.badge {
+  font-size: 0.75rem;
+  padding: 0.5em 0.75em;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .dashboard-card .card-header {
+    flex-direction: column;
+    align-items: flex-start !important;
+  }
+
+  .dashboard-card .card-header .btn {
+    margin-top: 0.5rem;
+  }
+
+  .job-listing .d-flex {
+    flex-direction: column;
+  }
+
+  .job-listing .btn {
+    margin-bottom: 0.25rem;
+  }
+
+  .nav-tabs .nav-link {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+  }
+
+  .search-box {
+    width: 200px;
+  }
+
+  .wallet-balance {
+    font-size: 1.5rem;
+  }
+
+  .earning-count {
+    font-size: 1.5rem;
+  }
+
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start !important;
+  }
+
+  .card-header .search-box {
+    margin-top: 1rem;
+    width: 100%;
+  }
+}
+
+@media (max-width: 576px) {
+  .nav-tabs {
+    flex-wrap: wrap;
+  }
+
+  .nav-tabs .nav-link {
+    flex: 1;
+    text-align: center;
+    min-width: 120px;
+  }
+
+  .table-responsive {
+    font-size: 0.875rem;
+  }
+
+  .btn-group {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .btn-group .btn {
+    margin-bottom: 0.25rem;
+  }
+}
+
+/* Animation Classes */
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slide-up {
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

@@ -1,0 +1,836 @@
+<!--
+=========================================================
+* MapleMesh AutoRepair Dashboard - v2.1.0
+=========================================================
+* Last Updated: July 28, 2025
+* Developed by MapleMesh Development Team
+=========================================================
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>MapleMesh AutoRepair - Technician Jobs</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome -->
+    <script
+      src="https://kit.fontawesome.com/42d5adcbca.js"
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Custom CSS -->
+    <link href="../assets/custom/css/style.css" rel="stylesheet" />
+    <link href="../assets/custom/css/components.css" rel="stylesheet" />
+  </head>
+
+  <body class="bg-gray-100">
+    <!-- ===================== HEADER / NAVIGATION BAR ===================== -->
+    <header>
+      <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+          <!-- Brand -->
+          <a
+            class="navbar-brand fw-bold me-3 d-flex flex-column align-items-start p-0"
+            href="technician_dashboard.html"
+          >
+            <span>MapleMesh</span>
+            <span>AutoRepair</span>
+          </a>
+
+          <!-- Left-side Navigation Links -->
+          <div class="navbar-nav d-none d-lg-flex me-auto">
+            <a class="nav-link fw-bold" href="technician_dashboard.html"
+              >Dashboard</a
+            >
+            <a class="nav-link fw-bold active" href="technician_jobs.html"
+              >Jobs</a
+            >
+            <a class="nav-link fw-bold" href="technician_schedule.html"
+              >Schedule</a
+            >
+          </div>
+
+          <!-- Welcome Message (Center) -->
+          <div
+            class="navbar-text d-none d-lg-block mx-auto text-center text-white"
+          >
+            <h4 class="mb-0 fw-bold">Job Management</h4>
+            <small>Manage Your Service Requests</small>
+          </div>
+
+          <!-- Right-side Navigation Links -->
+          <div class="collapse navbar-collapse flex-grow-0" id="mainNavbar">
+            <ul class="navbar-nav align-items-center">
+              <li class="nav-item dropdown hover-dropdown">
+                <a
+                  class="nav-link fw-bold"
+                  href="technician_profile.html"
+                  id="profileLink"
+                  >Profile</a
+                >
+                <div
+                  class="dropdown-menu dropdown-menu-end"
+                  aria-labelledby="profileLink"
+                >
+                  <div class="dropdown-header d-flex align-items-center p-3">
+                    <div class="avatar-circle me-3">
+                      <img
+                        src="../assets/img/avatar-placeholder.jpg"
+                        alt="Profile"
+                        class="avatar-img"
+                      />
+                    </div>
+                    <div>
+                      <h6 class="mb-0" id="tech-name">Loading...</h6>
+                      <small class="text-muted" id="tech-id">Loading...</small>
+                    </div>
+                  </div>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="technician_profile.html">
+                    <i class="fas fa-user me-2 text-primary"></i>My Profile
+                  </a>
+                  <a class="dropdown-item" href="technician_wallet.html">
+                    <i class="fas fa-wallet me-2 text-primary"></i>Wallet
+                  </a>
+                  <a class="dropdown-item" href="technician_jobs.html">
+                    <i class="fas fa-history me-2 text-primary"></i>Job History
+                  </a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="#">
+                    <i class="fas fa-question-circle me-2 text-primary"></i>Help
+                    & Support
+                  </a>
+                  <a class="dropdown-item" href="../index.html">
+                    <i class="fas fa-sign-out-alt me-2 text-danger"></i>Sign Out
+                  </a>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Mobile Toggle Button -->
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#mainNavbar"
+            aria-controls="mainNavbar"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        </div>
+      </nav>
+    </header>
+    <!-- ===================== END HEADER / NAVIGATION BAR ===================== -->
+
+    <!-- Tab Navigation -->
+    <div class="content-wrapper">
+      <div class="container-fluid py-3">
+        <ul
+          class="nav nav-tabs justify-content-center mb-4"
+          id="jobTabs"
+          role="tablist"
+        >
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="dashboard-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#dashboard"
+              type="button"
+              role="tab"
+              onclick="location.href='technician_dashboard.html'"
+            >
+              Dashboard
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link active"
+              id="jobs-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#jobs"
+              type="button"
+              role="tab"
+            >
+              Jobs
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="schedule-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#schedule"
+              type="button"
+              role="tab"
+              onclick="location.href='technician_schedule.html'"
+            >
+              Schedule
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="profile-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#profile"
+              type="button"
+              role="tab"
+              onclick="location.href='technician_profile.html'"
+            >
+              Profile
+            </button>
+          </li>
+        </ul>
+
+        <!-- Job Status Overview -->
+        <div class="row g-4 mb-4">
+          <div class="col-md-3">
+            <div class="card h-100">
+              <div class="card-body text-center">
+                <div class="earning-icon mb-3">
+                  <i class="fas fa-clock fa-2x text-warning"></i>
+                </div>
+                <h6 class="text-primary mb-2">Pending Jobs</h6>
+                <h3 class="earning-count mb-1" id="pending-count">0</h3>
+                <p class="earning-label mb-0">Awaiting Acceptance</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-3">
+            <div class="card h-100">
+              <div class="card-body text-center">
+                <div class="earning-icon mb-3">
+                  <i class="fas fa-play fa-2x text-primary"></i>
+                </div>
+                <h6 class="text-primary mb-2">Active Jobs</h6>
+                <h3 class="earning-count mb-1" id="active-count">0</h3>
+                <p class="earning-label mb-0">In Progress</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-3">
+            <div class="card h-100">
+              <div class="card-body text-center">
+                <div class="earning-icon mb-3">
+                  <i class="fas fa-check fa-2x text-success"></i>
+                </div>
+                <h6 class="text-primary mb-2">Completed</h6>
+                <h3 class="earning-count mb-1" id="completed-count">0</h3>
+                <p class="earning-label mb-0">This Month</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-3">
+            <div class="card h-100">
+              <div class="card-body text-center">
+                <div class="earning-icon mb-3">
+                  <i class="fas fa-dollar-sign fa-2x text-success"></i>
+                </div>
+                <h6 class="text-primary mb-2">Total Earnings</h6>
+                <h3 class="earning-count mb-1" id="earnings-total">$0</h3>
+                <p class="earning-label mb-0">This Month</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Job Filters -->
+        <div class="row mb-4">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                <div class="row align-items-center">
+                  <div class="col-md-3">
+                    <select class="form-select" id="job-status-filter">
+                      <option value="">All Statuses</option>
+                      <option value="pending">Pending</option>
+                      <option value="accepted">Accepted</option>
+                      <option value="in_progress">In Progress</option>
+                      <option value="completed">Completed</option>
+                      <option value="cancelled">Cancelled</option>
+                    </select>
+                  </div>
+                  <div class="col-md-3">
+                    <select class="form-select" id="service-type-filter">
+                      <option value="">All Services</option>
+                      <option value="oil_change">Oil Change</option>
+                      <option value="brake_repair">Brake Repair</option>
+                      <option value="tire_service">Tire Service</option>
+                      <option value="engine_diagnostic">
+                        Engine Diagnostic
+                      </option>
+                      <option value="ac_service">A/C Service</option>
+                    </select>
+                  </div>
+                  <div class="col-md-3">
+                    <input
+                      type="date"
+                      class="form-control"
+                      id="date-filter"
+                      placeholder="Filter by date"
+                    />
+                  </div>
+                  <div class="col-md-3">
+                    <div class="search-box">
+                      <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Search jobs..."
+                        id="job-search"
+                      />
+                      <i class="fas fa-search"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Jobs Table -->
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div
+                class="card-header d-flex justify-content-between align-items-center"
+              >
+                <h5 class="mb-0">Job Requests</h5>
+                <div class="d-flex gap-2">
+                  <button
+                    class="btn btn-primary btn-sm"
+                    onclick="refreshJobs()"
+                  >
+                    <i class="fas fa-refresh me-1"></i>Refresh
+                  </button>
+                  <button
+                    class="btn btn-success btn-sm"
+                    onclick="acceptAllPending()"
+                  >
+                    <i class="fas fa-check-double me-1"></i>Accept All Pending
+                  </button>
+                </div>
+              </div>
+              <div class="card-body p-0">
+                <div class="table-responsive">
+                  <table
+                    class="table table-hover align-middle mb-0"
+                    id="jobs-table"
+                  >
+                    <thead>
+                      <tr>
+                        <th>JOB ID</th>
+                        <th>DATE</th>
+                        <th>CUSTOMER</th>
+                        <th>VEHICLE</th>
+                        <th>SERVICE</th>
+                        <th>LOCATION</th>
+                        <th>PRICE</th>
+                        <th>STATUS</th>
+                        <th>ACTIONS</th>
+                      </tr>
+                    </thead>
+                    <tbody id="jobs-table-body">
+                      <tr>
+                        <td colspan="9" class="text-center py-4">
+                          <div
+                            class="spinner-border text-primary"
+                            role="status"
+                          >
+                            <span class="visually-hidden">Loading...</span>
+                          </div>
+                          <p class="mt-2 text-muted">Loading jobs...</p>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="p-3 border-top" id="pagination-container">
+                  <div
+                    class="d-flex justify-content-between align-items-center"
+                  >
+                    <small class="text-muted" id="pagination-info"
+                      >Loading...</small
+                    >
+                    <nav aria-label="Jobs pagination">
+                      <ul
+                        class="pagination pagination-sm mb-0"
+                        id="pagination-nav"
+                      >
+                        <!-- Pagination will be generated here -->
+                      </ul>
+                    </nav>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Job Details Modal -->
+    <div class="modal fade" id="jobDetailsModal" tabindex="-1">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Job Details</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body" id="job-details-content">
+            <!-- Job details will be loaded here -->
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
+            <div id="job-action-buttons">
+              <!-- Action buttons will be added here based on job status -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle (includes Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script>
+      let currentJobs = [];
+      let currentPage = 1;
+      const jobsPerPage = 10;
+
+      document.addEventListener("DOMContentLoaded", function () {
+        loadTechnicianProfile();
+        loadJobs();
+        bindEventListeners();
+      });
+
+      async function loadTechnicianProfile() {
+        try {
+          const token = localStorage.getItem("access_token");
+          if (!token) {
+            window.location.href = "sign-in.html";
+            return;
+          }
+
+          const response = await fetch(
+            "http://localhost:8001/api/technician/profile",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          if (response.ok) {
+            const profile = await response.json();
+            document.getElementById(
+              "tech-name"
+            ).textContent = `${profile.first_name} ${profile.last_name}`;
+            document.getElementById(
+              "tech-id"
+            ).textContent = `ID: ${profile.technician_id}`;
+          }
+        } catch (error) {
+          console.error("Error loading profile:", error);
+        }
+      }
+
+      async function loadJobs() {
+        try {
+          const token = localStorage.getItem("access_token");
+          const response = await fetch(
+            "http://localhost:8001/api/technician/jobs",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          if (response.ok) {
+            currentJobs = await response.json();
+            updateJobCounts();
+            renderJobsTable();
+          } else {
+            throw new Error("Failed to load jobs");
+          }
+        } catch (error) {
+          console.error("Error loading jobs:", error);
+          document.getElementById("jobs-table-body").innerHTML = `
+          <tr>
+            <td colspan="9" class="text-center py-4 text-danger">
+              <i class="fas fa-exclamation-triangle"></i>
+              <p class="mt-2">Failed to load jobs. Please try again.</p>
+            </td>
+          </tr>
+        `;
+        }
+      }
+
+      function updateJobCounts() {
+        const pending = currentJobs.filter(
+          (job) => job.status === "pending"
+        ).length;
+        const active = currentJobs.filter((job) =>
+          ["accepted", "in_progress"].includes(job.status)
+        ).length;
+        const completed = currentJobs.filter(
+          (job) => job.status === "completed"
+        ).length;
+        const earnings = currentJobs
+          .filter((job) => job.status === "completed")
+          .reduce((sum, job) => sum + (job.price || 0), 0);
+
+        document.getElementById("pending-count").textContent = pending;
+        document.getElementById("active-count").textContent = active;
+        document.getElementById("completed-count").textContent = completed;
+        document.getElementById(
+          "earnings-total"
+        ).textContent = `$${earnings.toFixed(2)}`;
+      }
+
+      function renderJobsTable() {
+        const filteredJobs = filterJobs();
+        const startIndex = (currentPage - 1) * jobsPerPage;
+        const endIndex = startIndex + jobsPerPage;
+        const pageJobs = filteredJobs.slice(startIndex, endIndex);
+
+        const tbody = document.getElementById("jobs-table-body");
+
+        if (pageJobs.length === 0) {
+          tbody.innerHTML = `
+          <tr>
+            <td colspan="9" class="text-center py-4">
+              <i class="fas fa-clipboard-list fa-3x text-muted mb-3"></i>
+              <p class="text-muted">No jobs found matching your criteria</p>
+            </td>
+          </tr>
+        `;
+          return;
+        }
+
+        tbody.innerHTML = pageJobs
+          .map(
+            (job) => `
+        <tr>
+          <td>#${job.job_id}</td>
+          <td>${new Date(job.created_at).toLocaleDateString()}</td>
+          <td>${job.customer_name}</td>
+          <td>${job.vehicle_make} ${job.vehicle_model}</td>
+          <td>${job.service_type}</td>
+          <td>${job.location}</td>
+          <td>$${job.price?.toFixed(2) || "TBD"}</td>
+          <td>${getStatusBadge(job.status)}</td>
+          <td>${getActionButtons(job)}</td>
+        </tr>
+      `
+          )
+          .join("");
+
+        updatePagination(filteredJobs.length);
+      }
+
+      function getStatusBadge(status) {
+        const badges = {
+          pending: '<span class="badge bg-warning">Pending</span>',
+          accepted: '<span class="badge bg-info">Accepted</span>',
+          in_progress: '<span class="badge bg-primary">In Progress</span>',
+          completed: '<span class="badge bg-success">Completed</span>',
+          cancelled: '<span class="badge bg-danger">Cancelled</span>',
+        };
+        return (
+          badges[status] || '<span class="badge bg-secondary">Unknown</span>'
+        );
+      }
+
+      function getActionButtons(job) {
+        const baseButtons = `<button class="btn btn-outline-secondary btn-sm me-1" onclick="viewJobDetails('${job.job_id}')">
+        <i class="fas fa-eye"></i>
+      </button>`;
+
+        switch (job.status) {
+          case "pending":
+            return (
+              baseButtons +
+              `
+            <button class="btn btn-success btn-sm me-1" onclick="acceptJob('${job.job_id}')">
+              <i class="fas fa-check"></i>
+            </button>
+            <button class="btn btn-danger btn-sm" onclick="declineJob('${job.job_id}')">
+              <i class="fas fa-times"></i>
+            </button>
+          `
+            );
+          case "accepted":
+            return (
+              baseButtons +
+              `
+            <button class="btn btn-primary btn-sm" onclick="startJob('${job.job_id}')">
+              <i class="fas fa-play"></i>
+            </button>
+          `
+            );
+          case "in_progress":
+            return (
+              baseButtons +
+              `
+            <button class="btn btn-success btn-sm" onclick="completeJob('${job.job_id}')">
+              <i class="fas fa-check-circle"></i>
+            </button>
+          `
+            );
+          default:
+            return baseButtons;
+        }
+      }
+
+      function filterJobs() {
+        const statusFilter = document.getElementById("job-status-filter").value;
+        const serviceFilter = document.getElementById(
+          "service-type-filter"
+        ).value;
+        const dateFilter = document.getElementById("date-filter").value;
+        const searchFilter = document
+          .getElementById("job-search")
+          .value.toLowerCase();
+
+        return currentJobs.filter((job) => {
+          const matchesStatus = !statusFilter || job.status === statusFilter;
+          const matchesService =
+            !serviceFilter || job.service_type === serviceFilter;
+          const matchesDate =
+            !dateFilter || job.created_at.startsWith(dateFilter);
+          const matchesSearch =
+            !searchFilter ||
+            job.customer_name.toLowerCase().includes(searchFilter) ||
+            job.vehicle_make.toLowerCase().includes(searchFilter) ||
+            job.service_type.toLowerCase().includes(searchFilter);
+
+          return (
+            matchesStatus && matchesService && matchesDate && matchesSearch
+          );
+        });
+      }
+
+      function updatePagination(totalItems) {
+        const totalPages = Math.ceil(totalItems / jobsPerPage);
+        const paginationInfo = document.getElementById("pagination-info");
+        const paginationNav = document.getElementById("pagination-nav");
+
+        const startItem = (currentPage - 1) * jobsPerPage + 1;
+        const endItem = Math.min(currentPage * jobsPerPage, totalItems);
+
+        paginationInfo.textContent = `Showing ${startItem}-${endItem} of ${totalItems} jobs`;
+
+        if (totalPages <= 1) {
+          paginationNav.innerHTML = "";
+          return;
+        }
+
+        let paginationHTML = "";
+        for (let i = 1; i <= totalPages; i++) {
+          paginationHTML += `
+          <li class="page-item ${i === currentPage ? "active" : ""}">
+            <a class="page-link" href="#" onclick="changePage(${i})">${i}</a>
+          </li>
+        `;
+        }
+
+        paginationNav.innerHTML = paginationHTML;
+      }
+
+      function changePage(page) {
+        currentPage = page;
+        renderJobsTable();
+      }
+
+      function bindEventListeners() {
+        // Filter event listeners
+        document
+          .getElementById("job-status-filter")
+          .addEventListener("change", () => {
+            currentPage = 1;
+            renderJobsTable();
+          });
+
+        document
+          .getElementById("service-type-filter")
+          .addEventListener("change", () => {
+            currentPage = 1;
+            renderJobsTable();
+          });
+
+        document
+          .getElementById("date-filter")
+          .addEventListener("change", () => {
+            currentPage = 1;
+            renderJobsTable();
+          });
+
+        document.getElementById("job-search").addEventListener(
+          "input",
+          debounce(() => {
+            currentPage = 1;
+            renderJobsTable();
+          }, 300)
+        );
+      }
+
+      function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+          const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+          };
+          clearTimeout(timeout);
+          timeout = setTimeout(later, wait);
+        };
+      }
+
+      // Job action functions
+      async function acceptJob(jobId) {
+        await updateJobStatus(jobId, "accepted");
+      }
+
+      async function declineJob(jobId) {
+        await updateJobStatus(jobId, "declined");
+      }
+
+      async function startJob(jobId) {
+        await updateJobStatus(jobId, "in_progress");
+      }
+
+      async function completeJob(jobId) {
+        await updateJobStatus(jobId, "completed");
+      }
+
+      async function updateJobStatus(jobId, status) {
+        try {
+          const token = localStorage.getItem("access_token");
+          const response = await fetch(
+            `http://localhost:8001/api/technician/jobs/${jobId}/status`,
+            {
+              method: "PUT",
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ status }),
+            }
+          );
+
+          if (response.ok) {
+            await loadJobs(); // Refresh the jobs list
+          } else {
+            throw new Error("Failed to update job status");
+          }
+        } catch (error) {
+          console.error("Error updating job status:", error);
+          alert("Failed to update job status. Please try again.");
+        }
+      }
+
+      async function viewJobDetails(jobId) {
+        const job = currentJobs.find((j) => j.job_id === jobId);
+        if (!job) return;
+
+        document.getElementById("job-details-content").innerHTML = `
+        <div class="row">
+          <div class="col-md-6">
+            <h6>Job Information</h6>
+            <p><strong>Job ID:</strong> #${job.job_id}</p>
+            <p><strong>Service:</strong> ${job.service_type}</p>
+            <p><strong>Date Created:</strong> ${new Date(
+              job.created_at
+            ).toLocaleString()}</p>
+            <p><strong>Status:</strong> ${getStatusBadge(job.status)}</p>
+            <p><strong>Price:</strong> $${job.price?.toFixed(2) || "TBD"}</p>
+          </div>
+          <div class="col-md-6">
+            <h6>Customer & Vehicle</h6>
+            <p><strong>Customer:</strong> ${job.customer_name}</p>
+            <p><strong>Phone:</strong> ${job.customer_phone || "N/A"}</p>
+            <p><strong>Vehicle:</strong> ${job.vehicle_make} ${
+          job.vehicle_model
+        } ${job.vehicle_year || ""}</p>
+            <p><strong>Location:</strong> ${job.location}</p>
+          </div>
+        </div>
+        ${
+          job.description
+            ? `
+          <div class="row mt-3">
+            <div class="col-12">
+              <h6>Description</h6>
+              <p>${job.description}</p>
+            </div>
+          </div>
+        `
+            : ""
+        }
+      `;
+
+        document.getElementById("job-action-buttons").innerHTML =
+          getActionButtons(job).replace(/btn-sm/g, "");
+
+        new bootstrap.Modal(document.getElementById("jobDetailsModal")).show();
+      }
+
+      function refreshJobs() {
+        loadJobs();
+      }
+
+      async function acceptAllPending() {
+        const pendingJobs = currentJobs.filter(
+          (job) => job.status === "pending"
+        );
+        if (pendingJobs.length === 0) {
+          alert("No pending jobs to accept.");
+          return;
+        }
+
+        if (confirm(`Accept all ${pendingJobs.length} pending jobs?`)) {
+          for (const job of pendingJobs) {
+            await updateJobStatus(job.job_id, "accepted");
+          }
+        }
+      }
+    </script>
+  </body>
+</html>

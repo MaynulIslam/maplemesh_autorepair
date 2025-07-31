@@ -8,413 +8,995 @@
 -->
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>MapleMesh AutoRepair - Customer Dashboard</title>
 
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>MapleMesh AutoRepair - Customer Dashboard</title>
-  
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  
-  <!-- Font Awesome -->
-  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
-  
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
-  
-  <!-- Custom CSS -->
-  <link href="../assets/custom/css/style.css" rel="stylesheet" />
-</head>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
 
-<body class="bg-gray-100">
-  <!-- ===================== HEADER / NAVIGATION BAR ===================== -->
-  <header>
-    <nav class="navbar navbar-expand-lg navbar-dark">
-      <div class="container-fluid">
-        <!-- Brand -->
-        <a class="navbar-brand fw-bold me-3 d-flex flex-column align-items-start p-0" href="customer_dashboard.html">
-          <span>MapleMesh</span>
-          <span>AutoRepair</span>
-        </a>
+    <!-- Font Awesome -->
+    <script
+      src="https://kit.fontawesome.com/42d5adcbca.js"
+      crossorigin="anonymous"
+    ></script>
 
-        <!-- Left-side Navigation Links -->
-        <div class="navbar-nav d-none d-lg-flex me-auto">
-          <a class="nav-link fw-bold active" href="customer_dashboard.html">Dashboard</a>
-          <a class="nav-link fw-bold" href="customer_service.html">Service</a>
-          <a class="nav-link fw-bold" href="customer_billing.html">Billing</a>
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Custom CSS -->
+    <link href="../assets/custom/css/style.css" rel="stylesheet" />
+  </head>
+
+  <body class="bg-gray-100">
+    <!-- ===================== HEADER / NAVIGATION BAR ===================== -->
+    <header>
+      <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+          <!-- Brand -->
+          <a
+            class="navbar-brand fw-bold me-3 d-flex flex-column align-items-start p-0"
+            href="customer_dashboard.html"
+          >
+            <span>MapleMesh</span>
+            <span>AutoRepair</span>
+          </a>
+
+          <!-- Left-side Navigation Links -->
+          <div class="navbar-nav d-none d-lg-flex me-auto">
+            <a class="nav-link fw-bold active" href="customer_dashboard.html"
+              >Dashboard</a
+            >
+            <a class="nav-link fw-bold" href="customer_service.html">Service</a>
+            <a class="nav-link fw-bold" href="customer_billing.html">Billing</a>
+          </div>
+
+          <!-- Welcome Message (Center) -->
+          <div
+            class="navbar-text d-none d-lg-block mx-auto text-center text-white"
+          >
+            <h4 class="mb-0 fw-bold">Welcome Back!</h4>
+            <small>Your Trusted Online Auto Service Partner</small>
+          </div>
+
+          <!-- Right-side Navigation Links -->
+          <div class="collapse navbar-collapse flex-grow-0" id="mainNavbar">
+            <ul class="navbar-nav align-items-center">
+              <li class="nav-item dropdown hover-dropdown">
+                <a
+                  class="nav-link fw-bold"
+                  href="customer_profile.html"
+                  id="profileLink"
+                  >Profile</a
+                >
+                <div
+                  class="dropdown-menu dropdown-menu-end"
+                  aria-labelledby="profileLink"
+                >
+                  <div class="dropdown-header d-flex align-items-center p-3">
+                    <div class="avatar-circle me-3">
+                      <img
+                        src="../assets/img/avatar-placeholder.jpg"
+                        alt="Profile"
+                        class="avatar-img"
+                      />
+                    </div>
+                    <div>
+                      <h6 class="mb-0">John Doe</h6>
+                      <small class="text-muted">Customer since 2022</small>
+                    </div>
+                  </div>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="customer_profile.html">
+                    <i class="fas fa-user me-2 text-primary"></i>My Profile
+                  </a>
+                  <a class="dropdown-item" href="customer_service.html">
+                    <i class="fas fa-history me-2 text-primary"></i>Service
+                    History
+                  </a>
+                  <a class="dropdown-item" href="customer_billing.html">
+                    <i class="fas fa-credit-card me-2 text-primary"></i>Billing
+                    Settings
+                  </a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="#">
+                    <i class="fas fa-question-circle me-2 text-primary"></i>Help
+                    & Support
+                  </a>
+                  <a class="dropdown-item" href="#">
+                    <i class="fas fa-sign-out-alt me-2 text-danger"></i>Sign Out
+                  </a>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Mobile Toggle Button -->
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#mainNavbar"
+            aria-controls="mainNavbar"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
         </div>
+      </nav>
+    </header>
+    <!-- ===================== END HEADER / NAVIGATION BAR ===================== -->
 
-        <!-- Welcome Message (Center) -->
-        <div class="navbar-text d-none d-lg-block mx-auto text-center text-white">
-          <h4 class="mb-0 fw-bold">Welcome Back!</h4>
-          <small>Your Trusted Online Auto Service Partner</small>
-        </div>
+    <!-- Main Content Container -->
+    <div class="content-wrapper">
+      <div class="container-fluid py-4">
+        <!-- ===================== TOP STATS CARDS ROW ===================== -->
+        <div class="row g-4 mb-4">
+          <!-- Vehicle Carousel Box -->
+          <div class="col-md-6 col-xl-4">
+            <div class="card h-100" id="vehicle-carousel-box">
+              <div
+                id="vehicleCarousel"
+                class="carousel slide"
+                data-bs-ride="carousel"
+                data-bs-interval="5000"
+              >
+                <div class="carousel-inner">
+                  <!-- Vehicle 1 -->
+                  <div class="carousel-item active">
+                    <div class="card-body">
+                      <h6 class="vehicle-info">
+                        TOYOTA RAV4 <span class="text-muted">2024</span>
+                      </h6>
+                      <p class="text-success">
+                        <i class="fas fa-clock me-2"></i>
+                        Tire Rotation Due In 3 months
+                      </p>
+                      <a href="customer_service.html" class="btn btn-primary">
+                        <i class="fas fa-wrench me-2"></i>
+                        Service Request
+                      </a>
+                    </div>
+                  </div>
+                  <!-- Vehicle 2 -->
+                  <div class="carousel-item">
+                    <div class="card-body">
+                      <h6 class="vehicle-info">
+                        HONDA ACCORD <span class="text-muted">2023</span>
+                      </h6>
+                      <p class="text-warning">
+                        <i class="fas fa-oil-can me-2"></i>
+                        Oil Change Due Next Week
+                      </p>
+                      <a href="customer_service.html" class="btn btn-primary">
+                        <i class="fas fa-wrench me-2"></i>
+                        Service Request
+                      </a>
+                    </div>
+                  </div>
+                  <!-- Vehicle 3 -->
+                  <div class="carousel-item">
+                    <div class="card-body">
+                      <h6 class="vehicle-info">
+                        TESLA MODEL 3 <span class="text-muted">2025</span>
+                      </h6>
+                      <p class="text-danger">
+                        <i class="fas fa-battery-three-quarters me-2"></i>
+                        Battery Check Overdue
+                      </p>
+                      <a href="customer_service.html" class="btn btn-primary">
+                        <i class="fas fa-wrench me-2"></i>
+                        Service Request
+                      </a>
+                    </div>
+                  </div>
+                </div>
 
-        <!-- Right-side Navigation Links -->
-        <div class="collapse navbar-collapse flex-grow-0" id="mainNavbar">
-          <ul class="navbar-nav align-items-center">
-            <li class="nav-item dropdown hover-dropdown">
-              <a class="nav-link fw-bold" href="customer_profile.html" id="profileLink">Profile</a>
-              <div class="dropdown-menu dropdown-menu-end" aria-labelledby="profileLink">
-                <div class="dropdown-header d-flex align-items-center p-3">
-                  <div class="avatar-circle me-3">
-                    <img src="../assets/img/avatar-placeholder.jpg" alt="Profile" class="avatar-img">
+                <!-- Right Navigation Arrow Only (in middle) -->
+                <button
+                  class="carousel-control-next vehicle-next-btn"
+                  type="button"
+                  data-bs-target="#vehicleCarousel"
+                  data-bs-slide="next"
+                >
+                  <span
+                    class="carousel-control-next-icon"
+                    aria-hidden="true"
+                  ></span>
+                  <span class="visually-hidden">Next</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Technicians Availability Box -->
+          <div class="col-md-6 col-xl-4">
+            <div class="card h-100" id="technicians-availability-box">
+              <div class="card-body">
+                <h6 class="text-primary mb-3">Technicians Availability</h6>
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <h3 class="technician-count mb-0">28</h3>
+                    <p class="stats-label mb-0">Total Technicians</p>
                   </div>
                   <div>
-                    <h6 class="mb-0">John Doe</h6>
-                    <small class="text-muted">Customer since 2022</small>
+                    <h3 class="technician-count text-success mb-0">5</h3>
+                    <p class="stats-label mb-0">On Call Available</p>
                   </div>
                 </div>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="customer_profile.html">
-                  <i class="fas fa-user me-2 text-primary"></i>My Profile
-                </a>
-                <a class="dropdown-item" href="customer_service.html">
-                  <i class="fas fa-history me-2 text-primary"></i>Service History
-                </a>
-                <a class="dropdown-item" href="customer_billing.html">
-                  <i class="fas fa-credit-card me-2 text-primary"></i>Billing Settings
-                </a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">
-                  <i class="fas fa-question-circle me-2 text-primary"></i>Help & Support
-                </a>
-                <a class="dropdown-item" href="#">
-                  <i class="fas fa-sign-out-alt me-2 text-danger"></i>Sign Out
-                </a>
               </div>
-            </li>
-          </ul>
+            </div>
+          </div>
+
+          <!-- Quick Actions Box -->
+          <div class="col-md-6 col-xl-4">
+            <div class="card h-100" id="quick-actions-box">
+              <div class="card-body">
+                <h6 class="text-primary mb-3">Quick Actions</h6>
+                <div class="d-grid gap-2">
+                  <button class="btn btn-primary">
+                    <i class="fas fa-plus me-2"></i>Book New Service
+                  </button>
+                  <button class="btn btn-light">
+                    <i class="fas fa-history me-2"></i>View History
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+        <!-- ===================== END TOP STATS CARDS ROW ===================== -->
 
-        <!-- Mobile Toggle Button -->
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
-                data-bs-target="#mainNavbar" aria-controls="mainNavbar" 
-                aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-      </div>
-    </nav>
-  </header>
-  <!-- ===================== END HEADER / NAVIGATION BAR ===================== -->
-
-  <!-- Main Content Container -->
-  <div class="content-wrapper">
-    <div class="container-fluid py-4">
-      <!-- ===================== TOP STATS CARDS ROW ===================== -->
-      <div class="row g-4 mb-4">
-        <!-- Vehicle Carousel Box -->
-        <div class="col-md-6 col-xl-4">
-          <div class="card h-100" id="vehicle-carousel-box">
-            <div id="vehicleCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
-              <div class="carousel-inner">
-                <!-- Vehicle 1 -->
-                <div class="carousel-item active">
-                  <div class="card-body">
-                    <h6 class="vehicle-info">TOYOTA RAV4 <span class="text-muted">2024</span></h6>
-                    <p class="text-success">
-                      <i class="fas fa-clock me-2"></i>
-                      Tire Rotation Due In 3 months
-                    </p>
-                    <a href="customer_service.html" class="btn btn-primary">
-                      <i class="fas fa-wrench me-2"></i>
-                      Service Request
-                    </a>
-                  </div>
-                </div>
-                <!-- Vehicle 2 -->
-                <div class="carousel-item">
-                  <div class="card-body">
-                    <h6 class="vehicle-info">HONDA ACCORD <span class="text-muted">2023</span></h6>
-                    <p class="text-warning">
-                      <i class="fas fa-oil-can me-2"></i>
-                      Oil Change Due Next Week
-                    </p>
-                    <a href="customer_service.html" class="btn btn-primary">
-                      <i class="fas fa-wrench me-2"></i>
-                      Service Request
-                    </a>
-                  </div>
-                </div>
-                <!-- Vehicle 3 -->
-                <div class="carousel-item">
-                  <div class="card-body">
-                    <h6 class="vehicle-info">TESLA MODEL 3 <span class="text-muted">2025</span></h6>
-                    <p class="text-danger">
-                      <i class="fas fa-battery-three-quarters me-2"></i>
-                      Battery Check Overdue
-                    </p>
-                    <a href="customer_service.html" class="btn btn-primary">
-                      <i class="fas fa-wrench me-2"></i>
-                      Service Request
-                    </a>
-                  </div>
+        <!-- ===================== SERVICE & REPAIR STATUS BOX ===================== -->
+        <div class="row mb-4">
+          <div class="col-12">
+            <div class="card" id="service-repair-status-box">
+              <div
+                class="card-header d-flex justify-content-between align-items-center"
+              >
+                <h5>Service & Repair Status</h5>
+                <div class="search-box">
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Search services..."
+                    id="serviceSearchInput"
+                  />
+                  <i class="fas fa-search"></i>
                 </div>
               </div>
-              
+              <div class="card-body p-0">
+                <div class="table-responsive">
+                  <table class="table table-hover align-middle mb-0">
+                    <thead>
+                      <tr>
+                        <th>SERVICES</th>
+                        <th>STATUS</th>
+                        <th>REAL TIME STATUS</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Tire Rotation - TOYOTA RAV4</td>
+                        <td>
+                          <span class="badge bg-success text-dark"
+                            >Technician Assigned</span
+                          >
+                        </td>
+                        <td>
+                          <div class="btn-group">
+                            <button class="btn btn-link btn-sm">
+                              <i class="fas fa-arrow-up"></i>
+                            </button>
+                            <button class="btn btn-link btn-sm">
+                              <i class="fas fa-arrow-down"></i>
+                            </button>
+                            <button class="btn btn-link btn-sm">
+                              <i class="fas fa-check"></i>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Oil Change - TOYOTA RAV4</td>
+                        <td>
+                          <span class="badge bg-secondary text-dark"
+                            >Pending</span
+                          >
+                        </td>
+                        <td>
+                          <div class="btn-group">
+                            <button class="btn btn-link btn-sm">
+                              <i class="fas fa-arrow-up"></i>
+                            </button>
+                            <button class="btn btn-link btn-sm">
+                              <i class="fas fa-arrow-down"></i>
+                            </button>
+                            <button class="btn btn-link btn-sm">
+                              <i class="fas fa-check"></i>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Brake Inspection - TOYOTA RAV4</td>
+                        <td>
+                          <span class="badge bg-warning text-dark"
+                            >In Progress</span
+                          >
+                        </td>
+                        <td>
+                          <div class="btn-group">
+                            <button class="btn btn-link btn-sm">
+                              <i class="fas fa-arrow-up"></i>
+                            </button>
+                            <button class="btn btn-link btn-sm">
+                              <i class="fas fa-arrow-down"></i>
+                            </button>
+                            <button class="btn btn-link btn-sm">
+                              <i class="fas fa-check"></i>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Battery Replacement - TOYOTA RAV4</td>
+                        <td>
+                          <span class="badge bg-danger">Overdue</span>
+                        </td>
+                        <td>
+                          <div class="btn-group">
+                            <button class="btn btn-link btn-sm">
+                              <i class="fas fa-arrow-up"></i>
+                            </button>
+                            <button class="btn btn-link btn-sm">
+                              <i class="fas fa-arrow-down"></i>
+                            </button>
+                            <button class="btn btn-link btn-sm">
+                              <i class="fas fa-check"></i>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- ===================== END SERVICE & REPAIR STATUS BOX ===================== -->
 
-              <!-- Right Navigation Arrow Only (in middle) -->
-              <button class="carousel-control-next vehicle-next-btn" type="button" data-bs-target="#vehicleCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
+        <!-- ===================== BOTTOM SECTION ===================== -->
+        <div class="row g-4">
+          <!-- Favorite Technicians Box -->
+          <div class="col-md-7">
+            <div class="card" id="favorite-technicians-box">
+              <div class="card-header">
+                <h5>Find Your Favorite Technician Here</h5>
+              </div>
+              <div class="card-body p-0">
+                <div class="table-responsive">
+                  <table class="table mb-0">
+                    <thead>
+                      <tr>
+                        <th>TECHNICIAN</th>
+                        <th>STATUS</th>
+                        <th>EDIT</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>John Smith</td>
+                        <td><span class="badge bg-success">Active</span></td>
+                        <td>
+                          <div class="btn-group">
+                            <button class="btn btn-outline-primary btn-sm">
+                              Add
+                            </button>
+                            <button class="btn btn-outline-secondary btn-sm">
+                              Remove
+                            </button>
+                            <button class="btn btn-outline-danger btn-sm">
+                              Delete
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>James Kim</td>
+                        <td><span class="badge bg-success">Active</span></td>
+                        <td>
+                          <div class="btn-group">
+                            <button class="btn btn-outline-primary btn-sm">
+                              Add
+                            </button>
+                            <button class="btn btn-outline-secondary btn-sm">
+                              Remove
+                            </button>
+                            <button class="btn btn-outline-danger btn-sm">
+                              Delete
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>Maria Lopez</td>
+                        <td>
+                          <span class="badge bg-secondary">Not Available</span>
+                        </td>
+                        <td>
+                          <div class="btn-group">
+                            <button class="btn btn-outline-primary btn-sm">
+                              Add
+                            </button>
+                            <button class="btn btn-outline-secondary btn-sm">
+                              Remove
+                            </button>
+                            <button class="btn btn-outline-danger btn-sm">
+                              Delete
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="p-3 text-muted small">
+                  You can save one more favorite technician of yours
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Promotions Box -->
+          <div class="col-md-5">
+            <div id="promotions-box">
+              <div class="alert alert-info text-center mb-3">
+                SAVE UPTO 50% ON YOUR FIRST CAR SERVICING!<br />
+                REFER YOUR FRIEND TODAY.
+              </div>
+              <div class="alert alert-warning text-center mb-2">
+                GET 30% DISCOUNT FROM SHELL WHEN YOU CHANGE ENGINE OIL THROUGH
+                US!
+              </div>
+              <div class="text-end text-muted small">
+                *Terms and conditions apply
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- ===================== END BOTTOM SECTION ===================== -->
+      </div>
+    </div>
+    <!-- ===================== END MAIN CONTENT ===================== -->
+
+    <!-- Bootstrap JS Bundle (includes Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script>
+      let customerData = null;
+      let vehicleData = [];
+      let serviceData = [];
+
+      // Initialize the dashboard
+      document.addEventListener("DOMContentLoaded", function () {
+        loadCustomerProfile();
+        loadVehicles();
+        loadServices();
+        initializeCarousel();
+        bindEventListeners();
+      });
+
+      async function loadCustomerProfile() {
+        try {
+          const token = localStorage.getItem("access_token");
+          if (!token) {
+            // Don't redirect immediately, show demo data instead
+            console.log("No token found, showing demo data");
+            showDemoData();
+            return;
+          }
+
+          const response = await fetch(
+            "http://localhost:8001/api/customer/profile",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          if (response.ok) {
+            customerData = await response.json();
+            updateProfileDropdown();
+          } else if (response.status === 401) {
+            localStorage.removeItem("access_token");
+            showDemoData();
+          } else {
+            throw new Error("Failed to load profile");
+          }
+        } catch (error) {
+          console.error("Error loading profile:", error);
+          showDemoData();
+        }
+      }
+
+      async function loadVehicles() {
+        try {
+          const token = localStorage.getItem("access_token");
+          if (!token) {
+            showDemoVehicles();
+            return;
+          }
+
+          const response = await fetch(
+            "http://localhost:8001/api/customer/vehicles",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          if (response.ok) {
+            vehicleData = await response.json();
+            updateVehicleCarousel();
+          } else {
+            throw new Error("Failed to load vehicles");
+          }
+        } catch (error) {
+          console.error("Error loading vehicles:", error);
+          showDemoVehicles();
+        }
+      }
+
+      async function loadServices() {
+        try {
+          const token = localStorage.getItem("access_token");
+          if (!token) {
+            showDemoServices();
+            return;
+          }
+
+          const response = await fetch(
+            "http://localhost:8001/api/customer/services",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          if (response.ok) {
+            serviceData = await response.json();
+            updateServiceTable();
+            updateTechnicianAvailability();
+          } else {
+            throw new Error("Failed to load services");
+          }
+        } catch (error) {
+          console.error("Error loading services:", error);
+          showDemoServices();
+        }
+      }
+
+      function showDemoData() {
+        customerData = {
+          first_name: "John",
+          last_name: "Doe",
+          created_at: "2022-01-01T00:00:00Z",
+        };
+        updateProfileDropdown();
+      }
+
+      function showDemoVehicles() {
+        vehicleData = [
+          { vehicle_id: 1, make: "TOYOTA", model: "RAV4", year: 2024 },
+          { vehicle_id: 2, make: "HONDA", model: "ACCORD", year: 2023 },
+          { vehicle_id: 3, make: "TESLA", model: "MODEL 3", year: 2025 },
+        ];
+        updateVehicleCarousel();
+      }
+
+      function showDemoServices() {
+        serviceData = [
+          {
+            service_id: 1,
+            service_type: "Tire Rotation",
+            vehicle_make: "TOYOTA",
+            vehicle_model: "RAV4",
+            status: "assigned",
+            vehicle_id: 1,
+          },
+          {
+            service_id: 2,
+            service_type: "Oil Change",
+            vehicle_make: "TOYOTA",
+            vehicle_model: "RAV4",
+            status: "pending",
+            vehicle_id: 1,
+          },
+          {
+            service_id: 3,
+            service_type: "Brake Inspection",
+            vehicle_make: "TOYOTA",
+            vehicle_model: "RAV4",
+            status: "in_progress",
+            vehicle_id: 1,
+          },
+          {
+            service_id: 4,
+            service_type: "Battery Replacement",
+            vehicle_make: "TOYOTA",
+            vehicle_model: "RAV4",
+            status: "overdue",
+            vehicle_id: 1,
+          },
+        ];
+        updateServiceTable();
+        updateTechnicianAvailability();
+      }
+
+      function updateProfileDropdown() {
+        if (customerData) {
+          const profileHeader = document.querySelector(".dropdown-header h6");
+          const profileSubtext = document.querySelector(
+            ".dropdown-header small"
+          );
+
+          profileHeader.textContent = `${customerData.first_name} ${customerData.last_name}`;
+          profileSubtext.textContent = `Customer since ${new Date(
+            customerData.created_at
+          ).getFullYear()}`;
+        }
+      }
+
+      function updateVehicleCarousel() {
+        const carouselInner = document.querySelector(".carousel-inner");
+
+        if (!vehicleData || vehicleData.length === 0) {
+          carouselInner.innerHTML = `
+          <div class="carousel-item active">
+            <div class="card-body text-center">
+              <h6 class="vehicle-info">No Vehicles Registered</h6>
+              <p class="text-muted">
+                <i class="fas fa-plus me-2"></i>
+                Add your first vehicle to get started
+              </p>
+              <a href="sign-in.html" class="btn btn-primary">
+                <i class="fas fa-sign-in-alt me-2"></i>
+                Sign In to Add Vehicle
+              </a>
+            </div>
+          </div>
+        `;
+          return;
+        }
+
+        carouselInner.innerHTML = vehicleData
+          .map((vehicle, index) => {
+            const nextService = getNextServiceForVehicle(vehicle.vehicle_id);
+            const statusClass = getServiceStatusClass(nextService);
+
+            return `
+          <div class="carousel-item ${index === 0 ? "active" : ""}">
+            <div class="card-body">
+              <h6 class="vehicle-info">${vehicle.make} ${
+              vehicle.model
+            } <span class="text-muted">${vehicle.year}</span></h6>
+              <p class="${statusClass}">
+                <i class="fas ${getServiceIcon(nextService)} me-2"></i>
+                ${getServiceMessage(nextService)}
+              </p>
+              <a href="customer_service.html?vehicle_id=${
+                vehicle.vehicle_id
+              }" class="btn btn-primary">
+                <i class="fas fa-wrench me-2"></i>
+                Service Request
+              </a>
+            </div>
+          </div>
+        `;
+          })
+          .join("");
+      }
+
+      function updateServiceTable() {
+        const tbody = document.querySelector(
+          "#service-repair-status-box tbody"
+        );
+
+        if (!serviceData || serviceData.length === 0) {
+          tbody.innerHTML = `
+          <tr>
+            <td colspan="3" class="text-center py-4">
+              <i class="fas fa-clipboard-list fa-3x text-muted mb-3"></i>
+              <p class="text-muted">No services found</p>
+              <a href="sign-in.html" class="btn btn-primary btn-sm">
+                <i class="fas fa-sign-in-alt me-1"></i>Sign In to Book Service
+              </a>
+            </td>
+          </tr>
+        `;
+          return;
+        }
+
+        tbody.innerHTML = serviceData
+          .map(
+            (service) => `
+        <tr>
+          <td>${service.service_type} - ${service.vehicle_make} ${
+              service.vehicle_model
+            }</td>
+          <td>${getServiceStatusBadge(service.status)}</td>
+          <td>
+            <div class="btn-group">
+              <button class="btn btn-link btn-sm" onclick="updateServicePriority('${
+                service.service_id
+              }', 'up')">
+                <i class="fas fa-arrow-up"></i>
+              </button>
+              <button class="btn btn-link btn-sm" onclick="updateServicePriority('${
+                service.service_id
+              }', 'down')">
+                <i class="fas fa-arrow-down"></i>
+              </button>
+              <button class="btn btn-link btn-sm" onclick="viewServiceDetails('${
+                service.service_id
+              }')">
+                <i class="fas fa-eye"></i>
               </button>
             </div>
-          </div>
-        </div>
-        
-        <!-- Technicians Availability Box -->
-        <div class="col-md-6 col-xl-4">
-          <div class="card h-100" id="technicians-availability-box">
-            <div class="card-body">
-              <h6 class="text-primary mb-3">Technicians Availability</h6>
-              <div class="d-flex justify-content-between align-items-center">
-                <div>
-                  <h3 class="technician-count mb-0">28</h3>
-                  <p class="stats-label mb-0">Total Technicians</p>
-                </div>
-                <div>
-                  <h3 class="technician-count text-success mb-0">5</h3>
-                  <p class="stats-label mb-0">On Call Available</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Quick Actions Box -->
-        <div class="col-md-6 col-xl-4">
-          <div class="card h-100" id="quick-actions-box">
-            <div class="card-body">
-              <h6 class="text-primary mb-3">Quick Actions</h6>
-              <div class="d-grid gap-2">
-                <button class="btn btn-primary">
-                  <i class="fas fa-plus me-2"></i>Book New Service
-                </button>
-                <button class="btn btn-light">
-                  <i class="fas fa-history me-2"></i>View History
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- ===================== END TOP STATS CARDS ROW ===================== -->
-
-      <!-- ===================== SERVICE & REPAIR STATUS BOX ===================== -->
-      <div class="row mb-4">
-        <div class="col-12">
-          <div class="card" id="service-repair-status-box">
-            <div class="card-header d-flex justify-content-between align-items-center">
-              <h5>Service & Repair Status</h5>
-              <div class="search-box">
-                <input type="text" class="form-control" placeholder="Search services..." id="serviceSearchInput">
-                <i class="fas fa-search"></i>
-              </div>
-            </div>
-            <div class="card-body p-0">
-              <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
-                  <thead>
-                    <tr>
-                      <th>SERVICES</th>
-                      <th>STATUS</th>
-                      <th>REAL TIME STATUS</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>Tire Rotation - TOYOTA RAV4</td>
-                      <td>
-                        <span class="badge bg-success text-dark">Technician Assigned</span>
-                      </td>
-                      <td>
-                        <div class="btn-group">
-                          <button class="btn btn-link btn-sm"><i class="fas fa-arrow-up"></i></button>
-                          <button class="btn btn-link btn-sm"><i class="fas fa-arrow-down"></i></button>
-                          <button class="btn btn-link btn-sm"><i class="fas fa-check"></i></button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Oil Change - TOYOTA RAV4</td>
-                      <td>
-                        <span class="badge bg-secondary text-dark">Pending</span>
-                      </td>
-                      <td>
-                        <div class="btn-group">
-                          <button class="btn btn-link btn-sm"><i class="fas fa-arrow-up"></i></button>
-                          <button class="btn btn-link btn-sm"><i class="fas fa-arrow-down"></i></button>
-                          <button class="btn btn-link btn-sm"><i class="fas fa-check"></i></button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Brake Inspection - TOYOTA RAV4</td>
-                      <td>
-                        <span class="badge bg-warning text-dark">In Progress</span>
-                      </td>
-                      <td>
-                        <div class="btn-group">
-                          <button class="btn btn-link btn-sm"><i class="fas fa-arrow-up"></i></button>
-                          <button class="btn btn-link btn-sm"><i class="fas fa-arrow-down"></i></button>
-                          <button class="btn btn-link btn-sm"><i class="fas fa-check"></i></button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Battery Replacement - TOYOTA RAV4</td>
-                      <td>
-                        <span class="badge bg-danger">Overdue</span>
-                      </td>
-                      <td>
-                        <div class="btn-group">
-                          <button class="btn btn-link btn-sm"><i class="fas fa-arrow-up"></i></button>
-                          <button class="btn btn-link btn-sm"><i class="fas fa-arrow-down"></i></button>
-                          <button class="btn btn-link btn-sm"><i class="fas fa-check"></i></button>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- ===================== END SERVICE & REPAIR STATUS BOX ===================== -->
-
-      <!-- ===================== BOTTOM SECTION ===================== -->
-      <div class="row g-4">
-        <!-- Favorite Technicians Box -->
-        <div class="col-md-7">
-          <div class="card" id="favorite-technicians-box">
-            <div class="card-header">
-              <h5>Find Your Favorite Technician Here</h5>
-            </div>
-            <div class="card-body p-0">
-              <div class="table-responsive">
-                <table class="table mb-0">
-                  <thead>
-                    <tr>
-                      <th>TECHNICIAN</th>
-                      <th>STATUS</th>
-                      <th>EDIT</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>John Smith</td>
-                      <td><span class="badge bg-success">Active</span></td>
-                      <td>
-                        <div class="btn-group">
-                          <button class="btn btn-outline-primary btn-sm">Add</button>
-                          <button class="btn btn-outline-secondary btn-sm">Remove</button>
-                          <button class="btn btn-outline-danger btn-sm">Delete</button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>James Kim</td>
-                      <td><span class="badge bg-success">Active</span></td>
-                      <td>
-                        <div class="btn-group">
-                          <button class="btn btn-outline-primary btn-sm">Add</button>
-                          <button class="btn btn-outline-secondary btn-sm">Remove</button>
-                          <button class="btn btn-outline-danger btn-sm">Delete</button>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Maria Lopez</td>
-                      <td><span class="badge bg-secondary">Not Available</span></td>
-                      <td>
-                        <div class="btn-group">
-                          <button class="btn btn-outline-primary btn-sm">Add</button>
-                          <button class="btn btn-outline-secondary btn-sm">Remove</button>
-                          <button class="btn btn-outline-danger btn-sm">Delete</button>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div class="p-3 text-muted small">
-                You can save one more favorite technician of yours
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Promotions Box -->
-        <div class="col-md-5">
-          <div id="promotions-box">
-            <div class="alert alert-info text-center mb-3">
-              SAVE UPTO 50% ON YOUR FIRST CAR SERVICING!<br>
-              REFER YOUR FRIEND TODAY.
-            </div>
-            <div class="alert alert-warning text-center mb-2">
-              GET 30% DISCOUNT FROM SHELL WHEN YOU CHANGE ENGINE OIL THROUGH US!
-            </div>
-            <div class="text-end text-muted small">
-              *Terms and conditions apply
-            </div>
-          </div>
-        </div>
-      </div>
-      <!-- ===================== END BOTTOM SECTION ===================== -->
-    </div>
-  </div>
-  <!-- ===================== END MAIN CONTENT ===================== -->
-
-  <!-- Bootstrap JS Bundle (includes Popper) -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-  <!-- Custom JavaScript -->
-  <script>
-    // Initialize the vehicle carousel with custom options
-    document.addEventListener('DOMContentLoaded', function() {
-      // Vehicle carousel configuration
-      const vehicleCarousel = document.getElementById('vehicleCarousel');
-      if (vehicleCarousel) {
-        const carousel = new bootstrap.Carousel(vehicleCarousel, {
-          interval: 5000,
-          touch: true,
-          pause: 'hover'
-        });
-
-        // Optional: Add keyboard navigation for accessibility
-        document.addEventListener('keydown', function(e) {
-          if (document.activeElement.closest('#vehicleCarousel')) {
-            if (e.key === 'ArrowLeft') {
-              carousel.prev();
-            } else if (e.key === 'ArrowRight') {
-              carousel.next();
-            }
-          }
-        });
+          </td>
+        </tr>
+      `
+          )
+          .join("");
       }
-    });
 
-    // Search functionality for Service & Repair Status
-    document.addEventListener('DOMContentLoaded', function() {
-      const searchInput = document.getElementById('serviceSearchInput');
-      if (searchInput) {
-        searchInput.addEventListener('keyup', function() {
-          const searchValue = this.value.toLowerCase();
-          const serviceRows = document.querySelectorAll('#service-repair-status-box tbody tr');
-          
-          serviceRows.forEach(row => {
-            const serviceText = row.querySelector('td:first-child').textContent.toLowerCase();
-            if (serviceText.includes(searchValue)) {
-              row.style.display = '';
-            } else {
-              row.style.display = 'none';
+      function updateTechnicianAvailability() {
+        // Show default values for demo
+        const token = localStorage.getItem("access_token");
+        if (!token) {
+          document.querySelector(".technician-count").textContent = "28";
+          document.querySelector(".technician-count.text-success").textContent =
+            "5";
+          return;
+        }
+
+        // Try to fetch real data
+        fetch("http://localhost:8001/api/technician/availability-summary")
+          .then((response) => response.json())
+          .then((data) => {
+            document.querySelector(".technician-count").textContent =
+              data.total_technicians || 28;
+            document.querySelector(
+              ".technician-count.text-success"
+            ).textContent = data.available_technicians || 5;
+          })
+          .catch((error) => {
+            console.error("Error loading technician availability:", error);
+            // Keep default values on error
+          });
+      }
+
+      function getNextServiceForVehicle(vehicleId) {
+        const vehicleServices = serviceData.filter(
+          (service) => service.vehicle_id === vehicleId
+        );
+
+        if (vehicleServices.length === 0) {
+          return { type: "maintenance", status: "due", daysUntil: 30 };
+        }
+
+        // Find the most urgent service
+        const pendingServices = vehicleServices.filter(
+          (service) => service.status === "pending"
+        );
+        const overdueServices = vehicleServices.filter(
+          (service) => service.status === "overdue"
+        );
+
+        if (overdueServices.length > 0) {
+          return {
+            type: overdueServices[0].service_type,
+            status: "overdue",
+            daysUntil: -1,
+          };
+        }
+
+        if (pendingServices.length > 0) {
+          return {
+            type: pendingServices[0].service_type,
+            status: "pending",
+            daysUntil: 0,
+          };
+        }
+
+        return { type: "maintenance", status: "upcoming", daysUntil: 90 };
+      }
+
+      function getServiceStatusClass(service) {
+        const classMap = {
+          overdue: "text-danger",
+          pending: "text-warning",
+          due: "text-warning",
+          upcoming: "text-success",
+        };
+        return classMap[service.status] || "text-muted";
+      }
+
+      function getServiceIcon(service) {
+        const iconMap = {
+          oil_change: "fa-oil-can",
+          tire_rotation: "fa-sync",
+          brake_inspection: "fa-stop-circle",
+          battery_check: "fa-battery-three-quarters",
+          maintenance: "fa-wrench",
+        };
+        return iconMap[service.type] || "fa-clock";
+      }
+
+      function getServiceMessage(service) {
+        if (service.status === "overdue") {
+          return `${service.type.replace("_", " ")} Overdue`;
+        } else if (service.status === "pending") {
+          return `${service.type.replace("_", " ")} Scheduled`;
+        } else if (service.daysUntil <= 7) {
+          return `${service.type.replace("_", " ")} Due This Week`;
+        } else if (service.daysUntil <= 30) {
+          return `${service.type.replace("_", " ")} Due In ${
+            service.daysUntil
+          } days`;
+        } else {
+          return `Next Service In ${service.daysUntil} days`;
+        }
+      }
+
+      function getServiceStatusBadge(status) {
+        const badges = {
+          pending: '<span class="badge bg-secondary">Pending</span>',
+          assigned: '<span class="badge bg-success">Technician Assigned</span>',
+          in_progress:
+            '<span class="badge bg-warning text-dark">In Progress</span>',
+          completed: '<span class="badge bg-success">Completed</span>',
+          overdue: '<span class="badge bg-danger">Overdue</span>',
+        };
+        return (
+          badges[status] || '<span class="badge bg-secondary">Unknown</span>'
+        );
+      }
+
+      function initializeCarousel() {
+        const vehicleCarousel = document.getElementById("vehicleCarousel");
+        if (vehicleCarousel) {
+          const carousel = new bootstrap.Carousel(vehicleCarousel, {
+            interval: 5000,
+            touch: true,
+            pause: "hover",
+          });
+
+          // Keyboard navigation
+          document.addEventListener("keydown", function (e) {
+            if (document.activeElement.closest("#vehicleCarousel")) {
+              if (e.key === "ArrowLeft") {
+                carousel.prev();
+              } else if (e.key === "ArrowRight") {
+                carousel.next();
+              }
             }
           });
-        });
+        }
       }
-    });
-  </script>
-</body>
+
+      function bindEventListeners() {
+        // Search functionality
+        const searchInput = document.getElementById("serviceSearchInput");
+        if (searchInput) {
+          searchInput.addEventListener("keyup", function () {
+            const searchValue = this.value.toLowerCase();
+            const serviceRows = document.querySelectorAll(
+              "#service-repair-status-box tbody tr"
+            );
+
+            serviceRows.forEach((row) => {
+              const serviceText = row
+                .querySelector("td:first-child")
+                .textContent.toLowerCase();
+              if (serviceText.includes(searchValue)) {
+                row.style.display = "";
+              } else {
+                row.style.display = "none";
+              }
+            });
+          });
+        }
+      }
+
+      // Service action functions
+      async function updateServicePriority(serviceId, direction) {
+        const token = localStorage.getItem("access_token");
+        if (!token) {
+          alert("Please sign in to manage your services.");
+          window.location.href = "sign-in.html";
+          return;
+        }
+
+        try {
+          const response = await fetch(
+            `http://localhost:8001/api/customer/services/${serviceId}/priority`,
+            {
+              method: "PUT",
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ direction }),
+            }
+          );
+
+          if (response.ok) {
+            loadServices(); // Refresh the services
+          } else if (response.status === 401) {
+            localStorage.removeItem("access_token");
+            alert("Your session has expired. Please sign in again.");
+            window.location.href = "sign-in.html";
+          } else {
+            throw new Error("Failed to update service priority");
+          }
+        } catch (error) {
+          console.error("Error updating service priority:", error);
+          alert("Failed to update service priority. Please try again.");
+        }
+      }
+
+      async function viewServiceDetails(serviceId) {
+        const token = localStorage.getItem("access_token");
+        if (!token) {
+          alert("Please sign in to view service details.");
+          window.location.href = "sign-in.html";
+          return;
+        }
+
+        try {
+          const response = await fetch(
+            `http://localhost:8001/api/customer/services/${serviceId}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          if (response.ok) {
+            const service = await response.json();
+            // Show service details in a modal or redirect to service page
+            window.location.href = `customer_service.html?service_id=${serviceId}`;
+          } else if (response.status === 401) {
+            localStorage.removeItem("access_token");
+            alert("Your session has expired. Please sign in again.");
+            window.location.href = "sign-in.html";
+          } else {
+            throw new Error("Failed to load service details");
+          }
+        } catch (error) {
+          console.error("Error loading service details:", error);
+          alert("Failed to load service details. Please try again.");
+        }
+      }
+    </script>
+  </body>
 </html>
