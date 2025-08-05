@@ -191,6 +191,79 @@
             resize: vertical;
             min-height: 80px;
         }
+
+        /* Autocomplete Styling */
+        .autocomplete-wrapper {
+            position: relative;
+        }
+
+        .autocomplete-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #d1d5db;
+            border-top: none;
+            border-radius: 0 0 6px 6px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .autocomplete-dropdown.show {
+            display: block;
+        }
+
+        .autocomplete-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #f8f9fa;
+            transition: background-color 0.2s ease;
+        }
+
+        .autocomplete-item:hover, .autocomplete-item.highlighted {
+            background-color: #f8f9fa;
+        }
+
+        .autocomplete-item.selected {
+            background-color: #136F63;
+            color: white;
+        }
+
+        .autocomplete-item:last-child {
+            border-bottom: none;
+        }
+
+        .autocomplete-loading {
+            padding: 10px 15px;
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        .autocomplete-no-results {
+            padding: 10px 15px;
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        /* Enhanced input styling for autocomplete */
+        .autocomplete-wrapper .form-input {
+            border-radius: 6px 6px 6px 6px;
+        }
+
+        .autocomplete-wrapper .form-input:focus {
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        .autocomplete-wrapper .form-input:focus + .autocomplete-dropdown {
+            border-top: 1px solid #136F63;
+        }
     </style>
 </head>
 <body>
@@ -268,7 +341,11 @@
                     </div>
                     <div class="grid grid-cols-2 gap-4">
                         <div class="space-y-3">
-                            <input type="text" id="owner-address-1" class="form-input" placeholder="Address Line 1" required>
+                            <div class="autocomplete-wrapper">
+                                <input type="text" id="owner-address-1" class="form-input" required 
+                                       placeholder="Type your address..." autocomplete="off">
+                                <div class="autocomplete-dropdown" id="addressDropdown"></div>
+                            </div>
                             <input type="text" id="owner-address-2" class="form-input" placeholder="Address Line 2 (Optional)">
                             <div class="grid grid-cols-2 gap-3">
                                 <input type="text" id="owner-city" class="form-input" placeholder="City" required>
@@ -293,19 +370,24 @@
                         <i class="fas fa-car mr-2"></i> Vehicle Information
                     </div>
                     <div class="grid grid-cols-4 gap-4 mb-3">
-                        <select id="vehicle-make" class="form-select" required>
-                            <option value="" disabled selected>Vehicle Make</option>
-                            <option value="toyota">Toyota</option>
-                            <option value="honda">Honda</option>
-                            <option value="ford">Ford</option>
-                            <option value="chevrolet">Chevrolet</option>
-                            <option value="tesla">Tesla</option>
-                        </select>
-                        <input type="text" id="vehicle-model" class="form-input" placeholder="Vehicle Model" required>
+                        <div class="autocomplete-wrapper">
+                            <input type="text" id="vehicle-make" class="form-input" required 
+                                   placeholder="Type or select make..." autocomplete="off">
+                            <div class="autocomplete-dropdown" id="regMakeDropdown"></div>
+                        </div>
+                        <div class="autocomplete-wrapper">
+                            <input type="text" id="vehicle-model" class="form-input" required 
+                                   placeholder="Type or select model..." autocomplete="off">
+                            <div class="autocomplete-dropdown" id="regModelDropdown"></div>
+                        </div>
                         <select id="vehicle-year" class="form-select" required>
                             <option value="" disabled selected>Vehicle Year</option>
                         </select>
-                        <input type="text" id="vehicle-color" class="form-input" placeholder="Vehicle Color" required>
+                        <div class="autocomplete-wrapper">
+                            <input type="text" id="vehicle-color" class="form-input" required 
+                                   placeholder="Type or select color..." autocomplete="off">
+                            <div class="autocomplete-dropdown" id="regColorDropdown"></div>
+                        </div>
                     </div>
                     <textarea id="vehicle-description" class="form-input" placeholder="Vehicle Description" rows="2" required></textarea>
                 </div>
@@ -392,7 +474,11 @@
                     <div class="grid grid-cols-2 gap-4">
                         <div class="space-y-3">
                             <input type="text" id="business-name" class="form-input" placeholder="Business Name" required>
-                            <input type="text" id="business-address" class="form-input" placeholder="Business Address" required>
+                            <div class="autocomplete-wrapper">
+                                <input type="text" id="business-address" class="form-input" required 
+                                       placeholder="Type business address..." autocomplete="off">
+                                <div class="autocomplete-dropdown" id="businessAddressDropdown"></div>
+                            </div>
                             <div class="grid grid-cols-2 gap-3">
                                 <input type="text" id="tech-city" class="form-input" placeholder="City" required>
                                 <input type="text" id="tech-province" class="form-input" placeholder="Province/State" required>
@@ -500,6 +586,583 @@
         document.addEventListener('DOMContentLoaded', function () {
             const ownerForm = document.getElementById('owner-registration-form');
             const technicianForm = document.getElementById('technician-registration-form');
+
+            // Vehicle Autocomplete Configuration
+            const NHTSA_API_BASE = 'https://vpic.nhtsa.dot.gov/api/vehicles';
+            let vehicleMakes = [];
+            let debounceTimers = {};
+
+            // Common color options
+            const commonColors = [
+                'Black', 'White', 'Silver', 'Gray', 'Red', 'Blue', 'Green', 'Yellow', 
+                'Orange', 'Purple', 'Brown', 'Gold', 'Beige', 'Maroon', 'Navy', 'Pink',
+                'Turquoise', 'Burgundy', 'Cream', 'Tan', 'Bronze', 'Copper', 'Pearl White',
+                'Metallic Blue', 'Dark Blue', 'Light Blue', 'Dark Green', 'Light Green'
+            ];
+
+            // Common vehicle models
+            const commonModels = [
+                'Accord', 'Camry', 'Civic', 'Corolla', 'Altima', 'Sentra', 'Elantra', 'Sonata',
+                'Malibu', 'Impala', 'Cruze', 'Focus', 'Fusion', 'F-150', 'Silverado', 'Sierra',
+                'Pilot', 'CR-V', 'RAV4', 'Highlander', 'Explorer', 'Escape', 'Equinox', 'Traverse',
+                'Wrangler', 'Grand Cherokee', 'Cherokee', 'Compass', 'Renegade', 'Outback', 'Forester',
+                'Legacy', 'Impreza', 'CX-5', 'CX-9', 'Mazda3', 'Mazda6', 'Soul', 'Forte', 'Optima'
+            ];
+
+            // Initialize vehicle autocomplete
+            function initializeVehicleAutocomplete() {
+                loadVehicleMakes();
+                setupMakeAutocomplete();
+                setupModelAutocomplete();
+                setupColorAutocomplete();
+            }
+
+            // Load vehicle makes from NHTSA API
+            async function loadVehicleMakes() {
+                try {
+                    if (vehicleMakes.length > 0) return; // Already loaded
+
+                    const response = await fetch(`${NHTSA_API_BASE}/GetMakesForVehicleType/car?format=json`);
+                    const data = await response.json();
+                    
+                    vehicleMakes = data.Results.sort((a, b) => a.MakeName.localeCompare(b.MakeName));
+                    console.log(`Loaded ${vehicleMakes.length} vehicle makes`);
+                    
+                } catch (error) {
+                    console.error('Error loading vehicle makes:', error);
+                    // Load fallback makes
+                    vehicleMakes = [
+                        {MakeName: 'Acura'}, {MakeName: 'Audi'}, {MakeName: 'BMW'}, {MakeName: 'Buick'}, 
+                        {MakeName: 'Cadillac'}, {MakeName: 'Chevrolet'}, {MakeName: 'Chrysler'}, {MakeName: 'Dodge'}, 
+                        {MakeName: 'Ford'}, {MakeName: 'GMC'}, {MakeName: 'Honda'}, {MakeName: 'Hyundai'}, 
+                        {MakeName: 'Infiniti'}, {MakeName: 'Jeep'}, {MakeName: 'Kia'}, {MakeName: 'Lexus'}, 
+                        {MakeName: 'Lincoln'}, {MakeName: 'Mazda'}, {MakeName: 'Mercedes-Benz'}, {MakeName: 'Mitsubishi'}, 
+                        {MakeName: 'Nissan'}, {MakeName: 'Pontiac'}, {MakeName: 'Ram'}, {MakeName: 'Subaru'}, 
+                        {MakeName: 'Toyota'}, {MakeName: 'Volkswagen'}, {MakeName: 'Volvo'}
+                    ];
+                }
+            }
+
+            // Setup make autocomplete
+            function setupMakeAutocomplete() {
+                const makeInput = document.getElementById('vehicle-make');
+                const makeDropdown = document.getElementById('regMakeDropdown');
+
+                makeInput.addEventListener('input', function() {
+                    const query = this.value.trim();
+                    
+                    clearTimeout(debounceTimers.make);
+                    
+                    if (query.length < 1) {
+                        hideDropdown(makeDropdown);
+                        return;
+                    }
+
+                    debounceTimers.make = setTimeout(() => {
+                        searchMakes(query, makeDropdown);
+                    }, 300);
+                });
+
+                makeInput.addEventListener('focus', function() {
+                    if (this.value.trim().length > 0) {
+                        searchMakes(this.value.trim(), makeDropdown);
+                    }
+                });
+
+                makeInput.addEventListener('blur', function() {
+                    setTimeout(() => hideDropdown(makeDropdown), 150);
+                });
+
+                // Trigger model search when make is selected/changed
+                makeInput.addEventListener('change', function() {
+                    const modelInput = document.getElementById('vehicle-model');
+                    
+                    if (modelInput.value.trim()) {
+                        const modelDropdown = document.getElementById('regModelDropdown');
+                        searchModels(modelInput.value.trim(), modelDropdown);
+                    }
+                });
+            }
+
+            // Setup model autocomplete
+            function setupModelAutocomplete() {
+                const modelInput = document.getElementById('vehicle-model');
+                const modelDropdown = document.getElementById('regModelDropdown');
+
+                modelInput.addEventListener('input', function() {
+                    const query = this.value.trim();
+                    
+                    clearTimeout(debounceTimers.model);
+                    
+                    if (query.length < 1) {
+                        hideDropdown(modelDropdown);
+                        return;
+                    }
+
+                    debounceTimers.model = setTimeout(() => {
+                        searchModels(query, modelDropdown);
+                    }, 300);
+                });
+
+                modelInput.addEventListener('focus', function() {
+                    if (this.value.trim().length > 0) {
+                        searchModels(this.value.trim(), modelDropdown);
+                    }
+                });
+
+                modelInput.addEventListener('blur', function() {
+                    setTimeout(() => hideDropdown(modelDropdown), 150);
+                });
+            }
+
+            // Setup color autocomplete
+            function setupColorAutocomplete() {
+                const colorInput = document.getElementById('vehicle-color');
+                const colorDropdown = document.getElementById('regColorDropdown');
+
+                colorInput.addEventListener('input', function() {
+                    const query = this.value.trim();
+                    
+                    clearTimeout(debounceTimers.color);
+                    
+                    if (query.length < 1) {
+                        hideDropdown(colorDropdown);
+                        return;
+                    }
+
+                    debounceTimers.color = setTimeout(() => {
+                        searchColors(query, colorDropdown);
+                    }, 200);
+                });
+
+                colorInput.addEventListener('focus', function() {
+                    if (this.value.trim().length > 0) {
+                        searchColors(this.value.trim(), colorDropdown);
+                    } else {
+                        showAllColors(colorDropdown);
+                    }
+                });
+
+                colorInput.addEventListener('blur', function() {
+                    setTimeout(() => hideDropdown(colorDropdown), 150);
+                });
+            }
+
+            // Search makes function
+            async function searchMakes(query, dropdown) {
+                showLoading(dropdown);
+                
+                try {
+                    if (vehicleMakes.length === 0) {
+                        await loadVehicleMakes();
+                    }
+
+                    const filteredMakes = vehicleMakes
+                        .filter(make => make.MakeName.toLowerCase().includes(query.toLowerCase()))
+                        .slice(0, 10);
+
+                    showMakeResults(filteredMakes, query, dropdown);
+                    
+                } catch (error) {
+                    console.error('Error searching makes:', error);
+                    showError(dropdown, 'Error loading makes');
+                }
+            }
+
+            // Search models function
+            async function searchModels(query, dropdown) {
+                showLoading(dropdown);
+                
+                try {
+                    const makeInput = document.getElementById('vehicle-make');
+                    const yearSelect = document.getElementById('vehicle-year');
+                    
+                    if (makeInput.value.trim() && yearSelect.value) {
+                        try {
+                            const response = await fetch(`${NHTSA_API_BASE}/GetModelsForMakeYear/make/${encodeURIComponent(makeInput.value.trim())}/modelyear/${yearSelect.value}?format=json`);
+                            const data = await response.json();
+                            
+                            if (data.Results && data.Results.length > 0) {
+                                const models = data.Results
+                                    .map(model => model.Model_Name)
+                                    .filter((model, index, array) => array.indexOf(model) === index)
+                                    .filter(model => model.toLowerCase().includes(query.toLowerCase()))
+                                    .slice(0, 10);
+
+                                if (models.length > 0) {
+                                    showModelResults(models, query, dropdown);
+                                    return;
+                                }
+                            }
+                        } catch (error) {
+                            console.log('NHTSA API error, falling back to generic models:', error);
+                        }
+                    }
+                    
+                    showGenericModelOptions(query, dropdown);
+                    
+                } catch (error) {
+                    console.error('Error searching models:', error);
+                    showGenericModelOptions(query, dropdown);
+                }
+            }
+
+            // Search colors function
+            function searchColors(query, dropdown) {
+                const filteredColors = commonColors
+                    .filter(color => color.toLowerCase().includes(query.toLowerCase()))
+                    .slice(0, 8);
+
+                showColorResults(filteredColors, query, dropdown);
+            }
+
+            // Show all colors
+            function showAllColors(dropdown) {
+                showColorResults(commonColors.slice(0, 10), '', dropdown);
+            }
+
+            // Show make results
+            function showMakeResults(makes, query, dropdown) {
+                let html = '';
+                
+                makes.forEach(make => {
+                    html += `<div class="autocomplete-item" onclick="selectRegMake('${make.MakeName}')">${make.MakeName}</div>`;
+                });
+                
+                if (query && !makes.some(make => make.MakeName.toLowerCase() === query.toLowerCase())) {
+                    html += `<div class="autocomplete-item" onclick="selectRegMake('${query}')"><strong>Use "${query}"</strong> (Custom)</div>`;
+                }
+                
+                if (html === '' && query) {
+                    html = `<div class="autocomplete-item" onclick="selectRegMake('${query}')"><strong>Use "${query}"</strong> (Custom)</div>`;
+                }
+
+                dropdown.innerHTML = html;
+                showDropdown(dropdown);
+            }
+
+            // Show model results
+            function showModelResults(models, query, dropdown) {
+                let html = '';
+                
+                models.forEach(model => {
+                    html += `<div class="autocomplete-item" onclick="selectRegModel('${model}')">${model}</div>`;
+                });
+                
+                if (query && !models.some(model => model.toLowerCase() === query.toLowerCase())) {
+                    html += `<div class="autocomplete-item" onclick="selectRegModel('${query}')"><strong>Use "${query}"</strong> (Custom)</div>`;
+                }
+                
+                if (html === '' && query) {
+                    html = `<div class="autocomplete-item" onclick="selectRegModel('${query}')"><strong>Use "${query}"</strong> (Custom)</div>`;
+                }
+
+                dropdown.innerHTML = html;
+                showDropdown(dropdown);
+            }
+
+            // Show generic model options
+            function showGenericModelOptions(query, dropdown) {
+                let html = '';
+                
+                if (query) {
+                    const filteredModels = commonModels
+                        .filter(model => model.toLowerCase().includes(query.toLowerCase()))
+                        .slice(0, 8);
+                    
+                    filteredModels.forEach(model => {
+                        html += `<div class="autocomplete-item" onclick="selectRegModel('${model}')">${model}</div>`;
+                    });
+                    
+                    if (!filteredModels.some(model => model.toLowerCase() === query.toLowerCase())) {
+                        html += `<div class="autocomplete-item" onclick="selectRegModel('${query}')"><strong>Use "${query}"</strong> (Custom)</div>`;
+                    }
+                    
+                    if (filteredModels.length === 0) {
+                        html = `<div class="autocomplete-item" onclick="selectRegModel('${query}')"><strong>Use "${query}"</strong> (Custom)</div>`;
+                    }
+                } else {
+                    commonModels.slice(0, 8).forEach(model => {
+                        html += `<div class="autocomplete-item" onclick="selectRegModel('${model}')">${model}</div>`;
+                    });
+                }
+
+                dropdown.innerHTML = html;
+                showDropdown(dropdown);
+            }
+
+            // Show color results
+            function showColorResults(colors, query, dropdown) {
+                let html = '';
+                
+                colors.forEach(color => {
+                    html += `<div class="autocomplete-item" onclick="selectRegColor('${color}')">${color}</div>`;
+                });
+                
+                if (query && !colors.some(color => color.toLowerCase() === query.toLowerCase())) {
+                    html += `<div class="autocomplete-item" onclick="selectRegColor('${query}')"><strong>Use "${query}"</strong> (Custom)</div>`;
+                }
+
+                dropdown.innerHTML = html;
+                showDropdown(dropdown);
+            }
+
+            // Selection functions
+            window.selectRegMake = function(make) {
+                document.getElementById('vehicle-make').value = make;
+                hideDropdown(document.getElementById('regMakeDropdown'));
+                
+                const modelInput = document.getElementById('vehicle-model');
+                if (modelInput.value) {
+                    modelInput.value = '';
+                    hideDropdown(document.getElementById('regModelDropdown'));
+                }
+            }
+
+            window.selectRegModel = function(model) {
+                document.getElementById('vehicle-model').value = model;
+                hideDropdown(document.getElementById('regModelDropdown'));
+            }
+
+            window.selectRegColor = function(color) {
+                document.getElementById('vehicle-color').value = color;
+                hideDropdown(document.getElementById('regColorDropdown'));
+            }
+
+            // Utility functions
+            function showLoading(dropdown) {
+                dropdown.innerHTML = '<div class="autocomplete-loading">Loading...</div>';
+                showDropdown(dropdown);
+            }
+
+            function showError(dropdown, message) {
+                dropdown.innerHTML = `<div class="autocomplete-no-results">${message}</div>`;
+                showDropdown(dropdown);
+            }
+
+            function showDropdown(dropdown) {
+                dropdown.classList.add('show');
+            }
+
+            function hideDropdown(dropdown) {
+                dropdown.classList.remove('show');
+            }
+
+            // Initialize autocomplete when page loads
+            initializeVehicleAutocomplete();
+            initializeAddressAutocomplete();
+
+            // Address Autocomplete Functions
+            function initializeAddressAutocomplete() {
+                setupOwnerAddressAutocomplete();
+                setupBusinessAddressAutocomplete();
+            }
+
+            // Setup owner address autocomplete
+            function setupOwnerAddressAutocomplete() {
+                const addressInput = document.getElementById('owner-address-1');
+                const addressDropdown = document.getElementById('addressDropdown');
+
+                addressInput.addEventListener('input', function() {
+                    const query = this.value.trim();
+                    
+                    clearTimeout(debounceTimers.ownerAddress);
+                    
+                    if (query.length < 3) {
+                        hideDropdown(addressDropdown);
+                        return;
+                    }
+
+                    debounceTimers.ownerAddress = setTimeout(() => {
+                        searchAddresses(query, addressDropdown, 'owner');
+                    }, 500);
+                });
+
+                addressInput.addEventListener('focus', function() {
+                    if (this.value.trim().length >= 3) {
+                        searchAddresses(this.value.trim(), addressDropdown, 'owner');
+                    }
+                });
+
+                addressInput.addEventListener('blur', function() {
+                    setTimeout(() => hideDropdown(addressDropdown), 150);
+                });
+            }
+
+            // Setup business address autocomplete
+            function setupBusinessAddressAutocomplete() {
+                const businessAddressInput = document.getElementById('business-address');
+                const businessAddressDropdown = document.getElementById('businessAddressDropdown');
+
+                businessAddressInput.addEventListener('input', function() {
+                    const query = this.value.trim();
+                    
+                    clearTimeout(debounceTimers.businessAddress);
+                    
+                    if (query.length < 3) {
+                        hideDropdown(businessAddressDropdown);
+                        return;
+                    }
+
+                    debounceTimers.businessAddress = setTimeout(() => {
+                        searchAddresses(query, businessAddressDropdown, 'business');
+                    }, 500);
+                });
+
+                businessAddressInput.addEventListener('focus', function() {
+                    if (this.value.trim().length >= 3) {
+                        searchAddresses(this.value.trim(), businessAddressDropdown, 'business');
+                    }
+                });
+
+                businessAddressInput.addEventListener('blur', function() {
+                    setTimeout(() => hideDropdown(businessAddressDropdown), 150);
+                });
+            }
+
+            // Search addresses using Nominatim API (OpenStreetMap)
+            async function searchAddresses(query, dropdown, type) {
+                showLoading(dropdown);
+                
+                try {
+                    // Use Nominatim API for address suggestions
+                    const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&limit=5&q=${encodeURIComponent(query)}`);
+                    const data = await response.json();
+                    
+                    if (data && data.length > 0) {
+                        showAddressResults(data, query, dropdown, type);
+                    } else {
+                        showNoAddressResults(query, dropdown);
+                    }
+                    
+                } catch (error) {
+                    console.error('Error searching addresses:', error);
+                    showError(dropdown, 'Error loading address suggestions');
+                }
+            }
+
+            // Show address results
+            function showAddressResults(addresses, query, dropdown, type) {
+                let html = '';
+                
+                addresses.forEach((address, index) => {
+                    const displayName = address.display_name;
+                    const shortName = displayName.length > 60 ? displayName.substring(0, 60) + '...' : displayName;
+                    
+                    html += `<div class="autocomplete-item" onclick="selectAddress(${index}, '${type}')" data-address='${JSON.stringify(address)}'>${shortName}</div>`;
+                });
+                
+                // Store addresses data for selection
+                window.currentAddresses = addresses;
+                
+                dropdown.innerHTML = html;
+                showDropdown(dropdown);
+            }
+
+            // Show no results message
+            function showNoAddressResults(query, dropdown) {
+                dropdown.innerHTML = `<div class="autocomplete-no-results">No address suggestions found for "${query}"</div>`;
+                showDropdown(dropdown);
+            }
+
+            // Select address function
+            window.selectAddress = function(index, type) {
+                const address = window.currentAddresses[index];
+                
+                if (type === 'owner') {
+                    fillOwnerAddressFields(address);
+                    hideDropdown(document.getElementById('addressDropdown'));
+                } else if (type === 'business') {
+                    fillBusinessAddressFields(address);
+                    hideDropdown(document.getElementById('businessAddressDropdown'));
+                }
+            }
+
+            // Fill owner address fields
+            function fillOwnerAddressFields(address) {
+                const addressParts = address.address;
+                
+                // Set the main address
+                document.getElementById('owner-address-1').value = 
+                    `${addressParts.house_number || ''} ${addressParts.road || addressParts.street || ''}`.trim() || 
+                    address.display_name.split(',')[0];
+                
+                // Set city
+                if (addressParts.city || addressParts.town || addressParts.village || addressParts.municipality) {
+                    document.getElementById('owner-city').value = 
+                        addressParts.city || addressParts.town || addressParts.village || addressParts.municipality;
+                }
+                
+                // Set province/state
+                if (addressParts.state || addressParts.province) {
+                    document.getElementById('owner-province').value = addressParts.state || addressParts.province;
+                }
+                
+                // Set postal code
+                if (addressParts.postcode) {
+                    document.getElementById('owner-postal-code').value = addressParts.postcode;
+                }
+                
+                // Set country
+                if (addressParts.country_code) {
+                    const countrySelect = document.getElementById('owner-country');
+                    const countryCode = addressParts.country_code.toUpperCase();
+                    
+                    // Map common country codes
+                    const countryMap = {
+                        'CA': 'CA',
+                        'US': 'US', 
+                        'MX': 'MX'
+                    };
+                    
+                    if (countryMap[countryCode]) {
+                        countrySelect.value = countryMap[countryCode];
+                    }
+                }
+            }
+
+            // Fill business address fields
+            function fillBusinessAddressFields(address) {
+                const addressParts = address.address;
+                
+                // Set the main address
+                document.getElementById('business-address').value = 
+                    `${addressParts.house_number || ''} ${addressParts.road || addressParts.street || ''}`.trim() || 
+                    address.display_name.split(',')[0];
+                
+                // Set city
+                if (addressParts.city || addressParts.town || addressParts.village || addressParts.municipality) {
+                    document.getElementById('tech-city').value = 
+                        addressParts.city || addressParts.town || addressParts.village || addressParts.municipality;
+                }
+                
+                // Set province/state
+                if (addressParts.state || addressParts.province) {
+                    document.getElementById('tech-province').value = addressParts.state || addressParts.province;
+                }
+                
+                // Set postal code
+                if (addressParts.postcode) {
+                    document.getElementById('tech-postal-code').value = addressParts.postcode;
+                }
+                
+                // Set country
+                if (addressParts.country_code) {
+                    const countrySelect = document.getElementById('tech-country');
+                    const countryCode = addressParts.country_code.toUpperCase();
+                    
+                    // Map common country codes
+                    const countryMap = {
+                        'CA': 'CA',
+                        'US': 'US', 
+                        'MX': 'MX'
+                    };
+                    
+                    if (countryMap[countryCode]) {
+                        countrySelect.value = countryMap[countryCode];
+                    }
+                }
+            }
 
             // Validation functions
             async function checkEmailExists(email) {

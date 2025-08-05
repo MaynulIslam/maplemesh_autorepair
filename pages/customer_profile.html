@@ -20,6 +20,9 @@
   <!-- Font Awesome -->
   <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
   
+  <!-- Add Font Awesome CSS as backup -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" crossorigin="anonymous">
+  
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
   
@@ -477,6 +480,224 @@
       font-size: 14px;
       border-radius: 8px;
     }
+
+    /* Vehicle Modal Styling */
+    .vehicle-modal .form-control, .vehicle-modal .form-select {
+      padding: 10px 12px;
+      font-size: 14px;
+      border-radius: 6px;
+      border: 1px solid #dee2e6;
+      transition: all 0.3s ease;
+    }
+
+    .vehicle-modal .form-control:focus, .vehicle-modal .form-select:focus {
+      border-color: #344966;
+      box-shadow: 0 0 0 0.2rem rgba(52, 73, 102, 0.15);
+    }
+
+    .vehicle-modal .form-control:disabled, .vehicle-modal .form-select:disabled {
+      background-color: #f8f9fa;
+      opacity: 0.7;
+    }
+
+    /* Loading state for dropdowns */
+    .loading-dropdown {
+      background-image: url("data:image/svg+xml,%3csvg width='12' height='12' viewBox='0 0 12 12' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M6 0a6 6 0 0 1 6 6 1 1 0 0 1-2 0 4 4 0 0 0-4-4 1 1 0 0 1 0-2z' fill='%23666'/%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 12px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Enhanced table styling */
+    #vehicleTable th {
+      background-color: #f8f9fa !important;
+      border-bottom: 2px solid #dee2e6 !important;
+      font-weight: 600 !important;
+      font-size: 12px !important;
+      text-transform: uppercase !important;
+      letter-spacing: 0.5px !important;
+      color: #344966 !important;
+      padding: 15px 10px !important;
+    }
+
+    #vehicleTable td {
+      padding: 15px 10px;
+      vertical-align: middle;
+      border-bottom: 1px solid #eee;
+      background-color: white !important;
+    }
+
+    #vehicleTable tbody tr:hover {
+      background-color: #f8f9fa !important;
+    }
+
+    #vehicleTable thead tr {
+      background-color: #f8f9fa !important;
+    }
+
+    /* Fix button styling */
+    .btn-outline-primary {
+      color: #0d6efd !important;
+      border-color: #0d6efd !important;
+      background-color: transparent !important;
+    }
+
+    .btn-outline-primary:hover {
+      color: #fff !important;
+      background-color: #0d6efd !important;
+      border-color: #0d6efd !important;
+    }
+
+    .btn-outline-danger {
+      color: #dc3545 !important;
+      border-color: #dc3545 !important;
+      background-color: transparent !important;
+    }
+
+    .btn-outline-danger:hover {
+      color: #fff !important;
+      background-color: #dc3545 !important;
+      border-color: #dc3545 !important;
+    }
+
+    /* Ensure icons are visible */
+    .btn i {
+      font-size: 14px !important;
+      color: inherit !important;
+    }
+
+    /* Table container styling */
+    .table-responsive {
+      background-color: white !important;
+      border-radius: 8px !important;
+      overflow: hidden !important;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    .table {
+      margin-bottom: 0 !important;
+      background-color: white !important;
+    }
+
+    /* Autocomplete Styling */
+    .autocomplete-wrapper {
+      position: relative;
+    }
+
+    .autocomplete-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 1px solid #dee2e6;
+      border-top: none;
+      border-radius: 0 0 6px 6px;
+      max-height: 200px;
+      overflow-y: auto;
+      z-index: 1000;
+      display: none;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .autocomplete-dropdown.show {
+      display: block;
+    }
+
+    .autocomplete-item {
+      padding: 10px 15px;
+      cursor: pointer;
+      border-bottom: 1px solid #f8f9fa;
+      transition: background-color 0.2s ease;
+    }
+
+    .autocomplete-item:hover, .autocomplete-item.highlighted {
+      background-color: #f8f9fa;
+    }
+
+    .autocomplete-item.selected {
+      background-color: #344966;
+      color: white;
+    }
+
+    .autocomplete-item:last-child {
+      border-bottom: none;
+    }
+
+    .autocomplete-loading {
+      padding: 10px 15px;
+      text-align: center;
+      color: #6c757d;
+      font-style: italic;
+    }
+
+    .autocomplete-no-results {
+      padding: 10px 15px;
+      text-align: center;
+      color: #6c757d;
+      font-style: italic;
+    }
+
+    /* Enhanced input styling for autocomplete */
+    .autocomplete-wrapper .form-control {
+      border-radius: 6px 6px 6px 6px;
+    }
+
+    .autocomplete-wrapper .form-control:focus {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    .autocomplete-wrapper .form-control:focus + .autocomplete-dropdown {
+      border-top: 1px solid #344966;
+    }
+
+    /* Card styling improvements */
+    .card {
+      background-color: white !important;
+      border: 1px solid #dee2e6 !important;
+      border-radius: 8px !important;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    .card-header {
+      background-color: #f8f9fa !important;
+      border-bottom: 1px solid #dee2e6 !important;
+      padding: 1rem 1.25rem !important;
+    }
+
+    .card-header h5 {
+      color: #344966 !important;
+      font-weight: 600 !important;
+      margin-bottom: 0 !important;
+    }
+
+    .card-body {
+      padding: 1.25rem !important;
+      background-color: white !important;
+    }
+
+    /* Button improvements */
+    .btn-sm {
+      padding: 0.375rem 0.75rem !important;
+      font-size: 0.875rem !important;
+    }
+
+    .btn-primary {
+      background-color: #344966 !important;
+      border-color: #344966 !important;
+    }
+
+    .btn-primary:hover {
+      background-color: #2a3b52 !important;
+      border-color: #2a3b52 !important;
+    }
   </style>
 
   <!-- Bootstrap JS Bundle (includes Popper) -->
@@ -490,8 +711,8 @@
 
   <!-- Vehicle Modal -->
   <div class="modal fade" id="vehicleModal" tabindex="-1" aria-labelledby="vehicleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content vehicle-modal">
         <div class="modal-header">
           <h5 class="modal-title" id="vehicleModalLabel">Add Vehicle</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -502,26 +723,40 @@
             <div class="row">
               <div class="col-md-6 mb-3">
                 <label for="vehicleMake" class="form-label">Make *</label>
-                <input type="text" class="form-control" id="vehicleMake" required>
+                <div class="autocomplete-wrapper">
+                  <input type="text" class="form-control" id="vehicleMake" required 
+                         placeholder="Type or select make..." autocomplete="off">
+                  <div class="autocomplete-dropdown" id="makeDropdown"></div>
+                </div>
               </div>
               <div class="col-md-6 mb-3">
                 <label for="vehicleModel" class="form-label">Model *</label>
-                <input type="text" class="form-control" id="vehicleModel" required>
+                <div class="autocomplete-wrapper">
+                  <input type="text" class="form-control" id="vehicleModel" required 
+                         placeholder="Type or select model..." autocomplete="off">
+                  <div class="autocomplete-dropdown" id="modelDropdown"></div>
+                </div>
               </div>
             </div>
             <div class="row">
               <div class="col-md-6 mb-3">
                 <label for="vehicleYear" class="form-label">Year *</label>
-                <input type="number" class="form-control" id="vehicleYear" min="1900" max="2030" required>
+                <select class="form-control" id="vehicleYear" required>
+                  <option value="">Select Year...</option>
+                </select>
               </div>
               <div class="col-md-6 mb-3">
                 <label for="vehicleColor" class="form-label">Color</label>
-                <input type="text" class="form-control" id="vehicleColor">
+                <div class="autocomplete-wrapper">
+                  <input type="text" class="form-control" id="vehicleColor" 
+                         placeholder="Type or select color..." autocomplete="off">
+                  <div class="autocomplete-dropdown" id="colorDropdown"></div>
+                </div>
               </div>
             </div>
             <div class="mb-3">
               <label for="vehicleLicense" class="form-label">License Plate</label>
-              <input type="text" class="form-control" id="vehicleLicense">
+              <input type="text" class="form-control" id="vehicleLicense" placeholder="e.g., ABC-1234">
             </div>
             <div class="mb-3">
               <label for="vehicleLastService" class="form-label">Last Service Date</label>
@@ -547,10 +782,22 @@
   <script>
     // API Configuration
     const API_BASE_URL = 'http://localhost:8001';
+    const NHTSA_API_BASE = 'https://vpic.nhtsa.dot.gov/api/vehicles';
 
     // Vehicle Management Functions
     let vehicles = [];
     let isEditMode = false;
+    let vehicleMakes = [];
+    let vehicleModels = [];
+    let debounceTimers = {};
+
+    // Common color options
+    const commonColors = [
+      'Black', 'White', 'Silver', 'Gray', 'Red', 'Blue', 'Green', 'Yellow', 
+      'Orange', 'Purple', 'Brown', 'Gold', 'Beige', 'Maroon', 'Navy', 'Pink',
+      'Turquoise', 'Burgundy', 'Cream', 'Tan', 'Bronze', 'Copper', 'Pearl White',
+      'Metallic Blue', 'Dark Blue', 'Light Blue', 'Dark Green', 'Light Green'
+    ];
 
     // Load vehicles when page loads
     document.addEventListener('DOMContentLoaded', function() {
@@ -563,13 +810,389 @@
       
       if (!token) {
         showAlert('You are not logged in. Please log in to view your vehicles.', 'warning');
-        // Optionally redirect to login page
-        // window.location.href = 'sign-in.html';
         return;
       }
       
       loadVehicles();
+      loadVehicleYears();
+      loadVehicleMakes();
+      setupAutocomplete();
     });
+
+    // Setup autocomplete functionality
+    function setupAutocomplete() {
+      setupMakeAutocomplete();
+      setupModelAutocomplete();
+      setupColorAutocomplete();
+    }
+
+    // Setup make autocomplete
+    function setupMakeAutocomplete() {
+      const makeInput = document.getElementById('vehicleMake');
+      const makeDropdown = document.getElementById('makeDropdown');
+
+      makeInput.addEventListener('input', function() {
+        const query = this.value.trim();
+        
+        clearTimeout(debounceTimers.make);
+        
+        if (query.length < 1) {
+          hideDropdown(makeDropdown);
+          return;
+        }
+
+        debounceTimers.make = setTimeout(() => {
+          searchMakes(query, makeDropdown);
+        }, 300);
+      });
+
+      makeInput.addEventListener('focus', function() {
+        if (this.value.trim().length > 0) {
+          searchMakes(this.value.trim(), makeDropdown);
+        }
+      });
+
+      makeInput.addEventListener('blur', function() {
+        // Delay hiding to allow for clicks on dropdown items
+        setTimeout(() => hideDropdown(makeDropdown), 150);
+      });
+
+      // Trigger model search when make is selected/changed
+      makeInput.addEventListener('change', function() {
+        const modelInput = document.getElementById('vehicleModel');
+        
+        // If model input has a value, refresh the model suggestions
+        if (modelInput.value.trim()) {
+          const modelDropdown = document.getElementById('modelDropdown');
+          searchModels(modelInput.value.trim(), modelDropdown);
+        }
+      });
+    }
+
+    // Setup model autocomplete
+    function setupModelAutocomplete() {
+      const modelInput = document.getElementById('vehicleModel');
+      const modelDropdown = document.getElementById('modelDropdown');
+
+      modelInput.addEventListener('input', function() {
+        const query = this.value.trim();
+        
+        clearTimeout(debounceTimers.model);
+        
+        if (query.length < 1) {
+          hideDropdown(modelDropdown);
+          return;
+        }
+
+        debounceTimers.model = setTimeout(() => {
+          searchModels(query, modelDropdown);
+        }, 300);
+      });
+
+      modelInput.addEventListener('focus', function() {
+        if (this.value.trim().length > 0) {
+          searchModels(this.value.trim(), modelDropdown);
+        }
+      });
+
+      modelInput.addEventListener('blur', function() {
+        setTimeout(() => hideDropdown(modelDropdown), 150);
+      });
+    }
+
+    // Setup color autocomplete
+    function setupColorAutocomplete() {
+      const colorInput = document.getElementById('vehicleColor');
+      const colorDropdown = document.getElementById('colorDropdown');
+
+      colorInput.addEventListener('input', function() {
+        const query = this.value.trim();
+        
+        clearTimeout(debounceTimers.color);
+        
+        if (query.length < 1) {
+          hideDropdown(colorDropdown);
+          return;
+        }
+
+        debounceTimers.color = setTimeout(() => {
+          searchColors(query, colorDropdown);
+        }, 200);
+      });
+
+      colorInput.addEventListener('focus', function() {
+        if (this.value.trim().length > 0) {
+          searchColors(this.value.trim(), colorDropdown);
+        } else {
+          // Show all common colors when focused
+          showAllColors(colorDropdown);
+        }
+      });
+
+      colorInput.addEventListener('blur', function() {
+        setTimeout(() => hideDropdown(colorDropdown), 150);
+      });
+    }
+
+    // Search makes function
+    async function searchMakes(query, dropdown) {
+      showLoading(dropdown);
+      
+      try {
+        // Filter from loaded makes or load them if not available
+        if (vehicleMakes.length === 0) {
+          await loadVehicleMakes();
+        }
+
+        const filteredMakes = vehicleMakes
+          .filter(make => make.MakeName.toLowerCase().includes(query.toLowerCase()))
+          .slice(0, 10); // Limit to 10 results
+
+        showMakeResults(filteredMakes, query, dropdown);
+        
+      } catch (error) {
+        console.error('Error searching makes:', error);
+        showError(dropdown, 'Error loading makes');
+      }
+    }
+
+    // Search models function
+    async function searchModels(query, dropdown) {
+      showLoading(dropdown);
+      
+      try {
+        const makeInput = document.getElementById('vehicleMake');
+        const yearSelect = document.getElementById('vehicleYear');
+        
+        // Try to get models from NHTSA API if make and year are available
+        if (makeInput.value.trim() && yearSelect.value) {
+          try {
+            const response = await fetch(`${NHTSA_API_BASE}/GetModelsForMakeYear/make/${encodeURIComponent(makeInput.value.trim())}/modelyear/${yearSelect.value}?format=json`);
+            const data = await response.json();
+            
+            if (data.Results && data.Results.length > 0) {
+              const models = data.Results
+                .map(model => model.Model_Name)
+                .filter((model, index, array) => array.indexOf(model) === index) // Remove duplicates
+                .filter(model => model.toLowerCase().includes(query.toLowerCase()))
+                .slice(0, 10);
+
+              if (models.length > 0) {
+                showModelResults(models, query, dropdown);
+                return;
+              }
+            }
+          } catch (error) {
+            console.log('NHTSA API error, falling back to generic models:', error);
+          }
+        }
+        
+        // Fallback to generic model search or custom input
+        showGenericModelOptions(query, dropdown);
+        
+      } catch (error) {
+        console.error('Error searching models:', error);
+        showGenericModelOptions(query, dropdown);
+      }
+    }
+
+    // Search colors function
+    function searchColors(query, dropdown) {
+      const filteredColors = commonColors
+        .filter(color => color.toLowerCase().includes(query.toLowerCase()))
+        .slice(0, 8);
+
+      showColorResults(filteredColors, query, dropdown);
+    }
+
+    // Show all colors
+    function showAllColors(dropdown) {
+      showColorResults(commonColors.slice(0, 10), '', dropdown);
+    }
+
+    // Show make results
+    function showMakeResults(makes, query, dropdown) {
+      let html = '';
+      
+      makes.forEach(make => {
+        html += `<div class="autocomplete-item" onclick="selectMake('${make.MakeName}')">${make.MakeName}</div>`;
+      });
+      
+      // Always allow custom input
+      if (query && !makes.some(make => make.MakeName.toLowerCase() === query.toLowerCase())) {
+        html += `<div class="autocomplete-item" onclick="selectMake('${query}')"><strong>Use "${query}"</strong> (Custom)</div>`;
+      }
+      
+      if (html === '' && query) {
+        html = `<div class="autocomplete-item" onclick="selectMake('${query}')"><strong>Use "${query}"</strong> (Custom)</div>`;
+      }
+
+      dropdown.innerHTML = html;
+      showDropdown(dropdown);
+    }
+
+    // Show model results
+    function showModelResults(models, query, dropdown) {
+      let html = '';
+      
+      models.forEach(model => {
+        html += `<div class="autocomplete-item" onclick="selectModel('${model}')">${model}</div>`;
+      });
+      
+      // Always allow custom input
+      if (query && !models.some(model => model.toLowerCase() === query.toLowerCase())) {
+        html += `<div class="autocomplete-item" onclick="selectModel('${query}')"><strong>Use "${query}"</strong> (Custom)</div>`;
+      }
+      
+      if (html === '' && query) {
+        html = `<div class="autocomplete-item" onclick="selectModel('${query}')"><strong>Use "${query}"</strong> (Custom)</div>`;
+      }
+
+      dropdown.innerHTML = html;
+      showDropdown(dropdown);
+    }
+
+    // Show generic model options when make/year not selected or no API results
+    function showGenericModelOptions(query, dropdown) {
+      let html = '';
+      
+      // Common vehicle models for generic search
+      const commonModels = [
+        'Accord', 'Camry', 'Civic', 'Corolla', 'Altima', 'Sentra', 'Elantra', 'Sonata',
+        'Malibu', 'Impala', 'Cruze', 'Focus', 'Fusion', 'F-150', 'Silverado', 'Sierra',
+        'Pilot', 'CR-V', 'RAV4', 'Highlander', 'Explorer', 'Escape', 'Equinox', 'Traverse',
+        'Wrangler', 'Grand Cherokee', 'Cherokee', 'Compass', 'Renegade', 'Outback', 'Forester',
+        'Legacy', 'Impreza', 'CX-5', 'CX-9', 'Mazda3', 'Mazda6', 'Soul', 'Forte', 'Optima'
+      ];
+      
+      if (query) {
+        // Filter common models by query
+        const filteredModels = commonModels
+          .filter(model => model.toLowerCase().includes(query.toLowerCase()))
+          .slice(0, 8);
+        
+        filteredModels.forEach(model => {
+          html += `<div class="autocomplete-item" onclick="selectModel('${model}')">${model}</div>`;
+        });
+        
+        // Always allow custom input
+        if (!filteredModels.some(model => model.toLowerCase() === query.toLowerCase())) {
+          html += `<div class="autocomplete-item" onclick="selectModel('${query}')"><strong>Use "${query}"</strong> (Custom)</div>`;
+        }
+        
+        if (filteredModels.length === 0) {
+          html = `<div class="autocomplete-item" onclick="selectModel('${query}')"><strong>Use "${query}"</strong> (Custom)</div>`;
+        }
+      } else {
+        // Show some common models when no query
+        commonModels.slice(0, 8).forEach(model => {
+          html += `<div class="autocomplete-item" onclick="selectModel('${model}')">${model}</div>`;
+        });
+      }
+
+      dropdown.innerHTML = html;
+      showDropdown(dropdown);
+    }
+
+    // Show color results
+    function showColorResults(colors, query, dropdown) {
+      let html = '';
+      
+      colors.forEach(color => {
+        html += `<div class="autocomplete-item" onclick="selectColor('${color}')">${color}</div>`;
+      });
+      
+      // Always allow custom input
+      if (query && !colors.some(color => color.toLowerCase() === query.toLowerCase())) {
+        html += `<div class="autocomplete-item" onclick="selectColor('${query}')"><strong>Use "${query}"</strong> (Custom)</div>`;
+      }
+
+      dropdown.innerHTML = html;
+      showDropdown(dropdown);
+    }
+
+    // Selection functions
+    function selectMake(make) {
+      document.getElementById('vehicleMake').value = make;
+      hideDropdown(document.getElementById('makeDropdown'));
+      
+      // Clear model when make changes
+      const modelInput = document.getElementById('vehicleModel');
+      if (modelInput.value) {
+        modelInput.value = '';
+        hideDropdown(document.getElementById('modelDropdown'));
+      }
+    }
+
+    function selectModel(model) {
+      document.getElementById('vehicleModel').value = model;
+      hideDropdown(document.getElementById('modelDropdown'));
+    }
+
+    function selectColor(color) {
+      document.getElementById('vehicleColor').value = color;
+      hideDropdown(document.getElementById('colorDropdown'));
+    }
+
+    // Utility functions
+    function showLoading(dropdown) {
+      dropdown.innerHTML = '<div class="autocomplete-loading">Loading...</div>';
+      showDropdown(dropdown);
+    }
+
+    function showError(dropdown, message) {
+      dropdown.innerHTML = `<div class="autocomplete-no-results">${message}</div>`;
+      showDropdown(dropdown);
+    }
+
+    function showDropdown(dropdown) {
+      dropdown.classList.add('show');
+    }
+
+    function hideDropdown(dropdown) {
+      dropdown.classList.remove('show');
+    }
+
+    // Load vehicle makes from NHTSA API
+    async function loadVehicleMakes() {
+      try {
+        if (vehicleMakes.length > 0) return; // Already loaded
+
+        const response = await fetch(`${NHTSA_API_BASE}/GetMakesForVehicleType/car?format=json`);
+        const data = await response.json();
+        
+        vehicleMakes = data.Results.sort((a, b) => a.MakeName.localeCompare(b.MakeName));
+        console.log(`Loaded ${vehicleMakes.length} vehicle makes`);
+        
+      } catch (error) {
+        console.error('Error loading vehicle makes:', error);
+        // Load fallback makes
+        vehicleMakes = [
+          {MakeName: 'Acura'}, {MakeName: 'Audi'}, {MakeName: 'BMW'}, {MakeName: 'Buick'}, 
+          {MakeName: 'Cadillac'}, {MakeName: 'Chevrolet'}, {MakeName: 'Chrysler'}, {MakeName: 'Dodge'}, 
+          {MakeName: 'Ford'}, {MakeName: 'GMC'}, {MakeName: 'Honda'}, {MakeName: 'Hyundai'}, 
+          {MakeName: 'Infiniti'}, {MakeName: 'Jeep'}, {MakeName: 'Kia'}, {MakeName: 'Lexus'}, 
+          {MakeName: 'Lincoln'}, {MakeName: 'Mazda'}, {MakeName: 'Mercedes-Benz'}, {MakeName: 'Mitsubishi'}, 
+          {MakeName: 'Nissan'}, {MakeName: 'Pontiac'}, {MakeName: 'Ram'}, {MakeName: 'Subaru'}, 
+          {MakeName: 'Toyota'}, {MakeName: 'Volkswagen'}, {MakeName: 'Volvo'}
+        ];
+      }
+    }
+
+    // Load vehicle years (current year back to 1990)
+    function loadVehicleYears() {
+      const yearSelect = document.getElementById('vehicleYear');
+      const currentYear = new Date().getFullYear();
+      
+      yearSelect.innerHTML = '<option value="">Select Year...</option>';
+      
+      for (let year = currentYear; year >= 1990; year--) {
+        const option = document.createElement('option');
+        option.value = year;
+        option.textContent = year;
+        yearSelect.appendChild(option);
+      }
+    }
 
     // Function to get auth token
     function getAuthToken() {
@@ -656,10 +1279,10 @@
           <tr>
             <td>
               <div class="d-flex align-items-center">
-                <i class="fas fa-car me-3 text-primary fa-lg"></i>
                 <div>
                   <strong>${vehicle.make} ${vehicle.model}</strong>
-                  <div class="text-muted small">${vehicle.color || 'Color not specified'}</div>
+                  <br>
+                  <small class="text-muted">${vehicle.color || 'Color not specified'}</small>
                 </div>
               </div>
             </td>
@@ -670,10 +1293,10 @@
               <span class="text-muted small">${vehicle.description || 'No description'}</span>
             </td>
             <td>
-              <button class="btn btn-sm btn-outline-primary me-1" onclick="editVehicle('${vehicle.vehicle_id}')">
+              <button class="btn btn-sm btn-outline-primary me-1" onclick="editVehicle('${vehicle.vehicle_id}')" title="Edit">
                 <i class="fas fa-edit"></i>
               </button>
-              <button class="btn btn-sm btn-outline-danger" onclick="deleteVehicle('${vehicle.vehicle_id}')">
+              <button class="btn btn-sm btn-outline-danger" onclick="deleteVehicle('${vehicle.vehicle_id}')" title="Delete">
                 <i class="fas fa-trash"></i>
               </button>
             </td>
@@ -691,12 +1314,23 @@
       document.getElementById('vehicleForm').reset();
       document.getElementById('vehicleId').value = '';
       
+      // Clear autocomplete inputs
+      document.getElementById('vehicleMake').value = '';
+      document.getElementById('vehicleModel').value = '';
+      document.getElementById('vehicleColor').value = '';
+      document.getElementById('vehicleYear').selectedIndex = 0;
+      
+      // Hide all dropdowns
+      hideDropdown(document.getElementById('makeDropdown'));
+      hideDropdown(document.getElementById('modelDropdown'));
+      hideDropdown(document.getElementById('colorDropdown'));
+      
       const modal = new bootstrap.Modal(document.getElementById('vehicleModal'));
       modal.show();
     }
 
     // Edit vehicle
-    function editVehicle(vehicleId) {
+    async function editVehicle(vehicleId) {
       const vehicle = vehicles.find(v => v.vehicle_id === vehicleId);
       if (!vehicle) return;
 
@@ -717,6 +1351,11 @@
         document.getElementById('vehicleLastService').value = date.toISOString().split('T')[0];
       }
 
+      // Hide all dropdowns
+      hideDropdown(document.getElementById('makeDropdown'));
+      hideDropdown(document.getElementById('modelDropdown'));
+      hideDropdown(document.getElementById('colorDropdown'));
+
       const modal = new bootstrap.Modal(document.getElementById('vehicleModal'));
       modal.show();
     }
@@ -731,14 +1370,20 @@
         }
 
         const vehicleData = {
-          make: document.getElementById('vehicleMake').value,
-          model: document.getElementById('vehicleModel').value,
+          make: document.getElementById('vehicleMake').value.trim(),
+          model: document.getElementById('vehicleModel').value.trim(),
           year: parseInt(document.getElementById('vehicleYear').value),
-          color: document.getElementById('vehicleColor').value || null,
-          license_plate: document.getElementById('vehicleLicense').value || null,
+          color: document.getElementById('vehicleColor').value.trim() || null,
+          license_plate: document.getElementById('vehicleLicense').value.trim() || null,
           last_service_date: document.getElementById('vehicleLastService').value || null,
-          description: document.getElementById('vehicleDescription').value || null
+          description: document.getElementById('vehicleDescription').value.trim() || null
         };
+
+        // Validate required fields
+        if (!vehicleData.make || !vehicleData.model || !vehicleData.year) {
+          showAlert('Please fill in all required fields (Make, Model, Year)', 'warning');
+          return;
+        }
 
         let response;
         if (isEditMode) {
