@@ -19,6 +19,7 @@ db = client[DATABASE_NAME]
 user_auth_collection = db.user_authentication
 customer_profile_collection = db.customer_profile
 technician_profile_collection = db.technician_profile
+vehicles_collection = db.vehicles
 
 # Test connection
 try:
@@ -35,6 +36,9 @@ def create_indexes():
         # Profile collections indexes
         customer_profile_collection.create_index("user_id", unique=True)
         technician_profile_collection.create_index("user_id", unique=True)
+        
+        # Vehicle collection indexes (no unique constraint on vehicle_id since we don't use it)
+        vehicles_collection.create_index("user_id")
         
     except Exception as e:
         logging.error(f"Error creating indexes: {e}")

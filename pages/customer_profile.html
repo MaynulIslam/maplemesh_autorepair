@@ -28,76 +28,7 @@
 </head>
 
 <body class="bg-gray-100">
-  <!-- ===================== HEADER / NAVIGATION BAR ===================== -->
-  <header>
-    <nav class="navbar navbar-expand-lg navbar-dark">
-      <div class="container-fluid">
-        <!-- Brand -->
-        <a class="navbar-brand fw-bold me-3 d-flex flex-column align-items-start p-0" href="customer_dashboard.html">
-          <span>MapleMesh</span>
-          <span>AutoRepair</span>
-        </a>
-
-        <!-- Left-side Navigation Links -->
-        <div class="navbar-nav d-none d-lg-flex me-auto">
-          <a class="nav-link fw-bold" href="customer_dashboard.html">Dashboard</a>
-          <a class="nav-link fw-bold" href="customer_service.html">Service</a>
-          <a class="nav-link fw-bold" href="customer_billing.html">Billing</a>
-        </div>
-
-        <!-- Welcome Message (Center) -->
-        <div class="navbar-text d-none d-lg-block mx-auto text-center text-white">
-          <h4 class="mb-0 fw-bold">Welcome Back!</h4>
-          <small>Your Trusted Auto Service Partner</small>
-        </div>
-
-        <!-- Right-side Navigation Links -->
-        <div class="collapse navbar-collapse flex-grow-0" id="mainNavbar">
-          <ul class="navbar-nav align-items-center">
-            <li class="nav-item dropdown hover-dropdown">
-              <a class="nav-link fw-bold active" href="customer_profile.html" id="profileLink">Profile</a>
-              <div class="dropdown-menu dropdown-menu-end" aria-labelledby="profileLink">
-                <div class="dropdown-header d-flex align-items-center p-3">
-                  <div class="avatar-square me-3">
-                    <i class="fas fa-user avatar-icon"></i>
-                  </div>
-                  <div>
-                    <h6 class="mb-0" id="nav-profile-name">Loading...</h6>
-                    <small class="text-muted" id="nav-member-since">Customer since...</small>
-                  </div>
-                </div>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="customer_profile.html">
-                  <i class="fas fa-user me-2 text-primary"></i>My Profile
-                </a>
-                <a class="dropdown-item" href="customer_service.html">
-                  <i class="fas fa-history me-2 text-primary"></i>Service History
-                </a>
-                <a class="dropdown-item" href="customer_billing.html">
-                  <i class="fas fa-credit-card me-2 text-primary"></i>Billing Settings
-                </a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">
-                  <i class="fas fa-question-circle me-2 text-primary"></i>Help & Support
-                </a>
-                <a class="dropdown-item" href="#">
-                  <i class="fas fa-sign-out-alt me-2 text-danger"></i>Sign Out
-                </a>
-              </div>
-            </li>
-          </ul>
-        </div>
-
-        <!-- Mobile Toggle Button -->
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
-                data-bs-target="#mainNavbar" aria-controls="mainNavbar" 
-                aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-      </div>
-    </nav>
-  </header>
-  <!-- ===================== END HEADER / NAVIGATION BAR ===================== -->
+  <!-- Navigation will be loaded by customer_navigation.js -->
 
   <!-- Main Content Container -->
   <div class="content-wrapper">
@@ -206,101 +137,31 @@
           <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
               <h5>Registered Vehicles</h5>
-              <button class="btn btn-sm btn-primary">
+              <button class="btn btn-sm btn-primary" onclick="openAddVehicleModal()">
                 <i class="fas fa-plus me-2"></i>Add Vehicle
               </button>
             </div>
             <div class="card-body p-0">
               <div class="table-responsive">
-                <table class="table align-middle mb-0">
+                <table class="table align-middle mb-0" id="vehicleTable">
                   <thead>
                     <tr>
                       <th>VEHICLE</th>
                       <th>YEAR</th>
                       <th>LICENSE PLATE</th>
                       <th>LAST SERVICE</th>
-                      <th>NEXT SERVICE</th>
+                      <th>DESCRIPTION</th>
                       <th>ACTIONS</th>
                     </tr>
                   </thead>
-                  <tbody>
-                    <tr>
-                      <td>
-                        <div class="d-flex align-items-center">
-                          <i class="fas fa-car me-3 text-primary fa-lg"></i>
-                          <div>
-                            <strong>Toyota RAV4</strong>
-                            <div class="text-muted small">SUV, White</div>
-                          </div>
-                        </div>
-                      </td>
-                      <td>2024</td>
-                      <td>ABC-1234</td>
-                      <td>Jan 15, 2025</td>
-                      <td>
-                        <span class="badge bg-success">In 3 months</span>
-                      </td>
-                      <td>
-                        <button class="btn btn-sm btn-outline-primary me-1">
-                          <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="btn btn-sm btn-outline-danger">
-                          <i class="fas fa-trash"></i>
-                        </button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div class="d-flex align-items-center">
-                          <i class="fas fa-car me-3 text-primary fa-lg"></i>
-                          <div>
-                            <strong>Honda Accord</strong>
-                            <div class="text-muted small">Sedan, Black</div>
-                          </div>
-                        </div>
-                      </td>
-                      <td>2023</td>
-                      <td>XYZ-5678</td>
-                      <td>Dec 5, 2024</td>
-                      <td>
-                        <span class="badge bg-warning text-dark">Next week</span>
-                      </td>
-                      <td>
-                        <button class="btn btn-sm btn-outline-primary me-1">
-                          <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="btn btn-sm btn-outline-danger">
-                          <i class="fas fa-trash"></i>
-                        </button>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div class="d-flex align-items-center">
-                          <i class="fas fa-car me-3 text-primary fa-lg"></i>
-                          <div>
-                            <strong>Tesla Model 3</strong>
-                            <div class="text-muted small">Sedan, Blue</div>
-                          </div>
-                        </div>
-                      </td>
-                      <td>2025</td>
-                      <td>ELC-9012</td>
-                      <td>Nov 20, 2024</td>
-                      <td>
-                        <span class="badge bg-danger">Overdue</span>
-                      </td>
-                      <td>
-                        <button class="btn btn-sm btn-outline-primary me-1">
-                          <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="btn btn-sm btn-outline-danger">
-                          <i class="fas fa-trash"></i>
-                        </button>
-                      </td>
-                    </tr>
+                  <tbody id="vehicleTableBody">
+                    <!-- Vehicle data will be loaded dynamically -->
                   </tbody>
                 </table>
+                <div id="noVehiclesMessage" class="text-center p-4 text-muted" style="display: none;">
+                  <i class="fas fa-car fa-3x mb-3"></i>
+                  <p>No vehicles registered yet. Click "Add Vehicle" to get started.</p>
+                </div>
               </div>
             </div>
           </div>
@@ -405,8 +266,6 @@
         // Update profile name and member since
         document.getElementById('profile-name').textContent = `${profile.first_name} ${profile.last_name}`;
         document.getElementById('member-since').textContent = `Customer since ${profile.member_since}`;
-        document.getElementById('nav-profile-name').textContent = `${profile.first_name} ${profile.last_name}`;
-        document.getElementById('nav-member-since').textContent = `Customer since ${profile.member_since}`;
         
         // Populate form fields
         document.getElementById('firstName').value = profile.first_name || '';
@@ -484,19 +343,21 @@
         }
       }
       
-      // Show alert message
-      function showAlert(message, type) {
+      // Show alert message (make it global so navigation can use it)
+      window.showAlert = function(message, type) {
         const alertDiv = document.createElement('div');
         alertDiv.className = `alert alert-${type} mt-3 fade show`;
         alertDiv.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'} me-2"></i>${message}`;
         
         const form = document.getElementById('profile-form');
-        form.appendChild(alertDiv);
-        
-        setTimeout(() => {
-          alertDiv.classList.remove('show');
-          setTimeout(() => alertDiv.remove(), 300);
-        }, 3000);
+        if (form) {
+          form.appendChild(alertDiv);
+          
+          setTimeout(() => {
+            alertDiv.classList.remove('show');
+            setTimeout(() => alertDiv.remove(), 300);
+          }, 3000);
+        }
       }
       
       // Profile editing functionality with updated button text
@@ -617,6 +478,339 @@
       border-radius: 8px;
     }
   </style>
+
+  <!-- Bootstrap JS Bundle (includes Popper) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- Customer Navigation Script -->
+  <script src="../js/customer_navigation.js"></script>
 </body>
 
-</html>
+</html>  </style>
+
+  <!-- Vehicle Modal -->
+  <div class="modal fade" id="vehicleModal" tabindex="-1" aria-labelledby="vehicleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="vehicleModalLabel">Add Vehicle</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="vehicleForm">
+            <input type="hidden" id="vehicleId" value="">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="vehicleMake" class="form-label">Make *</label>
+                <input type="text" class="form-control" id="vehicleMake" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="vehicleModel" class="form-label">Model *</label>
+                <input type="text" class="form-control" id="vehicleModel" required>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="vehicleYear" class="form-label">Year *</label>
+                <input type="number" class="form-control" id="vehicleYear" min="1900" max="2030" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="vehicleColor" class="form-label">Color</label>
+                <input type="text" class="form-control" id="vehicleColor">
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="vehicleLicense" class="form-label">License Plate</label>
+              <input type="text" class="form-control" id="vehicleLicense">
+            </div>
+            <div class="mb-3">
+              <label for="vehicleLastService" class="form-label">Last Service Date</label>
+              <input type="date" class="form-control" id="vehicleLastService">
+            </div>
+            <div class="mb-3">
+              <label for="vehicleDescription" class="form-label">Description</label>
+              <textarea class="form-control" id="vehicleDescription" rows="3" placeholder="Additional notes about the vehicle..."></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" onclick="saveVehicle()">Save Vehicle</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS Bundle (includes Popper) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // API Configuration
+    const API_BASE_URL = 'http://localhost:8001';
+
+    // Vehicle Management Functions
+    let vehicles = [];
+    let isEditMode = false;
+
+    // Load vehicles when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check if user is authenticated
+      const token = getAuthToken();
+      const userInfo = localStorage.getItem('user_info');
+      
+      console.log('Page loaded - Token:', token ? 'Present' : 'Missing');
+      console.log('Page loaded - User Info:', userInfo ? 'Present' : 'Missing');
+      
+      if (!token) {
+        showAlert('You are not logged in. Please log in to view your vehicles.', 'warning');
+        // Optionally redirect to login page
+        // window.location.href = 'sign-in.html';
+        return;
+      }
+      
+      loadVehicles();
+    });
+
+    // Function to get auth token
+    function getAuthToken() {
+      return localStorage.getItem('access_token');
+    }
+
+    // Function to make authenticated API calls
+    async function apiCall(endpoint, options = {}) {
+      const token = getAuthToken();
+      
+      if (!token) {
+        throw new Error('No authentication token found. Please log in again.');
+      }
+      
+      const defaultOptions = {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      };
+
+      const mergedOptions = {
+        ...defaultOptions,
+        ...options,
+        headers: {
+          ...defaultOptions.headers,
+          ...options.headers
+        }
+      };
+
+      console.log('Making API call to:', `${API_BASE_URL}${endpoint}`);
+      console.log('With token:', token ? 'Present' : 'Missing');
+
+      const response = await fetch(`${API_BASE_URL}${endpoint}`, mergedOptions);
+      
+      if (!response.ok) {
+        if (response.status === 401) {
+          // Token might be expired or invalid
+          localStorage.removeItem('access_token');
+          localStorage.removeItem('user_info');
+          throw new Error('Session expired. Please log in again.');
+        }
+        
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
+      }
+      
+      return await response.json();
+    }
+
+    // Load vehicles from API
+    async function loadVehicles() {
+      try {
+        const response = await apiCall('/api/customer/vehicles');
+        vehicles = response.vehicles;
+        displayVehicles();
+      } catch (error) {
+        console.error('Error loading vehicles:', error);
+        showAlert('Error loading vehicles: ' + error.message, 'danger');
+      }
+    }
+
+    // Display vehicles in table
+    function displayVehicles() {
+      const tableBody = document.getElementById('vehicleTableBody');
+      const noVehiclesMessage = document.getElementById('noVehiclesMessage');
+      const vehicleTable = document.getElementById('vehicleTable');
+
+      if (vehicles.length === 0) {
+        vehicleTable.style.display = 'none';
+        noVehiclesMessage.style.display = 'block';
+        return;
+      }
+
+      vehicleTable.style.display = 'table';
+      noVehiclesMessage.style.display = 'none';
+
+      const vehicleRows = vehicles.map(vehicle => {
+        const lastServiceDate = vehicle.last_service_date 
+          ? new Date(vehicle.last_service_date).toLocaleDateString()
+          : 'Not recorded';
+
+        return `
+          <tr>
+            <td>
+              <div class="d-flex align-items-center">
+                <i class="fas fa-car me-3 text-primary fa-lg"></i>
+                <div>
+                  <strong>${vehicle.make} ${vehicle.model}</strong>
+                  <div class="text-muted small">${vehicle.color || 'Color not specified'}</div>
+                </div>
+              </div>
+            </td>
+            <td>${vehicle.year}</td>
+            <td>${vehicle.license_plate || 'Not specified'}</td>
+            <td>${lastServiceDate}</td>
+            <td>
+              <span class="text-muted small">${vehicle.description || 'No description'}</span>
+            </td>
+            <td>
+              <button class="btn btn-sm btn-outline-primary me-1" onclick="editVehicle('${vehicle.vehicle_id}')">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="btn btn-sm btn-outline-danger" onclick="deleteVehicle('${vehicle.vehicle_id}')">
+                <i class="fas fa-trash"></i>
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      tableBody.innerHTML = vehicleRows;
+    }
+
+    // Open add vehicle modal
+    function openAddVehicleModal() {
+      isEditMode = false;
+      document.getElementById('vehicleModalLabel').textContent = 'Add Vehicle';
+      document.getElementById('vehicleForm').reset();
+      document.getElementById('vehicleId').value = '';
+      
+      const modal = new bootstrap.Modal(document.getElementById('vehicleModal'));
+      modal.show();
+    }
+
+    // Edit vehicle
+    function editVehicle(vehicleId) {
+      const vehicle = vehicles.find(v => v.vehicle_id === vehicleId);
+      if (!vehicle) return;
+
+      isEditMode = true;
+      document.getElementById('vehicleModalLabel').textContent = 'Edit Vehicle';
+      
+      // Populate form
+      document.getElementById('vehicleId').value = vehicle.vehicle_id;
+      document.getElementById('vehicleMake').value = vehicle.make;
+      document.getElementById('vehicleModel').value = vehicle.model;
+      document.getElementById('vehicleYear').value = vehicle.year;
+      document.getElementById('vehicleColor').value = vehicle.color || '';
+      document.getElementById('vehicleLicense').value = vehicle.license_plate || '';
+      document.getElementById('vehicleDescription').value = vehicle.description || '';
+      
+      if (vehicle.last_service_date) {
+        const date = new Date(vehicle.last_service_date);
+        document.getElementById('vehicleLastService').value = date.toISOString().split('T')[0];
+      }
+
+      const modal = new bootstrap.Modal(document.getElementById('vehicleModal'));
+      modal.show();
+    }
+
+    // Save vehicle (add or update)
+    async function saveVehicle() {
+      try {
+        const form = document.getElementById('vehicleForm');
+        if (!form.checkValidity()) {
+          form.reportValidity();
+          return;
+        }
+
+        const vehicleData = {
+          make: document.getElementById('vehicleMake').value,
+          model: document.getElementById('vehicleModel').value,
+          year: parseInt(document.getElementById('vehicleYear').value),
+          color: document.getElementById('vehicleColor').value || null,
+          license_plate: document.getElementById('vehicleLicense').value || null,
+          last_service_date: document.getElementById('vehicleLastService').value || null,
+          description: document.getElementById('vehicleDescription').value || null
+        };
+
+        let response;
+        if (isEditMode) {
+          const vehicleId = document.getElementById('vehicleId').value;
+          response = await apiCall(`/api/customer/vehicles/${vehicleId}`, {
+            method: 'PUT',
+            body: JSON.stringify(vehicleData)
+          });
+        } else {
+          response = await apiCall('/api/customer/vehicles', {
+            method: 'POST',
+            body: JSON.stringify(vehicleData)
+          });
+        }
+
+        showAlert(response.message, 'success');
+        
+        // Close modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('vehicleModal'));
+        modal.hide();
+        
+        // Reload vehicles
+        await loadVehicles();
+
+      } catch (error) {
+        console.error('Error saving vehicle:', error);
+        showAlert('Error saving vehicle: ' + error.message, 'danger');
+      }
+    }
+
+    // Delete vehicle
+    async function deleteVehicle(vehicleId) {
+      if (!confirm('Are you sure you want to delete this vehicle? This action cannot be undone.')) {
+        return;
+      }
+
+      try {
+        const response = await apiCall(`/api/customer/vehicles/${vehicleId}`, {
+          method: 'DELETE'
+        });
+
+        showAlert(response.message, 'success');
+        await loadVehicles();
+
+      } catch (error) {
+        console.error('Error deleting vehicle:', error);
+        showAlert('Error deleting vehicle: ' + error.message, 'danger');
+      }
+    }
+
+    // Show alert function
+    function showAlert(message, type) {
+      // Create alert element
+      const alertDiv = document.createElement('div');
+      alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+      alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+      alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      `;
+
+      // Add to body
+      document.body.appendChild(alertDiv);
+
+      // Auto remove after 5 seconds
+      setTimeout(() => {
+        if (alertDiv.parentNode) {
+          alertDiv.remove();
+        }
+      }, 5000);
+    }
+  </script>
+  
+  <!-- Customer Navigation Script -->
+  <script src="../js/customer_navigation.js"></script>

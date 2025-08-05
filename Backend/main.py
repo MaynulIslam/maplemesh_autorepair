@@ -1,9 +1,9 @@
 from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.middleware.cors import CORSMiddleware
-from models import CustomerRegistration, TechnicianRegistration, UserLogin, UserResponse, Token
+from models import CustomerRegistration, TechnicianRegistration, UserLogin, UserResponse, Token, VehicleCreate, VehicleUpdate, VehicleResponse, VehicleListResponse
 from auth_utils import hash_password, verify_password, create_access_token, verify_token
-from db_config import user_auth_collection, customer_profile_collection, technician_profile_collection, client
+from db_config import user_auth_collection, customer_profile_collection, technician_profile_collection, client, vehicles_collection
 from datetime import datetime, timezone
 from bson import ObjectId
 import logging
@@ -430,6 +430,143 @@ async def update_customer_profile(
         
     except Exception as e:
         logging.error(f"Update profile error: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+# Vehicle Management Endpoints
+
+@app.get("/api/customer/vehicles", response_model=VehicleListResponse)
+async def get_customer_vehicles(current_user: dict = Depends(get_current_user)):
+    """Get all vehicles for the current customer"""
+    try:
+        print(f"Getting vehicles for user ID: {current_user['user_id']}")
+        
+        # Find all vehicles for this user
+        vehicles_cursor = vehicles_collection.find({"user_id": current_user["user_id"]})
+        vehicles = []
+        
+        for vehicle in vehicles_cursor:
+            vehicles.append(VehicleResponse(
+                vehicle_id=str(vehicle["_id"]),
+                make=vehicle["make"],
+                model=vehicle["model"],
+                year=vehicle["year"],
+                color=vehicle.get("color"),
+                license_plate=vehicle.get("license_plate"),
+                last_service_date=vehicle.get("last_service_date"),
+                description=vehicle.get("description"),
+                created_at=vehicle["created_at"],
+                updated_at=vehicle["updated_at"]
+            ))
+        
+        return VehicleListResponse(vehicles=vehicles)
+        
+    except Exception as e:
+        logging.error(f"Get vehicles error: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+@app.post("/api/customer/vehicles")
+async def create_vehicle(
+    vehicle_data: VehicleCreate,
+    current_user: dict = Depends(get_current_user)
+):
+    """Create a new vehicle for the current customer"""
+    try:
+        print(f"Creating vehicle for user ID: {current_user['user_id']}")
+        print(f"Vehicle data: {vehicle_data.dict()}")
+        
+        # Create vehicle document
+        vehicle_doc = {
+            "user_id": current_user["user_id"],
+            "make": vehicle_data.make,
+            "model": vehicle_data.model,
+            "year": vehicle_data.year,
+            "color": vehicle_data.color,
+            "license_plate": vehicle_data.license_plate,
+            "last_service_date": vehicle_data.last_service_date,
+            "description": vehicle_data.description,
+            "created_at": datetime.now(timezone.utc),
+            "updated_at": datetime.now(timezone.utc)
+        }
+        
+        # Insert vehicle
+        result = vehicles_collection.insert_one(vehicle_doc)
+        
+        return {
+            "message": "Vehicle added successfully",
+            "vehicle_id": str(result.inserted_id)
+        }
+        
+    except Exception as e:
+        logging.error(f"Create vehicle error: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+@app.put("/api/customer/vehicles/{vehicle_id}")
+async def update_vehicle(
+    vehicle_id: str,
+    vehicle_data: VehicleUpdate,
+    current_user: dict = Depends(get_current_user)
+):
+    """Update a vehicle for the current customer"""
+    try:
+        print(f"Updating vehicle {vehicle_id} for user ID: {current_user['user_id']}")
+        
+        # Check if vehicle exists and belongs to user
+        vehicle = vehicles_collection.find_one({
+            "_id": ObjectId(vehicle_id),
+            "user_id": current_user["user_id"]
+        })
+        
+        if not vehicle:
+            raise HTTPException(status_code=404, detail="Vehicle not found")
+        
+        # Build update data (only include non-None values)
+        update_data = {"updated_at": datetime.now(timezone.utc)}
+        
+        for field, value in vehicle_data.dict().items():
+            if value is not None:
+                update_data[field] = value
+        
+        # Update vehicle
+        vehicles_collection.update_one(
+            {"_id": ObjectId(vehicle_id)},
+            {"$set": update_data}
+        )
+        
+        return {"message": "Vehicle updated successfully"}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Update vehicle error: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+@app.delete("/api/customer/vehicles/{vehicle_id}")
+async def delete_vehicle(
+    vehicle_id: str,
+    current_user: dict = Depends(get_current_user)
+):
+    """Delete a vehicle for the current customer"""
+    try:
+        print(f"Deleting vehicle {vehicle_id} for user ID: {current_user['user_id']}")
+        
+        # Check if vehicle exists and belongs to user
+        vehicle = vehicles_collection.find_one({
+            "_id": ObjectId(vehicle_id),
+            "user_id": current_user["user_id"]
+        })
+        
+        if not vehicle:
+            raise HTTPException(status_code=404, detail="Vehicle not found")
+        
+        # Delete vehicle
+        vehicles_collection.delete_one({"_id": ObjectId(vehicle_id)})
+        
+        return {"message": "Vehicle deleted successfully"}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Delete vehicle error: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
 
 if __name__ == "__main__":

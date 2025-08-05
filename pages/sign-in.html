@@ -12,6 +12,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome -->
     <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+    <!-- Google Identity Services -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script>
         // Configure Tailwind with the company colors
         tailwind.config = {
@@ -172,6 +174,55 @@
                 0 0 20px rgba(19, 111, 99, 0.15);
             border: 2px solid rgba(19, 111, 99, 0.2);
         }
+
+        /* Social login button styles */
+        .social-btn {
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+            min-height: 60px;
+            background-color: white !important;
+        }
+
+        .social-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .social-btn:active {
+            transform: translateY(0);
+        }
+
+        .social-btn.loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .social-btn.loading .fa-spin {
+            animation: spin 1s linear infinite;
+        }
+
+        /* Style for social login images */
+        .social-btn img {
+            transition: all 0.2s ease;
+            filter: brightness(1);
+        }
+
+        .social-btn:hover img {
+            filter: brightness(1.1);
+            transform: scale(1.05);
+        }
+
+        /* If Font Awesome fails, show text clearly */
+        .social-btn span {
+            color: #374151;
+            font-weight: 500;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -254,15 +305,18 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-3 gap-2">
-                <button type="button" class="flex justify-center items-center py-2 px-2 border border-gray-300 rounded-md shadow-sm bg-white text-xs font-medium text-gray-700 hover:bg-gray-50">
-                    <i class="fab fa-google text-red-500 text-sm"></i>
+            <div class="grid grid-cols-3 gap-3">
+                <button type="button" id="google-login-btn" class="social-btn flex flex-col justify-center items-center py-3 px-2 border border-gray-300 rounded-lg shadow-sm bg-white text-xs font-medium text-gray-700 hover:bg-gray-50 hover:border-red-400 min-h-[60px]">
+                    <img src="../Images/google_signin.png" alt="Google" class="w-6 h-6 mb-1">
+                    <span class="text-[10px]">Google</span>
                 </button>
-                <button type="button" class="flex justify-center items-center py-2 px-2 border border-gray-300 rounded-md shadow-sm bg-white text-xs font-medium text-gray-700 hover:bg-gray-50">
-                    <i class="fab fa-facebook-f text-blue-600 text-sm"></i>
+                <button type="button" class="social-btn flex flex-col justify-center items-center py-3 px-2 border border-gray-300 rounded-lg shadow-sm bg-white text-xs font-medium text-gray-700 hover:bg-gray-50 hover:border-blue-400 min-h-[60px]">
+                    <img src="../Images/facebook_signin.png" alt="Facebook" class="w-6 h-6 mb-1">
+                    <span class="text-[10px]">Facebook</span>
                 </button>
-                <button type="button" class="flex justify-center items-center py-2 px-2 border border-gray-300 rounded-md shadow-sm bg-white text-xs font-medium text-gray-700 hover:bg-gray-50">
-                    <i class="fab fa-apple text-black text-sm"></i>
+                <button type="button" class="social-btn flex flex-col justify-center items-center py-3 px-2 border border-gray-300 rounded-lg shadow-sm bg-white text-xs font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-400 min-h-[60px]">
+                    <img src="../Images/apple_signin.png" alt="Apple" class="w-6 h-6 mb-1">
+                    <span class="text-[10px]">Apple</span>
                 </button>
             </div>
 
@@ -322,6 +376,214 @@
 
     <script>
         const API_BASE_URL = 'http://localhost:8001';
+        
+        // Google Client ID - You'll need to replace this with your actual Google Client ID
+        const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID_HERE';
+
+        // Google Sign-In callback function
+        async function handleGoogleLogin(response) {
+            try {
+                console.log('Google login response:', response);
+                
+                // Show loading state on button
+                const googleBtn = document.getElementById('google-login-btn');
+                googleBtn.classList.add('loading');
+                googleBtn.innerHTML = '<i class="fas fa-spinner fa-spin text-red-500 text-sm"></i>';
+                googleBtn.disabled = true;
+
+                // First, check if user exists with this Google email
+                const checkResponse = await fetch(`${API_BASE_URL}/api/auth/check-google-user`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        credential: response.credential 
+                    })
+                });
+
+                const checkResult = await checkResponse.json();
+
+                if (checkResponse.ok) {
+                    if (checkResult.user_exists) {
+                        // User exists, proceed with login
+                        await proceedWithGoogleLogin(response.credential);
+                    } else {
+                        // New user, show selection modal
+                        showUserTypeSelection(response.credential, checkResult.user_info);
+                    }
+                } else {
+                    throw new Error(checkResult.detail || 'Failed to verify Google user');
+                }
+
+            } catch (error) {
+                console.error('Google login error:', error);
+                alert('Google login failed: ' + error.message);
+                resetGoogleButton();
+            }
+        }
+
+        // Function to proceed with existing user login
+        async function proceedWithGoogleLogin(credential) {
+            try {
+                const result = await fetch(`${API_BASE_URL}/api/auth/google-login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        credential: credential 
+                    })
+                });
+
+                const data = await result.json();
+
+                if (result.ok) {
+                    // Store token in localStorage
+                    localStorage.setItem('access_token', data.access_token);
+                    localStorage.setItem('user_info', JSON.stringify(data.user));
+                    
+                    // Show success state briefly before redirect
+                    const googleBtn = document.getElementById('google-login-btn');
+                    googleBtn.innerHTML = '<i class="fas fa-check text-green-500 text-sm"></i>';
+                    
+                    setTimeout(() => {
+                        // Redirect based on user type
+                        if (data.user.user_type === 'customer') {
+                            window.location.href = 'customer_dashboard.html';
+                        } else {
+                            window.location.href = 'technician_dashboard.html';
+                        }
+                    }, 1000);
+                } else {
+                    throw new Error(data.detail || 'Google login failed');
+                }
+            } catch (error) {
+                console.error('Google login error:', error);
+                alert('Google login failed: ' + error.message);
+                resetGoogleButton();
+            }
+        }
+
+        // Function to reset Google button state
+        function resetGoogleButton() {
+            const googleBtn = document.getElementById('google-login-btn');
+            googleBtn.classList.remove('loading');
+            googleBtn.innerHTML = '<img src="../Images/google_signin.png" alt="Google" class="w-6 h-6 mb-1"><span class="text-[10px]">Google</span>';
+            googleBtn.disabled = false;
+        }
+
+        // Function to show user type selection modal
+        function showUserTypeSelection(credential, userInfo) {
+            // Reset Google button first
+            resetGoogleButton();
+            
+            // Update modal content for Google user
+            document.querySelector('#signup-modal h1').textContent = 'Welcome to MapleMesh!';
+            document.querySelector('#signup-modal p').textContent = `Hi ${userInfo.name || userInfo.email}! How would you like to get started?`;
+            
+            // Update the button event handlers for Google signup
+            const ownerBtn = document.getElementById('owner-btn');
+            const technicianBtn = document.getElementById('technician-btn');
+            
+            // Remove old event listeners and add new ones
+            ownerBtn.replaceWith(ownerBtn.cloneNode(true));
+            technicianBtn.replaceWith(technicianBtn.cloneNode(true));
+            
+            // Get the new elements after replacement
+            const newOwnerBtn = document.getElementById('owner-btn');
+            const newTechnicianBtn = document.getElementById('technician-btn');
+            
+            newOwnerBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                createGoogleUser(credential, 'customer');
+            });
+            
+            newTechnicianBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                createGoogleUser(credential, 'technician');
+            });
+            
+            // Show the modal
+            openModal();
+        }
+
+        // Function to create Google user with selected type
+        async function createGoogleUser(credential, userType) {
+            try {
+                // Show loading in modal
+                const modal = document.getElementById('signup-modal');
+                const modalContent = modal.querySelector('.bg-white');
+                modalContent.innerHTML = `
+                    <div class="text-center py-8">
+                        <i class="fas fa-spinner fa-spin text-4xl text-primary-light mb-4"></i>
+                        <h2 class="text-xl font-bold text-primary mb-2">Creating your account...</h2>
+                        <p class="text-gray-600">Please wait while we set up your profile</p>
+                    </div>
+                `;
+
+                const result = await fetch(`${API_BASE_URL}/api/auth/google-signup`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        credential: credential,
+                        user_type: userType
+                    })
+                });
+
+                const data = await result.json();
+
+                if (result.ok) {
+                    // Store token in localStorage
+                    localStorage.setItem('access_token', data.access_token);
+                    localStorage.setItem('user_info', JSON.stringify(data.user));
+                    
+                    // Show success message
+                    modalContent.innerHTML = `
+                        <div class="text-center py-8">
+                            <i class="fas fa-check-circle text-4xl text-green-500 mb-4"></i>
+                            <h2 class="text-xl font-bold text-green-600 mb-2">Account Created Successfully!</h2>
+                            <p class="text-gray-600">Redirecting to your dashboard...</p>
+                        </div>
+                    `;
+                    
+                    setTimeout(() => {
+                        // Redirect based on user type
+                        if (data.user.user_type === 'customer') {
+                            window.location.href = 'customer_dashboard.html';
+                        } else {
+                            window.location.href = 'technician_dashboard.html';
+                        }
+                    }, 2000);
+                } else {
+                    throw new Error(data.detail || 'Failed to create Google account');
+                }
+            } catch (error) {
+                console.error('Google signup error:', error);
+                alert('Failed to create account: ' + error.message);
+                closeModalFunction();
+            }
+        }
+
+        // Initialize Google Sign-In when the page loads
+        function initializeGoogle() {
+            if (typeof google !== 'undefined' && google.accounts) {
+                google.accounts.id.initialize({
+                    client_id: GOOGLE_CLIENT_ID,
+                    callback: handleGoogleLogin,
+                    auto_select: false,
+                    cancel_on_tap_outside: true
+                });
+            } else {
+                // Retry initialization after a short delay
+                setTimeout(initializeGoogle, 100);
+            }
+        }
+
+        // Call initialize when page loads
+        window.addEventListener('load', initializeGoogle);
 
         async function handleLogin(email, password) {
             try {
@@ -523,6 +785,28 @@
                 e.preventDefault();
                 window.location.href = 'sign-up.html?type=technician';
             });
+
+            // Google Sign-In button click handler
+            const googleBtn = document.getElementById('google-login-btn');
+            if (googleBtn) {
+                googleBtn.addEventListener('click', function() {
+                    if (typeof google !== 'undefined' && google.accounts) {
+                        // Add loading state
+                        googleBtn.classList.add('loading');
+                        googleBtn.innerHTML = '<i class="fas fa-spinner fa-spin text-red-500 text-sm"></i>';
+                        
+                        google.accounts.id.prompt((notification) => {
+                            // Reset button state when prompt is dismissed
+                            if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+                                googleBtn.classList.remove('loading');
+                                googleBtn.innerHTML = '<i class="fab fa-google text-red-500 text-sm"></i>';
+                            }
+                        });
+                    } else {
+                        alert('Google Sign-In is not loaded yet. Please try again in a moment.');
+                    }
+                });
+            }
         });
     </script>
 

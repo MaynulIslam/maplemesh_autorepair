@@ -28,76 +28,7 @@
 </head>
 
 <body class="bg-gray-100">
-  <!-- ===================== HEADER / NAVIGATION BAR ===================== -->
-  <header>
-    <nav class="navbar navbar-expand-lg navbar-dark">
-      <div class="container-fluid">
-        <!-- Brand -->
-        <a class="navbar-brand fw-bold me-3 d-flex flex-column align-items-start p-0" href="customer_dashboard.html">
-          <span>MapleMesh</span>
-          <span>AutoRepair</span>
-        </a>
-
-        <!-- Left-side Navigation Links -->
-        <div class="navbar-nav d-none d-lg-flex me-auto">
-          <a class="nav-link fw-bold" href="customer_dashboard.html">Dashboard</a>
-          <a class="nav-link fw-bold" href="customer_service.html">Service</a>
-          <a class="nav-link fw-bold active" href="customer_billing.html">Billing</a>
-        </div>
-
-        <!-- Welcome Message (Center) -->
-        <div class="navbar-text d-none d-lg-block mx-auto text-center text-white">
-          <h4 class="mb-0 fw-bold">Welcome Back!</h4>
-          <small>Your Trusted Auto Service Partner</small>
-        </div>
-
-        <!-- Right-side Navigation Links -->
-        <div class="collapse navbar-collapse flex-grow-0" id="mainNavbar">
-          <ul class="navbar-nav align-items-center">
-            <li class="nav-item dropdown hover-dropdown">
-              <a class="nav-link fw-bold" href="customer_profile.html" id="profileLink">Profile</a>
-              <div class="dropdown-menu dropdown-menu-end" aria-labelledby="profileLink">
-                <div class="dropdown-header d-flex align-items-center p-3">
-                  <div class="avatar-circle me-3">
-                    <img src="../assets/img/avatar-placeholder.jpg" alt="Profile" class="avatar-img">
-                  </div>
-                  <div>
-                    <h6 class="mb-0">John Doe</h6>
-                    <small class="text-muted">Customer since 2022</small>
-                  </div>
-                </div>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="customer_profile.html">
-                  <i class="fas fa-user me-2 text-primary"></i>My Profile
-                </a>
-                <a class="dropdown-item" href="customer_service.html">
-                  <i class="fas fa-history me-2 text-primary"></i>Service History
-                </a>
-                <a class="dropdown-item" href="customer_billing.html">
-                  <i class="fas fa-credit-card me-2 text-primary"></i>Billing Settings
-                </a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">
-                  <i class="fas fa-question-circle me-2 text-primary"></i>Help & Support
-                </a>
-                <a class="dropdown-item" href="#">
-                  <i class="fas fa-sign-out-alt me-2 text-danger"></i>Sign Out
-                </a>
-              </div>
-            </li>
-          </ul>
-        </div>
-
-        <!-- Mobile Toggle Button -->
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
-                data-bs-target="#mainNavbar" aria-controls="mainNavbar" 
-                aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-      </div>
-    </nav>
-  </header>
-  <!-- ===================== END HEADER / NAVIGATION BAR ===================== -->
+  <!-- Navigation will be loaded by customer_navigation.js -->
 
   <!-- Main Content Container -->
   <div class="content-wrapper">
@@ -338,5 +269,7 @@
       }
     });
   </script>
+  <!-- Customer Navigation Script -->
+  <script src="../js/customer_navigation.js"></script>
 </body>
 </html>

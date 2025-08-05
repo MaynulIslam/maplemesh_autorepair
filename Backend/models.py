@@ -66,6 +66,14 @@ class Token(BaseModel):
     token_type: str
     user: UserResponse
 
+# Google OAuth Models
+class GoogleLoginRequest(BaseModel):
+    credential: str
+
+class GoogleSignupRequest(BaseModel):
+    credential: str
+    user_type: str
+
 class ProfileUpdateRequest(BaseModel):
     first_name: str
     last_name: str
@@ -94,3 +102,37 @@ class ProfileResponse(BaseModel):
     member_since: str
     membership_level: str = "Bronze"
     loyalty_points: int = 0
+
+# Vehicle Models
+class VehicleCreate(BaseModel):
+    make: str
+    model: str
+    year: int
+    color: Optional[str] = None
+    license_plate: Optional[str] = None
+    last_service_date: Optional[str] = None
+    description: Optional[str] = None
+
+class VehicleUpdate(BaseModel):
+    make: Optional[str] = None
+    model: Optional[str] = None
+    year: Optional[int] = None
+    color: Optional[str] = None
+    license_plate: Optional[str] = None
+    last_service_date: Optional[str] = None
+    description: Optional[str] = None
+
+class VehicleResponse(BaseModel):
+    vehicle_id: str
+    make: str
+    model: str
+    year: int
+    color: Optional[str] = None
+    license_plate: Optional[str] = None
+    last_service_date: Optional[str] = None
+    description: Optional[str] = None
+    created_at: datetime
+    updated_at: datetime
+
+class VehicleListResponse(BaseModel):
+    vehicles: List[VehicleResponse]
