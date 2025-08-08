@@ -46,31 +46,12 @@ class CustomerNavigation {
             <ul class="navbar-nav align-items-center">
               <li class="nav-item dropdown hover-dropdown">
                 <a class="nav-link fw-bold" href="customer_profile.html" id="profileLink">Profile</a>
-                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="profileLink">
-                  <div class="dropdown-header d-flex align-items-center p-3">
-                    <div class="avatar-square me-3">
-                      <i class="fas fa-user avatar-icon"></i>
-                    </div>
-                    <div>
-                      <h6 class="mb-0" id="nav-profile-name">Loading...</h6>
-                      <small class="text-muted" id="nav-member-since">Customer since...</small>
-                    </div>
-                  </div>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="customer_profile.html">
-                    <i class="fas fa-user me-2 text-primary"></i>My Profile
-                  </a>
-                  <a class="dropdown-item" href="customer_service.html">
-                    <i class="fas fa-history me-2 text-primary"></i>Service History
-                  </a>
-                  <a class="dropdown-item" href="customer_billing.html">
-                    <i class="fas fa-credit-card me-2 text-primary"></i>Billing Settings
-                  </a>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="#">
+                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="profileLink" style="background-color:#041B15; min-width:12rem;">
+                  <a class="dropdown-item text-white d-flex align-items-center" href="#" id="help-support-link">
                     <i class="fas fa-question-circle me-2 text-primary"></i>Help & Support
                   </a>
-                  <a class="dropdown-item" href="#" id="sign-out-btn">
+                  <div class="dropdown-divider" style="border-color: rgba(255,255,255,0.15)"></div>
+                  <a class="dropdown-item text-white d-flex align-items-center" href="#" id="sign-out-btn">
                     <i class="fas fa-sign-out-alt me-2 text-danger"></i>Sign Out
                   </a>
                 </div>
@@ -125,6 +106,9 @@ class CustomerNavigation {
     
     // Setup sign out functionality
     this.setupSignOut();
+
+    // Setup hover behavior for dropdown
+    this.setupHoverDropdown();
   }
 
   // Set active navigation link based on current page
@@ -188,16 +172,11 @@ class CustomerNavigation {
       if (response.ok) {
         const profile = await response.json();
         
-        // Update navigation profile info with delay to ensure elements exist
+        // Update navigation name on the dropdown trigger
         setTimeout(() => {
-          const profileName = document.getElementById('nav-profile-name');
-          const memberSince = document.getElementById('nav-member-since');
-          
-          if (profileName) {
-            profileName.textContent = `${profile.first_name} ${profile.last_name}`;
-          }
-          if (memberSince) {
-            memberSince.textContent = `Customer since ${profile.member_since}`;
+          const profileLink = document.getElementById('profileLink');
+          if (profileLink) {
+            profileLink.textContent = profile.first_name || 'Profile';
           }
         }, 100);
       }
@@ -214,25 +193,69 @@ class CustomerNavigation {
       if (signOutBtn) {
         signOutBtn.addEventListener('click', (e) => {
           e.preventDefault();
-          
           if (confirm('Are you sure you want to sign out?')) {
+            const toastId = window.statusNotify ? statusNotify.loading('Signing out...', { title: 'Please wait' }) : null;
             // Remove authentication data
             localStorage.removeItem('access_token');
             localStorage.removeItem('user_info');
-            
-            // Show sign out message if showAlert function exists
-            if (typeof showAlert === 'function') {
+            if (toastId) {
+              statusNotify.update(toastId, 'Signed out', 'success');
+              setTimeout(() => { window.location.href = 'sign-in.html'; }, 600);
+            } else if (typeof showAlert === 'function') {
               showAlert('Signing out...', 'info');
-              setTimeout(() => {
-                window.location.href = 'sign-in.html';
-              }, 1000);
+              setTimeout(() => { window.location.href = 'sign-in.html'; }, 1000);
             } else {
-              // Direct redirect if no alert function
               window.location.href = 'sign-in.html';
             }
           }
         });
       }
+
+      // Optional: Help & Support click handler (placeholder)
+      const helpLink = document.getElementById('help-support-link');
+      if (helpLink) {
+        helpLink.addEventListener('click', (e) => {
+          e.preventDefault();
+          if (window.statusNotify) {
+            statusNotify.info('Help & Support coming soon');
+          }
+        });
+      }
+    }, 100);
+  }
+
+  // Show dropdown on hover while keeping link navigation on click
+  setupHoverDropdown() {
+    // Small delay to ensure DOM is ready
+    setTimeout(() => {
+      const dropdown = document.querySelector('.nav-item.dropdown.hover-dropdown');
+      const menu = dropdown ? dropdown.querySelector('.dropdown-menu') : null;
+      const trigger = dropdown ? dropdown.querySelector('#profileLink') : null;
+      if (!dropdown || !menu || !trigger) return;
+
+      let hoverTimeout;
+
+      const showMenu = () => {
+        clearTimeout(hoverTimeout);
+        dropdown.classList.add('show');
+        menu.classList.add('show');
+        // Positioning compatibility
+        menu.setAttribute('data-bs-popper', 'none');
+      };
+
+      const hideMenu = () => {
+        hoverTimeout = setTimeout(() => {
+          dropdown.classList.remove('show');
+          menu.classList.remove('show');
+          menu.removeAttribute('data-bs-popper');
+        }, 150);
+      };
+
+      dropdown.addEventListener('mouseenter', showMenu);
+      dropdown.addEventListener('mouseleave', hideMenu);
+      // Keep menu open when hovering over it directly
+      menu.addEventListener('mouseenter', showMenu);
+      menu.addEventListener('mouseleave', hideMenu);
     }, 100);
   }
 

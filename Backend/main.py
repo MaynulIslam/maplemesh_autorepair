@@ -3,12 +3,12 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.middleware.cors import CORSMiddleware
 from models import CustomerRegistration, TechnicianRegistration, UserLogin, UserResponse, Token, VehicleCreate, VehicleUpdate, VehicleResponse, VehicleListResponse
 from auth_utils import hash_password, verify_password, create_access_token, verify_token
-from db_config import user_auth_collection, customer_profile_collection, technician_profile_collection, client, vehicles_collection
+from db_config import user_auth_collection, customer_profile_collection, technician_profile_collection, client, vehicles_collection, customer_service_list_collection
 from datetime import datetime, timezone
 from bson import ObjectId
 import logging
 from pydantic import BaseModel, EmailStr
-from typing import Optional
+from typing import Optional, List
 
 app = FastAPI(title="MapleMesh AutoRepair API", version="1.0.0")
 
@@ -567,6 +567,112 @@ async def delete_vehicle(
         raise
     except Exception as e:
         logging.error(f"Delete vehicle error: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+# Models for Service Requests
+class ServiceCatalogItem(BaseModel):
+    id: str
+    name: str
+    category: Optional[str] = None
+    estimated_minutes: Optional[int] = None
+
+class ServiceRequestCreate(BaseModel):
+    vehicle_id: str
+    odometer_km: int
+    services: List[str]  # list of catalog item ids or names
+    description: Optional[str] = None
+
+class ServiceRequestResponse(BaseModel):
+    id: str
+    user_id: str
+    vehicle_id: str
+    odometer_km: int
+    services: List[str]
+    description: Optional[str] = None
+    status: str
+    created_at: datetime
+    updated_at: datetime
+
+class ServiceListResponse(BaseModel):
+    services: List[ServiceRequestResponse]
+
+# In-memory catalog for now (can be swapped to external API later)
+SERVICE_CATALOG: List[ServiceCatalogItem] = [
+    ServiceCatalogItem(id="oil_change", name="Engine Oil & Filter Change", category="Maintenance", estimated_minutes=45),
+    ServiceCatalogItem(id="tire_rotation", name="Tire Rotation", category="Tires", estimated_minutes=30),
+    ServiceCatalogItem(id="brake_inspection", name="Brake Inspection", category="Brakes", estimated_minutes=40),
+    ServiceCatalogItem(id="brake_pads", name="Brake Pads Replacement", category="Brakes", estimated_minutes=90),
+    ServiceCatalogItem(id="battery_check", name="Battery Test & Replacement", category="Electrical", estimated_minutes=30),
+    ServiceCatalogItem(id="alignment", name="Wheel Alignment", category="Tires", estimated_minutes=60),
+    ServiceCatalogItem(id="ac_service", name="A/C Service & Recharge", category="HVAC", estimated_minutes=60),
+    ServiceCatalogItem(id="engine_diagnostics", name="Engine Diagnostics", category="Diagnostics", estimated_minutes=60),
+    ServiceCatalogItem(id="transmission_service", name="Transmission Service", category="Powertrain", estimated_minutes=120),
+    ServiceCatalogItem(id="coolant_flush", name="Coolant Flush", category="Fluids", estimated_minutes=60),
+]
+
+@app.get("/api/services/catalog", response_model=List[ServiceCatalogItem])
+async def get_service_catalog():
+    return SERVICE_CATALOG
+
+@app.get("/api/customer/services", response_model=ServiceListResponse)
+async def list_customer_services(current_user: dict = Depends(get_current_user)):
+    try:
+        cursor = customer_service_list_collection.find({"user_id": current_user["user_id"]}).sort("created_at", -1)
+        items: List[ServiceRequestResponse] = []
+        async_like_list = list(cursor)
+        for doc in async_like_list:
+            items.append(ServiceRequestResponse(
+                id=str(doc["_id"]),
+                user_id=doc["user_id"],
+                vehicle_id=doc["vehicle_id"],
+                odometer_km=doc.get("odometer_km", 0),
+                services=doc.get("services", []),
+                description=doc.get("description"),
+                status=doc.get("status", "Pending"),
+                created_at=doc.get("created_at", datetime.now(timezone.utc)),
+                updated_at=doc.get("updated_at", datetime.now(timezone.utc))
+            ))
+        return ServiceListResponse(services=items)
+    except Exception as e:
+        logging.error(f"List services error: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+@app.post("/api/customer/services", response_model=ServiceRequestResponse)
+async def create_customer_service(req: ServiceRequestCreate, current_user: dict = Depends(get_current_user)):
+    try:
+        # Validate vehicle belongs to user
+        vehicle = vehicles_collection.find_one({"_id": ObjectId(req.vehicle_id), "user_id": current_user["user_id"]})
+        if not vehicle:
+            raise HTTPException(status_code=404, detail="Vehicle not found")
+
+        now = datetime.now(timezone.utc)
+        doc = {
+            "user_id": current_user["user_id"],
+            "vehicle_id": req.vehicle_id,
+            "odometer_km": req.odometer_km,
+            "services": req.services,
+            "description": req.description,
+            "status": "Pending",
+            "created_at": now,
+            "updated_at": now
+        }
+        result = customer_service_list_collection.insert_one(doc)
+        created = customer_service_list_collection.find_one({"_id": result.inserted_id})
+        return ServiceRequestResponse(
+            id=str(created["_id"]),
+            user_id=created["user_id"],
+            vehicle_id=created["vehicle_id"],
+            odometer_km=created.get("odometer_km", 0),
+            services=created.get("services", []),
+            description=created.get("description"),
+            status=created.get("status", "Pending"),
+            created_at=created.get("created_at", now),
+            updated_at=created.get("updated_at", now)
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Create service error: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
 
 if __name__ == "__main__":

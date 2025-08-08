@@ -14,6 +14,8 @@
     <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
     <!-- Google Identity Services -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <!-- Status notifications -->
+    <script src="../js/status-notify.js"></script>
     <script>
         // Configure Tailwind with the company colors
         tailwind.config = {
@@ -382,14 +384,21 @@
 
         // Google Sign-In callback function
         async function handleGoogleLogin(response) {
+            let toastId = null;
             try {
                 console.log('Google login response:', response);
+
+                if (window.statusNotify) {
+                    toastId = statusNotify.loading('Signing in with Google...', { autoClose: false });
+                }
                 
                 // Show loading state on button
                 const googleBtn = document.getElementById('google-login-btn');
-                googleBtn.classList.add('loading');
-                googleBtn.innerHTML = '<i class="fas fa-spinner fa-spin text-red-500 text-sm"></i>';
-                googleBtn.disabled = true;
+                if (googleBtn) {
+                    googleBtn.classList.add('loading');
+                    googleBtn.innerHTML = '<i class="fas fa-spinner fa-spin text-red-500 text-sm"></i>';
+                    googleBtn.disabled = true;
+                }
 
                 // First, check if user exists with this Google email
                 const checkResponse = await fetch(`${API_BASE_URL}/api/auth/check-google-user`, {
@@ -407,9 +416,12 @@
                 if (checkResponse.ok) {
                     if (checkResult.user_exists) {
                         // User exists, proceed with login
-                        await proceedWithGoogleLogin(response.credential);
+                        await proceedWithGoogleLogin(response.credential, toastId);
                     } else {
                         // New user, show selection modal
+                        if (window.statusNotify && toastId) {
+                            statusNotify.update(toastId, 'Choose account type to continue', 'info', { autoClose: 2000 });
+                        }
                         showUserTypeSelection(response.credential, checkResult.user_info);
                     }
                 } else {
@@ -418,14 +430,23 @@
 
             } catch (error) {
                 console.error('Google login error:', error);
-                alert('Google login failed: ' + error.message);
+                if (window.statusNotify && toastId) {
+                    statusNotify.update(toastId, 'Google login failed: ' + error.message, 'error', { autoClose: 3000 });
+                } else {
+                    alert('Google login failed: ' + error.message);
+                }
                 resetGoogleButton();
             }
         }
 
         // Function to proceed with existing user login
-        async function proceedWithGoogleLogin(credential) {
+        async function proceedWithGoogleLogin(credential, existingToastId = null) {
+            let toastId = existingToastId;
             try {
+                if (!toastId && window.statusNotify) {
+                    toastId = statusNotify.loading('Signing in...', { autoClose: false });
+                }
+
                 const result = await fetch(`${API_BASE_URL}/api/auth/google-login`, {
                     method: 'POST',
                     headers: {
@@ -443,9 +464,14 @@
                     localStorage.setItem('access_token', data.access_token);
                     localStorage.setItem('user_info', JSON.stringify(data.user));
                     
+                    // Show success
+                    if (window.statusNotify && toastId) {
+                        statusNotify.update(toastId, 'Signed in', 'success', { autoClose: 800 });
+                    }
+
                     // Show success state briefly before redirect
                     const googleBtn = document.getElementById('google-login-btn');
-                    googleBtn.innerHTML = '<i class="fas fa-check text-green-500 text-sm"></i>';
+                    if (googleBtn) googleBtn.innerHTML = '<i class="fas fa-check text-green-500 text-sm"></i>';
                     
                     setTimeout(() => {
                         // Redirect based on user type
@@ -454,13 +480,17 @@
                         } else {
                             window.location.href = 'technician_dashboard.html';
                         }
-                    }, 1000);
+                    }, 700);
                 } else {
                     throw new Error(data.detail || 'Google login failed');
                 }
             } catch (error) {
                 console.error('Google login error:', error);
-                alert('Google login failed: ' + error.message);
+                if (window.statusNotify && toastId) {
+                    statusNotify.update(toastId, 'Google login failed: ' + error.message, 'error', { autoClose: 3000 });
+                } else {
+                    alert('Google login failed: ' + error.message);
+                }
                 resetGoogleButton();
             }
         }
@@ -468,6 +498,7 @@
         // Function to reset Google button state
         function resetGoogleButton() {
             const googleBtn = document.getElementById('google-login-btn');
+            if (!googleBtn) return;
             googleBtn.classList.remove('loading');
             googleBtn.innerHTML = '<img src="../Images/google_signin.png" alt="Google" class="w-6 h-6 mb-1"><span class="text-[10px]">Google</span>';
             googleBtn.disabled = false;
@@ -510,7 +541,12 @@
 
         // Function to create Google user with selected type
         async function createGoogleUser(credential, userType) {
+            let toastId = null;
             try {
+                if (window.statusNotify) {
+                    toastId = statusNotify.loading('Creating your account...', { autoClose: false });
+                }
+
                 // Show loading in modal
                 const modal = document.getElementById('signup-modal');
                 const modalContent = modal.querySelector('.bg-white');
@@ -548,6 +584,10 @@
                             <p class="text-gray-600">Redirecting to your dashboard...</p>
                         </div>
                     `;
+
+                    if (window.statusNotify && toastId) {
+                        statusNotify.update(toastId, 'Account created', 'success', { autoClose: 1000 });
+                    }
                     
                     setTimeout(() => {
                         // Redirect based on user type
@@ -556,13 +596,17 @@
                         } else {
                             window.location.href = 'technician_dashboard.html';
                         }
-                    }, 2000);
+                    }, 1000);
                 } else {
                     throw new Error(data.detail || 'Failed to create Google account');
                 }
             } catch (error) {
                 console.error('Google signup error:', error);
-                alert('Failed to create account: ' + error.message);
+                if (window.statusNotify && toastId) {
+                    statusNotify.update(toastId, 'Failed to create account: ' + error.message, 'error', { autoClose: 3000 });
+                } else {
+                    alert('Failed to create account: ' + error.message);
+                }
                 closeModalFunction();
             }
         }
@@ -586,7 +630,24 @@
         window.addEventListener('load', initializeGoogle);
 
         async function handleLogin(email, password) {
+            let toastId = null;
+            const submitBtn = document.querySelector('#sign-in-form button[type="submit"]');
+            // Set button loading state
+            if (submitBtn) {
+                if (window.statusNotify && statusNotify.setButtonLoading) {
+                    statusNotify.setButtonLoading(submitBtn, 'Signing in...');
+                } else {
+                    submitBtn.dataset.prevHtml = submitBtn.innerHTML;
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2 text-sm"></i> Signing in...';
+                }
+            }
+
             try {
+                if (window.statusNotify) {
+                    toastId = statusNotify.loading('Signing in...', { autoClose: false });
+                }
+
                 const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
                     method: 'POST',
                     headers: {
@@ -602,25 +663,48 @@
                     localStorage.setItem('access_token', result.access_token);
                     localStorage.setItem('user_info', JSON.stringify(result.user));
                     
-                    alert('Login successful!');
+                    if (window.statusNotify && toastId) {
+                        statusNotify.update(toastId, 'Signed in', 'success', { autoClose: 800 });
+                    } else {
+                        alert('Login successful!');
+                    }
+
                     // Redirect based on user type
-                    if (result.user.user_type === 'customer') {
-                        window.location.href = 'customer_dashboard.html';
-                    } else {
-                        window.location.href = 'technician_dashboard.html';
-                    }
+                    setTimeout(() => {
+                        if (result.user.user_type === 'customer') {
+                            window.location.href = 'customer_dashboard.html';
+                        } else {
+                            window.location.href = 'technician_dashboard.html';
+                        }
+                    }, 700);
                 } else {
-                    // Updated error handling
-                    if (result.detail === "User Name or Password is incorrect Please try again") {
-                        alert("User Name or Password is incorrect Please try again");
+                    const msg = (result && result.detail) ? result.detail : 'Login failed';
+                    if (window.statusNotify && toastId) {
+                        statusNotify.update(toastId, msg, 'error', { autoClose: 2500 });
                     } else {
-                        alert(result.detail || 'Login failed');
+                        alert(msg);
                     }
-                    throw new Error(result.detail || 'Login failed');
+                    throw new Error(msg);
                 }
             } catch (error) {
                 console.error('Login error:', error);
-                alert('Login failed: ' + error.message);
+                if (window.statusNotify && toastId) {
+                    statusNotify.update(toastId, 'Login failed: ' + error.message, 'error', { autoClose: 3000 });
+                } else {
+                    alert('Login failed: ' + error.message);
+                }
+            } finally {
+                if (submitBtn) {
+                    if (window.statusNotify && statusNotify.removeButtonLoading) {
+                        statusNotify.removeButtonLoading(submitBtn);
+                    } else {
+                        submitBtn.disabled = false;
+                        if (submitBtn.dataset.prevHtml) {
+                            submitBtn.innerHTML = submitBtn.dataset.prevHtml;
+                            delete submitBtn.dataset.prevHtml;
+                        }
+                    }
+                }
             }
         }
 
@@ -688,7 +772,11 @@
                         await handleLogin(email, password);
                     } catch (error) {
                         console.error('Login error:', error);
-                        alert('Login failed: ' + error.message);
+                        if (window.statusNotify) {
+                            statusNotify.error('Login failed: ' + error.message);
+                        } else {
+                            alert('Login failed: ' + error.message);
+                        }
                     }
                 }
             });
@@ -730,6 +818,8 @@
                     modalContent.classList.add('modal-sharp');
                 }
             }
+            // Expose globally for other functions
+            window.openModal = openModal;
             
             // Function to close the modal with animation
             function closeModalFunction() {
@@ -751,6 +841,8 @@
                     modalBackdrop.classList.remove('modal-backdrop-blur');
                 }, 300);
             }
+            // Expose globally for other functions
+            window.closeModalFunction = closeModalFunction;
             
             // Close modal when clicking the X button
             if (closeModal) {
@@ -803,7 +895,11 @@
                             }
                         });
                     } else {
-                        alert('Google Sign-In is not loaded yet. Please try again in a moment.');
+                        if (window.statusNotify) {
+                            statusNotify.info('Google Sign-In is not loaded yet. Please try again in a moment.');
+                        } else {
+                            alert('Google Sign-In is not loaded yet. Please try again in a moment.');
+                        }
                     }
                 });
             }
