@@ -61,6 +61,11 @@
     .service-chip { background:#f1f5f9; border-radius: 999px; padding: .25rem .6rem; font-size: .8rem; margin: .15rem; display:inline-block }
     /* Inline search results under Required Services */
     #serviceSearchResults { max-height: 240px; overflow:auto; border:1px solid #e9ecef; border-radius:.25rem; }
+    /* Service carousel custom arrow */
+    .service-carousel-wrapper { position: relative; }
+    .service-carousel-next { position:absolute; top:50%; right:4px; transform:translateY(-50%); z-index:5; border-radius:50%; width:40px; height:40px; display:flex; align-items:center; justify-content:center; box-shadow:0 2px 6px rgba(0,0,0,.2); background:#041B15; color:#fff; border:none; }
+    .service-carousel-next:hover { background:#063026; }
+    .service-carousel-next svg { width:18px; height:18px; }
   </style>
 </head>
 
@@ -90,7 +95,10 @@
                 <div class="text-muted">No services yet. Click "Schedule New Service" to create one.</div>
               </div>
               <button id="btn-schedule-service" class="btn btn-primary schedule-btn">
-                <i class="fas fa-calendar-plus me-2"></i>Schedule New Service
+                <i class="fas fa-calendar-plus me-2"></i>Add Service
+              </button>
+              <button id="btn-edit-service" class="btn btn-outline-secondary schedule-btn me-2" style="right: 180px;">
+                <i class="fas fa-edit me-2"></i>Edit Service
               </button>
             </div>
           </div>
@@ -133,28 +141,8 @@
                       <th>ACTION</th>
                     </tr>
                   </thead>
-                  <tbody>
-                    <tr>
-                      <td>Jun 15, 2025</td>
-                      <td>Oil Change - TOYOTA RAV4</td>
-                      <td>John Smith</td>
-                      <td><span class="badge bg-success">Completed</span></td>
-                      <td><button class="btn btn-sm btn-outline-primary">Details</button></td>
-                    </tr>
-                    <tr>
-                      <td>May 22, 2025</td>
-                      <td>Tire Rotation - TOYOTA RAV4</td>
-                      <td>Maria Lopez</td>
-                      <td><span class="badge bg-success">Completed</span></td>
-                      <td><button class="btn btn-sm btn-outline-primary">Details</button></td>
-                    </tr>
-                    <tr>
-                      <td>Apr 10, 2025</td>
-                      <td>Brake Inspection - TOYOTA RAV4</td>
-                      <td>James Kim</td>
-                      <td><span class="badge bg-success">Completed</span></td>
-                      <td><button class="btn btn-sm btn-outline-primary">Details</button></td>
-                    </tr>
+                  <tbody id="serviceHistoryBody">
+                    <tr><td colspan="5" class="text-muted">Loading...</td></tr>
                   </tbody>
                 </table>
               </div>
@@ -283,6 +271,50 @@
         </div>
       </div>
 
+      <!-- Service Details Modal -->
+      <div class="modal fade" id="serviceDetailsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title"><i class="fas fa-info-circle me-2"></i>Service Details</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div id="serviceDetailsContent" class="small text-muted">Loading...</div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Edit Service Modal -->
+      <div class="modal fade" id="editServiceModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Edit Service</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form id="editServiceForm" class="row g-3">
+                <div class="col-12">
+                  <label class="form-label">Select Service to Edit</label>
+                  <select id="editServiceSelect" class="form-select" required>
+                    <option value="" selected disabled>Loading...</option>
+                  </select>
+                </div>
+                <div id="editServiceFields" class="col-12 mt-3" style="display:none;"></div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              <button type="button" id="saveEditServiceBtn" class="btn btn-primary" style="display:none;">Save Changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -295,6 +327,8 @@
     let token = localStorage.getItem('access_token');
     let catalog = [];
     let selectedServiceIds = new Set();
+  let editServiceList = [];
+  let vehicleMap = {};
 
     function renderSelectedServices() {
       const container = document.getElementById('selectedServices');
@@ -419,42 +453,222 @@
           headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await res.json();
+        window.__latestServices = data.services || []; // cache for history table
         if (res.ok && data.services && data.services.length) {
           if (data.services.length === 1) {
+            // Dispose any previous carousel instance
+            if (window.serviceCarouselInstance) { window.serviceCarouselInstance.dispose(); window.serviceCarouselInstance = null; }
             const s = data.services[0];
             container.innerHTML = `
-              <div class="mb-2"><strong>Status:</strong> <span class="badge bg-warning text-dark">${s.status}</span></div>
-              <div class="mb-2"><strong>Vehicle:</strong> ${s.vehicle_id}</div>
-              <div class="mb-2"><strong>Odometer:</strong> ${s.odometer_km.toLocaleString()} km</div>
-              <div class="mb-2"><strong>Services:</strong> ${s.services.map(id => (catalog.find(c=>c.id===id)?.name)||id).map(n=>`<span class='service-chip'>${n}</span>`).join(' ')}</div>
+              <div class=\"mb-2\"><strong>Status:</strong> <span class=\"badge bg-warning text-dark\">${s.status}</span></div>
+              <div class=\"mb-2\"><strong>Vehicle:</strong> ${s.vehicle_id}</div>
+              <div class=\"mb-2\"><strong>Odometer:</strong> ${s.odometer_km.toLocaleString()} km</div>
+              <div class=\"mb-2\"><strong>Services:</strong> ${s.services.map(id => (catalog.find(c=>c.id===id)?.name)||id).map(n=>`<span class='service-chip'>${n}</span>`).join(' ')}</div>
               <div><strong>Description:</strong> ${s.description || '-'}</div>
             `;
           } else {
-            // Build a simple carousel
             const id = 'servicesCarousel';
             const slides = data.services.map((s, idx) => `
-              <div class="carousel-item ${idx===0?'active':''}">
-                <div class="p-3">
-                  <div class="mb-2"><strong>Status:</strong> <span class="badge bg-warning text-dark">${s.status}</span></div>
-                  <div class="mb-2"><strong>Vehicle:</strong> ${s.vehicle_id}</div>
-                  <div class="mb-2"><strong>Odometer:</strong> ${s.odometer_km.toLocaleString()} km</div>
-                  <div class="mb-2"><strong>Services:</strong> ${s.services.map(id => (catalog.find(c=>c.id===id)?.name)||id).map(n=>`<span class='service-chip'>${n}</span>`).join(' ')}</div>
+              <div class=\"carousel-item ${idx===0?'active':''}\">
+                <div class=\"p-3\">
+                  <div class=\"mb-2\"><strong>Status:</strong> <span class=\"badge bg-warning text-dark\">${s.status}</span></div>
+                  <div class=\"mb-2\"><strong>Vehicle:</strong> ${s.vehicle_id}</div>
+                  <div class=\"mb-2\"><strong>Odometer:</strong> ${s.odometer_km.toLocaleString()} km</div>
+                  <div class=\"mb-2\"><strong>Services:</strong> ${s.services.map(id => (catalog.find(c=>c.id===id)?.name)||id).map(n=>`<span class='service-chip'>${n}</span>`).join(' ')}</div>
                   <div><strong>Description:</strong> ${s.description || '-'}</div>
                 </div>
               </div>`).join('');
+
             container.innerHTML = `
-              <div id="${id}" class="carousel slide" data-bs-ride="carousel">
-                <div class="carousel-inner">${slides}</div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#${id}" data-bs-slide="prev"><span class="carousel-control-prev-icon" aria-hidden="true"></span><span class="visually-hidden">Previous</span></button>
-                <button class="carousel-control-next" type="button" data-bs-target="#${id}" data-bs-slide="next"><span class="carousel-control-next-icon" aria-hidden="true"></span><span class="visually-hidden">Next</span></button>
+              <div class=\"service-carousel-wrapper\">
+                <div id=\"${id}\" class=\"carousel slide\" data-bs-ride=\"carousel\">
+                  <div class=\"carousel-inner\">${slides}</div>
+                </div>
+                <button type=\"button\" class=\"service-carousel-next\" id=\"servicesCarouselNextBtn\" aria-label=\"Next service\">
+                  <svg viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 3l6 5-6 5\"/></svg>
+                </button>
               </div>`;
+
+
+            // Init / re-init carousel (manual only, no auto-advance)
+            const carouselEl = document.getElementById(id);
+            if (window.serviceCarouselInstance) { window.serviceCarouselInstance.dispose(); }
+            window.serviceCarouselInstance = new bootstrap.Carousel(carouselEl, { interval: false, ride: false, pause: true, wrap: true });
+
+            // Arrow button click -> next
+            const nextBtn = document.getElementById('servicesCarouselNextBtn');
+            if (nextBtn) {
+              nextBtn.addEventListener('click', () => { if (window.serviceCarouselInstance) window.serviceCarouselInstance.next(); });
+            }
           }
         } else {
+          if (window.serviceCarouselInstance) { window.serviceCarouselInstance.dispose(); window.serviceCarouselInstance = null; }
           container.innerHTML = '<div class="text-muted">No services yet. Click "Schedule New Service" to create one.</div>';
         }
+        // After updating main widget, refresh history table
+        renderServiceHistory();
       } catch (e) {
         container.innerHTML = '<div class="text-danger">Failed to load services.</div>';
+        renderServiceHistory(true);
       }
+    }
+
+    // Build vehicle map for nicer labels in history (id -> label)
+    async function buildVehicleMap() {
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/customer/vehicles`, { headers: { 'Authorization': `Bearer ${token}` } });
+        const data = await res.json();
+        if (res.ok && data.vehicles) {
+          vehicleMap = {};
+          data.vehicles.forEach(v => { vehicleMap[v.vehicle_id] = `${v.year} ${v.make} ${v.model}`; });
+        }
+      } catch (e) { /* ignore */ }
+    }
+
+    // Edit Service Modal Logic
+    async function openEditServiceModal() {
+      // Load latest services
+      const select = document.getElementById('editServiceSelect');
+      const fields = document.getElementById('editServiceFields');
+      const saveBtn = document.getElementById('saveEditServiceBtn');
+      select.innerHTML = '<option value="" selected disabled>Loading...</option>';
+      fields.style.display = 'none';
+      saveBtn.style.display = 'none';
+      fields.innerHTML = '';
+      // Fetch services
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/customer/services`, { headers: { 'Authorization': `Bearer ${token}` } });
+        const data = await res.json();
+        editServiceList = (data && data.services) ? data.services : [];
+        if (editServiceList.length === 0) {
+          select.innerHTML = '<option value="" disabled selected>No services found</option>';
+          return;
+        }
+        select.innerHTML = '<option value="" disabled selected>Select a service</option>' +
+          editServiceList.map(s => `<option value="${s.id}">${(catalog.find(c=>c.id===s.services[0])?.name||'Service')} - ${vehicleMap[s.vehicle_id]||s.vehicle_id} (${formatDate(s.created_at)})</option>`).join('');
+      } catch (e) {
+        select.innerHTML = '<option value="" disabled selected>Failed to load services</option>';
+      }
+    }
+
+    function renderEditServiceFields(serviceId) {
+      const svc = editServiceList.find(s => s.id === serviceId);
+      const fields = document.getElementById('editServiceFields');
+      const saveBtn = document.getElementById('saveEditServiceBtn');
+      if (!svc) { fields.style.display = 'none'; saveBtn.style.display = 'none'; return; }
+      // Build editable form
+      const vehicleOptions = Object.entries(vehicleMap).map(([id,label]) => `<option value='${id}' ${id===svc.vehicle_id?'selected':''}>${label}</option>`).join('');
+      const serviceCheckboxes = catalog.map(c => {
+        const checked = svc.services.includes(c.id) ? 'checked' : '';
+        return `<label class='me-2 mb-1'><input type='checkbox' class='form-check-input me-1 editServiceChk' value='${c.id}' ${checked}/> ${c.name}</label>`;
+      }).join('');
+      fields.innerHTML = `
+        <div class='mb-2'>
+          <label class='form-label fw-semibold mb-0'>Vehicle</label>
+          <select class='form-select form-select-sm' id='editVehicleSelect'>${vehicleOptions}</select>
+        </div>
+        <div class='mb-2'>
+          <label class='form-label fw-semibold mb-0'>Odometer (km)</label>
+          <input type='number' min='0' class='form-control form-control-sm' id='editOdometer' value='${svc.odometer_km || 0}' />
+        </div>
+        <div class='mb-2'>
+          <label class='form-label fw-semibold mb-0'>Services</label>
+          <div class='border rounded p-2' style='max-height:150px; overflow:auto'>${serviceCheckboxes}</div>
+        </div>
+        <div class='mb-2'>
+          <label class='form-label fw-semibold mb-0'>Description</label>
+          <textarea class='form-control form-control-sm' id='editDescription' rows='2'>${(svc.description||'').replace(/</g,'&lt;')}</textarea>
+        </div>
+      `;
+      fields.style.display = '';
+      saveBtn.style.display = '';
+    }
+
+    async function saveEditService() {
+      const select = document.getElementById('editServiceSelect');
+      const serviceId = select.value;
+      const odometer = parseInt(document.getElementById('editOdometer')?.value || '0',10);
+      const description = document.getElementById('editDescription')?.value.trim();
+      const vehicleId = document.getElementById('editVehicleSelect')?.value;
+      const services = Array.from(document.querySelectorAll('.editServiceChk:checked')).map(c=>c.value);
+      if (!vehicleId) { if (window.statusNotify) statusNotify.error('Vehicle required'); return; }
+      if (!services.length) { if (window.statusNotify) statusNotify.error('Select at least one service'); return; }
+      let toastId = window.statusNotify ? statusNotify.loading('Saving changes...', { autoClose:false }) : null;
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/customer/services/${serviceId}`, {
+          method:'PUT',
+          headers:{ 'Content-Type':'application/json', 'Authorization':`Bearer ${token}` },
+          body: JSON.stringify({ odometer_km: odometer, description, services, vehicle_id: vehicleId })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.detail || 'Update failed');
+        if (toastId) statusNotify.update(toastId, 'Updated', 'success', { autoClose:1200 });
+        // close modal
+        const modalEl = document.getElementById('editServiceModal');
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        modal.hide();
+        await loadYourServices();
+      } catch (e) {
+        if (toastId) statusNotify.update(toastId, e.message, 'error', { autoClose:2500 });
+      }
+    }
+
+    function formatDate(iso) {
+      if (!iso) return '-';
+      const d = new Date(iso);
+      if (isNaN(d.getTime())) return '-';
+      return d.toLocaleDateString(undefined, { month:'short', day:'2-digit', year:'numeric' });
+    }
+
+    function renderServiceHistory(error=false) {
+      const tbody = document.getElementById('serviceHistoryBody');
+      if (!tbody) return;
+      if (error) { tbody.innerHTML = '<tr><td colspan="5" class="text-danger">Failed to load services</td></tr>'; return; }
+      const services = window.__latestServices || [];
+      if (!services.length) { tbody.innerHTML = '<tr><td colspan="5" class="text-muted">No services added yet.</td></tr>'; return; }
+      // Filter by search
+      const searchInput = document.getElementById('serviceSearchInput');
+      const q = (searchInput?.value || '').toLowerCase();
+      const rows = services
+        .filter(s => {
+          if (!q) return true;
+            const names = s.services.map(id => (catalog.find(c=>c.id===id)?.name)||id).join(' ');
+            return names.toLowerCase().includes(q) || (s.status||'').toLowerCase().includes(q);
+        })
+        .map(s => {
+          const date = formatDate(s.created_at || s.updated_at);
+          const serviceNames = s.services.map(id => (catalog.find(c=>c.id===id)?.name)||id).join(', ');
+          const vehicleLabel = vehicleMap[s.vehicle_id] || s.vehicle_id;
+          return `<tr>
+            <td>${date}</td>
+            <td>${serviceNames} - ${vehicleLabel}</td>
+            <td>-</td>
+            <td><span class="badge bg-${(s.status||'Pending').toLowerCase()==='completed'?'success':'warning'}${(s.status||'Pending').toLowerCase()==='completed'?'':' text-dark'}">${s.status || 'Pending'}</span></td>
+            <td><button class="btn btn-sm btn-outline-primary" data-service-id="${s.id}">Details</button></td>
+          </tr>`;
+        });
+      tbody.innerHTML = rows.length ? rows.join('') : '<tr><td colspan="5" class="text-muted">No services match your search.</td></tr>';
+    }
+
+    function showServiceDetails(serviceId) {
+      const svc = (window.__latestServices || []).find(s => s.id === serviceId);
+      const container = document.getElementById('serviceDetailsContent');
+      if (!svc) { container.innerHTML = '<span class="text-danger">Service not found.</span>'; }
+      else {
+        const serviceNames = svc.services.map(id => (catalog.find(c=>c.id===id)?.name)||id).map(n=>`<span class='service-chip'>${n}</span>`).join(' ');
+        const vehicleLabel = vehicleMap[svc.vehicle_id] || svc.vehicle_id;
+        container.innerHTML = `
+          <div class='mb-2'><strong>ID:</strong> <code>${svc.id}</code></div>
+          <div class='mb-2'><strong>Status:</strong> <span class="badge bg-${(svc.status||'Pending').toLowerCase()==='completed'?'success':'warning'}${(svc.status||'Pending').toLowerCase()==='completed'?'':' text-dark'}">${svc.status || 'Pending'}</span></div>
+          <div class='mb-2'><strong>Vehicle:</strong> ${vehicleLabel}</div>
+          <div class='mb-2'><strong>Odometer:</strong> ${svc.odometer_km?.toLocaleString()} km</div>
+          <div class='mb-2'><strong>Services:</strong> ${serviceNames || '-'}</div>
+          <div class='mb-2'><strong>Description:</strong> ${svc.description || '-'}</div>
+          <div class='mb-2'><strong>Created:</strong> ${formatDate(svc.created_at)}</div>
+          <div><strong>Last Updated:</strong> ${formatDate(svc.updated_at)}</div>`;
+      }
+      const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('serviceDetailsModal'));
+      modal.show();
     }
 
     async function saveService() {
@@ -518,7 +732,37 @@
       });
       document.getElementById('saveServiceBtn').addEventListener('click', saveService);
 
+      // Edit Service button
+      document.getElementById('btn-edit-service').addEventListener('click', async () => {
+        await buildVehicleMap();
+        await loadCatalog();
+        await openEditServiceModal();
+        const modal = new bootstrap.Modal(document.getElementById('editServiceModal'));
+        modal.show();
+      });
+      document.getElementById('editServiceSelect').addEventListener('change', function() {
+        renderEditServiceFields(this.value);
+      });
+      document.getElementById('saveEditServiceBtn').addEventListener('click', saveEditService);
+
+      // Delegate clicks for Details buttons
+      const historyBody = document.getElementById('serviceHistoryBody');
+      if (historyBody) {
+        historyBody.addEventListener('click', (e) => {
+          const btn = e.target.closest('[data-service-id]');
+          if (btn) {
+            const id = btn.getAttribute('data-service-id');
+            showServiceDetails(id);
+          }
+        });
+      }
+
+      // History search listener
+      const histSearch = document.getElementById('serviceSearchInput');
+      if (histSearch) histSearch.addEventListener('input', () => renderServiceHistory());
+
       // Initial loads
+      await buildVehicleMap();
       await loadCatalog();
       await loadYourServices();
     });

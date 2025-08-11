@@ -1,16 +1,34 @@
-from fastapi import FastAPI, HTTPException, Depends, status
+from fastapi import FastAPI, HTTPException, Depends, status, UploadFile, File
+from fastapi.staticfiles import StaticFiles
+import pathlib, os
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.middleware.cors import CORSMiddleware
 from models import CustomerRegistration, TechnicianRegistration, UserLogin, UserResponse, Token, VehicleCreate, VehicleUpdate, VehicleResponse, VehicleListResponse
 from auth_utils import hash_password, verify_password, create_access_token, verify_token
-from db_config import user_auth_collection, customer_profile_collection, technician_profile_collection, client, vehicles_collection, customer_service_list_collection
+from db_config import user_auth_collection, customer_profile_collection, technician_profile_collection, client, vehicles_collection, customer_service_list_collection, db
 from datetime import datetime, timezone
 from bson import ObjectId
 import logging
 from pydantic import BaseModel, EmailStr
 from typing import Optional, List
+import csv, io
+from pymongo import ReturnDocument
 
 app = FastAPI(title="MapleMesh AutoRepair API", version="1.0.0")
+
+# Mount static folders (serving frontend assets)
+BASE_DIR = pathlib.Path(__file__).resolve().parent.parent  # project root (parent of Backend)
+static_map = {
+    'js': BASE_DIR / 'js',
+    'pages': BASE_DIR / 'pages',
+    'assets': BASE_DIR / 'assets'
+}
+for mount_name, path_obj in static_map.items():
+    try:
+        if path_obj.exists():
+            app.mount(f"/{mount_name}", StaticFiles(directory=str(path_obj)), name=mount_name)
+    except Exception as e:
+        logging.warning(f"Could not mount static path {mount_name}: {e}")
 
 # Database connection verification
 def verify_db_connection():
@@ -609,6 +627,139 @@ SERVICE_CATALOG: List[ServiceCatalogItem] = [
     ServiceCatalogItem(id="transmission_service", name="Transmission Service", category="Powertrain", estimated_minutes=120),
     ServiceCatalogItem(id="coolant_flush", name="Coolant Flush", category="Fluids", estimated_minutes=60),
 ]
+
+# ================= Global Services (Admin Catalog) =================
+class GlobalServiceBase(BaseModel):
+    service_id: str
+    service_name: str
+    main_category: str
+    time_takes: Optional[int] = None
+    price: Optional[float] = None
+    description: Optional[str] = None
+
+class GlobalServiceCreate(GlobalServiceBase):
+    pass
+
+class GlobalServiceUpdate(BaseModel):
+    service_name: Optional[str] = None
+    main_category: Optional[str] = None
+    time_takes: Optional[int] = None
+    price: Optional[float] = None
+    description: Optional[str] = None
+
+class GlobalService(GlobalServiceBase):
+    id: str
+
+class GlobalServiceList(BaseModel):
+    items: List[GlobalService]
+
+global_services_collection = db.global_services
+try:
+    global_services_collection.create_index("service_id", unique=True)
+except Exception as e:  # index may already exist
+    logging.warning(f"Index creation on global_services failed or already exists: {e}")
+
+def _doc_to_global_service(doc: dict) -> GlobalService:
+    return GlobalService(
+        id=str(doc.get("_id")),
+        service_id=doc.get("service_id"),
+        service_name=doc.get("service_name"),
+        main_category=doc.get("main_category"),
+        time_takes=doc.get("time_takes"),
+        price=doc.get("price"),
+        description=doc.get("description")
+    )
+
+@app.get("/api/global-services", response_model=GlobalServiceList)
+async def list_global_services(q: Optional[str] = None, skip: int = 0, limit: int = 200, current_user: dict = Depends(get_current_user)):
+    criteria = {}
+    if q:
+        regex = {"$regex": q, "$options": "i"}
+        criteria = {"$or": [
+            {"service_id": regex},
+            {"service_name": regex},
+            {"main_category": regex},
+            {"description": regex}
+        ]}
+    cursor = global_services_collection.find(criteria).skip(max(skip, 0)).limit(min(limit, 500))
+    items = [_doc_to_global_service(d) for d in cursor]
+    return GlobalServiceList(items=items)
+
+@app.post("/api/global-services", response_model=GlobalService)
+async def create_global_service(payload: GlobalServiceCreate, current_user: dict = Depends(get_current_user)):
+    if global_services_collection.find_one({"service_id": payload.service_id}):
+        raise HTTPException(status_code=400, detail="service_id already exists")
+    doc = payload.dict()
+    global_services_collection.insert_one(doc)
+    inserted = global_services_collection.find_one({"service_id": payload.service_id})
+    return _doc_to_global_service(inserted)
+
+@app.put("/api/global-services/{service_id}", response_model=GlobalService)
+async def update_global_service(service_id: str, payload: GlobalServiceUpdate, current_user: dict = Depends(get_current_user)):
+    update_data = {k: v for k, v in payload.dict().items() if v is not None}
+    if not update_data:
+        raise HTTPException(status_code=400, detail="No fields to update")
+    res = global_services_collection.find_one_and_update(
+        {"service_id": service_id}, {"$set": update_data}, return_document=ReturnDocument.AFTER
+    )
+    if not res:
+        raise HTTPException(status_code=404, detail="Service not found")
+    return _doc_to_global_service(res)
+
+@app.delete("/api/global-services/{service_id}")
+async def delete_global_service(service_id: str, current_user: dict = Depends(get_current_user)):
+    res = global_services_collection.delete_one({"service_id": service_id})
+    if res.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Service not found")
+    return {"message": "Deleted"}
+
+@app.post("/api/global-services/bulk-upload")
+async def bulk_upload_global_services(file: UploadFile = File(...), current_user: dict = Depends(get_current_user)):
+    if not file.filename.lower().endswith((".csv", ".txt")):
+        raise HTTPException(status_code=400, detail="Only CSV files are supported currently")
+    content = await file.read()
+    try:
+        text = content.decode('utf-8-sig')
+    except UnicodeDecodeError:
+        text = content.decode('latin-1')
+    reader = csv.DictReader(io.StringIO(text))
+    required_cols = {"service_id", "service_name", "main_category", "time_takes", "price", "description"}
+    fieldnames_normalized = {c.strip(): c for c in (reader.fieldnames or [])}
+    missing = required_cols - set(fieldnames_normalized.keys())
+    if missing:
+        raise HTTPException(status_code=400, detail=f"Missing required columns: {', '.join(sorted(missing))}")
+    inserted = 0
+    updated = 0
+    for row in reader:
+        sid = (row.get('service_id') or '').strip()
+        if not sid:
+            continue
+        try:
+            time_val = row.get('time_takes')
+            time_takes = int(time_val) if time_val and time_val.strip() else None
+        except ValueError:
+            time_takes = None
+        try:
+            price_val = row.get('price')
+            price = float(price_val) if price_val and price_val.strip() else None
+        except ValueError:
+            price = None
+        doc = {
+            'service_id': sid,
+            'service_name': (row.get('service_name') or '').strip(),
+            'main_category': (row.get('main_category') or '').strip(),
+            'time_takes': time_takes,
+            'price': price,
+            'description': (row.get('description') or '').strip() or None
+        }
+        existing = global_services_collection.find_one({'service_id': sid})
+        if existing:
+            global_services_collection.update_one({'service_id': sid}, {'$set': doc})
+            updated += 1
+        else:
+            global_services_collection.insert_one(doc)
+            inserted += 1
+    return {"inserted": inserted, "updated": updated}
 
 @app.get("/api/services/catalog", response_model=List[ServiceCatalogItem])
 async def get_service_catalog():

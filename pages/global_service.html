@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Global Services Catalog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    body { background:#f8f9fa; }
+    .table-responsive { max-height:60vh; }
+    tbody td { vertical-align: middle; }
+    .sticky-header thead th { position: sticky; top:0; background:#fff; z-index:2; }
+  </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg bg-dark navbar-dark mb-4">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Admin – Global Services</a>
+  </div>
+</nav>
+<div class="container-fluid">
+  <div class="d-flex flex-wrap gap-2 mb-3">
+    <div class="input-group" style="max-width:320px;">
+      <span class="input-group-text">Search</span>
+      <input id="searchBox" type="text" class="form-control" placeholder="Name, id, category..." />
+    </div>
+    <button id="btnAdd" class="btn btn-primary">Add Service</button>
+    <button id="btnBulk" class="btn btn-outline-secondary">Bulk Upload</button>
+    <a id="btnTemplate" class="btn btn-outline-info" href="#" download>Template CSV</a>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-sm table-hover align-middle sticky-header" id="servicesTable">
+      <thead class="table-light">
+        <tr>
+          <th>Service ID</th>
+          <th>Name</th>
+          <th>Category</th>
+          <th>Time (min)</th>
+          <th>Price</th>
+          <th>Description</th>
+          <th style="width:110px;">Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <div id="statusArea" class="small text-muted mt-2">Initializing page...</div>
+</div>
+
+<!-- Add/Edit Modal -->
+<div class="modal fade" id="serviceModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="serviceModalLabel">Add Service</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="serviceForm" class="row g-3">
+          <div class="col-md-4">
+            <label class="form-label">Service ID *</label>
+            <input type="text" class="form-control" id="svc_service_id" required />
+          </div>
+          <div class="col-md-8">
+            <label class="form-label">Service Name *</label>
+            <input type="text" class="form-control" id="svc_service_name" required />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Category *</label>
+            <input type="text" class="form-control" id="svc_main_category" required />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Time (minutes)</label>
+            <input type="number" class="form-control" id="svc_time_takes" />
+          </div>
+            <div class="col-md-4">
+              <label class="form-label">Price</label>
+              <input type="number" step="0.01" class="form-control" id="svc_price" />
+            </div>
+          <div class="col-12">
+            <label class="form-label">Description</label>
+            <textarea class="form-control" id="svc_description" rows="3"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" id="btnSaveService" class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bulk Upload Modal -->
+<div class="modal fade" id="bulkModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Bulk Upload CSV</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p class="small">Upload a CSV with headers: service_id, service_name, main_category, time_takes, price, description</p>
+        <input type="file" id="bulkFile" accept=".csv,text/csv" class="form-control" />
+        <div id="bulkStatus" class="mt-2 small text-muted"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button class="btn btn-primary" id="btnUploadCsv">Upload</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/global_services.js" onerror="console.error('Failed to load global_services.js')"></script>
+</body>
+</html>
