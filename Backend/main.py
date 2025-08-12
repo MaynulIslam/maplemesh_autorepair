@@ -1,5 +1,7 @@
 from fastapi import FastAPI, HTTPException, Depends, status, UploadFile, File
+from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
+from pathlib import Path
 import pathlib, os
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.middleware.cors import CORSMiddleware
@@ -16,37 +18,23 @@ from pymongo import ReturnDocument
 
 app = FastAPI(title="MapleMesh AutoRepair API", version="1.0.0")
 
-# Mount static folders (serving frontend assets)
-BASE_DIR = pathlib.Path(__file__).resolve().parent.parent  # project root (parent of Backend)
-static_map = {
-    'js': BASE_DIR / 'js',
-    'pages': BASE_DIR / 'pages',
-    'assets': BASE_DIR / 'assets'
-}
-for mount_name, path_obj in static_map.items():
-    try:
-        if path_obj.exists():
-            app.mount(f"/{mount_name}", StaticFiles(directory=str(path_obj)), name=mount_name)
-    except Exception as e:
-        logging.warning(f"Could not mount static path {mount_name}: {e}")
+FRONTEND_DIST = Path(__file__).resolve().parent.parent / "Frontend" / "dist"
+print(f"[Frontend] Dist path: {FRONTEND_DIST} exists? {FRONTEND_DIST.exists()}")
 
-# Database connection verification
-def verify_db_connection():
-    print("Connecting to Database...")
-    try:
-        # Try a simple command to check connection
-        client.admin.command('ping')
-        print("Database Connection successful.")
-    except Exception as e:
-        print(f"Database Connection failed: {e}")
+# REMOVE (or comment out) this old line:
+# app.mount("/", StaticFiles(directory=str(FRONTEND_DIST), html=True), name="frontend")
 
-# Call verification at startup
-verify_db_connection()
+if FRONTEND_DIST.exists():
+    assets_dir = FRONTEND_DIST / "assets"
+    if assets_dir.exists():
+        app.mount("/assets", StaticFiles(directory=str(assets_dir)), name="assets")
+else:
+    print("[Frontend] Build not found. Run: cd Frontend && npm run build")
 
-# Configure CORS
+# Configure CORS (restrict to React dev + future production host)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, specify your frontend URL
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -55,21 +43,88 @@ app.add_middleware(
 # Security
 security = HTTPBearer()
 
+# ===================== MODELS (Local to this file) =====================
+class EmailCheckRequest(BaseModel):
+    email: EmailStr
+
+class UsernameCheckRequest(BaseModel):
+    username: str
+
+class CheckResponse(BaseModel):
+    exists: bool
+
+class ProfileUpdateRequest(BaseModel):
+    first_name: str
+    last_name: str
+    email: EmailStr
+    phone: str
+    address_line_1: str
+    address_line_2: Optional[str] = None
+    city: str
+    province: str
+    postal_code: str
+    country: str
+
+class ProfileResponse(BaseModel):
+    user_id: str
+    first_name: str
+    last_name: str
+    username: str
+    email: str
+    phone: str
+    address_line_1: str
+    address_line_2: Optional[str] = None
+    city: str
+    province: str
+    postal_code: str
+    country: str
+    member_since: str
+    membership_level: str = "Bronze"
+    loyalty_points: int = 0
+
+# ===================== AUTH UTILS / DEPENDENCIES =====================
 async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
-    """Get current authenticated user from JWT token"""
     try:
         token = credentials.credentials
         payload = verify_token(token)
         user_id = payload.get("sub")
-        if user_id is None:
+        if not user_id:
             raise HTTPException(status_code=401, detail="Invalid token")
-        return {"user_id": user_id}
-    except Exception as e:
+        return {"user_id": user_id}  # (Keep this shape consistently)
+    except Exception:
         raise HTTPException(status_code=401, detail="Invalid token")
 
-@app.get("/")
-async def root():
-    return {"message": "MapleMesh AutoRepair API is running!"}
+# ===================== AUTH ROUTES =====================
+
+@app.post("/api/auth/check-email", response_model=CheckResponse)
+async def check_email_exists(payload: EmailCheckRequest):
+    exists = user_auth_collection.find_one({"email": payload.email}) is not None
+    return CheckResponse(exists=exists)
+
+@app.post("/api/auth/check-username", response_model=CheckResponse)
+async def check_username_exists(payload: UsernameCheckRequest):
+    exists = user_auth_collection.find_one({"username": payload.username}) is not None
+    return CheckResponse(exists=exists)
+
+@app.get("/api/auth/me", response_model=UserResponse)
+async def get_current_user_info(current_user: dict = Depends(get_current_user)):
+    """Get current user information"""
+    try:
+        # current_user has {'user_id': ...}
+        user = user_auth_collection.find_one({"_id": ObjectId(current_user["user_id"])})
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        return UserResponse(
+            id=str(user["_id"]),
+            email=user["email"],
+            user_type=user["user_type"],
+            created_at=user["created_at"]
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Get user info error: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
 
 @app.post("/api/auth/register/customer")
 async def register_customer(customer_data: CustomerRegistration):
@@ -281,173 +336,20 @@ async def login_user(user_credentials: UserLogin):
 async def get_current_user_info(current_user: dict = Depends(get_current_user)):
     """Get current user information"""
     try:
-        user = user_auth_collection.find_one({"_id": ObjectId(current_user["sub"])})
+        # current_user has {'user_id': ...}
+        user = user_auth_collection.find_one({"_id": ObjectId(current_user["user_id"])})
         if not user:
             raise HTTPException(status_code=404, detail="User not found")
-        
         return UserResponse(
             id=str(user["_id"]),
             email=user["email"],
             user_type=user["user_type"],
             created_at=user["created_at"]
         )
-    except Exception as e:
-        logging.error(f"Get user info error: {e}")
-        raise HTTPException(status_code=500, detail="Internal server error")
-
-# Add these new models at the top of your file
-class EmailCheckRequest(BaseModel):
-    email: str
-
-class UsernameCheckRequest(BaseModel):
-    username: str
-
-class CheckResponse(BaseModel):
-    exists: bool
-
-# Add these endpoints before your existing endpoints
-@app.post("/api/auth/check-email")
-async def check_email_exists(email_check: dict):
-    email = email_check.get("email")
-    existing_user = user_auth_collection.find_one({"email": email})
-    return {"exists": existing_user is not None}
-
-@app.post("/api/auth/check-username")
-async def check_username_exists(username_check: dict):
-    username = username_check.get("username")
-    existing_user = user_auth_collection.find_one({"username": username})
-    return {"exists": existing_user is not None}
-
-# Add these models for profile management
-class ProfileUpdateRequest(BaseModel):
-    first_name: str
-    last_name: str
-    email: EmailStr
-    phone: str
-    address_line_1: str
-    address_line_2: Optional[str] = None
-    city: str
-    province: str
-    postal_code: str
-    country: str
-
-class ProfileResponse(BaseModel):
-    user_id: str
-    first_name: str
-    last_name: str
-    username: str
-    email: str
-    phone: str
-    address_line_1: str
-    address_line_2: Optional[str] = None
-    city: str
-    province: str
-    postal_code: str
-    country: str
-    member_since: str
-    membership_level: str = "Bronze"
-    loyalty_points: int = 0
-
-# Get user profile endpoint
-@app.get("/api/customer/profile", response_model=ProfileResponse)
-async def get_customer_profile(current_user: dict = Depends(get_current_user)):
-    """Get customer profile information"""
-    try:
-        print(f"Getting profile for user ID: {current_user['user_id']}")
-        
-        # Get user from authentication collection
-        user = user_auth_collection.find_one({"_id": ObjectId(current_user["user_id"])})
-        if not user:
-            raise HTTPException(status_code=404, detail="User not found")
-        
-        # Get customer profile from customer collection
-        customer_profile = customer_profile_collection.find_one({"user_id": current_user["user_id"]})
-        if not customer_profile:
-            raise HTTPException(status_code=404, detail="Customer profile not found")
-        
-        # Extract data from nested structure
-        personal_info = customer_profile.get("personal_information", {})
-        address_info = customer_profile.get("address_information", {})
-        
-        # Format member since date
-        created_at = user.get("created_at")
-        if created_at:
-            if isinstance(created_at, str):
-                member_since = created_at[:4]  # Extract year from string
-            else:
-                member_since = str(created_at.year)  # Extract year from datetime
-        else:
-            member_since = "2025"
-        
-        return ProfileResponse(
-            user_id=current_user["user_id"],
-            first_name=personal_info.get("first_name", ""),
-            last_name=personal_info.get("last_name", ""),
-            username=personal_info.get("username", ""),
-            email=user.get("email", ""),
-            phone=personal_info.get("phone_number", ""),
-            address_line_1=address_info.get("address_line1", ""),
-            address_line_2=address_info.get("address_line2", ""),
-            city=address_info.get("city", ""),
-            province=address_info.get("province_state", ""),
-            postal_code=address_info.get("postal_zip_code", ""),
-            country=address_info.get("country", ""),
-            member_since=member_since,
-            membership_level=customer_profile.get("loyalty_status", {}).get("membership_level", "Bronze"),
-            loyalty_points=customer_profile.get("loyalty_status", {}).get("points", 0)
-        )
-        
     except HTTPException:
         raise
     except Exception as e:
-        logging.error(f"Get profile error: {e}")
-        raise HTTPException(status_code=500, detail="Internal server error")
-
-# Update user profile endpoint
-@app.put("/api/customer/profile")
-async def update_customer_profile(
-    profile_data: ProfileUpdateRequest, 
-    current_user: dict = Depends(get_current_user)
-):
-    """Update customer profile information"""
-    try:
-        print(f"Updating profile for user ID: {current_user['user_id']}")
-        print(f"Profile data: {profile_data.dict()}")
-        
-        # Update email in user_auth_collection
-        user_auth_collection.update_one(
-            {"_id": ObjectId(current_user["user_id"])},
-            {
-                "$set": {
-                    "email": profile_data.email,
-                    "updated_at": datetime.now(timezone.utc)
-                }
-            }
-        )
-        
-        # Update profile in customer_profile_collection
-        customer_profile_collection.update_one(
-            {"user_id": current_user["user_id"]},
-            {
-                "$set": {
-                    "personal_information.first_name": profile_data.first_name,
-                    "personal_information.last_name": profile_data.last_name,
-                    "personal_information.phone_number": profile_data.phone,
-                    "address_information.address_line1": profile_data.address_line_1,
-                    "address_information.address_line2": profile_data.address_line_2,
-                    "address_information.city": profile_data.city,
-                    "address_information.province_state": profile_data.province,
-                    "address_information.postal_zip_code": profile_data.postal_code,
-                    "address_information.country": profile_data.country,
-                    "updated_at": datetime.now(timezone.utc)
-                }
-            }
-        )
-        
-        return {"message": "Profile updated successfully"}
-        
-    except Exception as e:
-        logging.error(f"Update profile error: {e}")
+        logging.error(f"Get user info error: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
 
 # Vehicle Management Endpoints
@@ -826,6 +728,28 @@ async def create_customer_service(req: ServiceRequestCreate, current_user: dict 
         logging.error(f"Create service error: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
 
+@app.post("/api/auth/logout")
+async def logout():
+    return {"message": "Logged out"}
+
+@app.get("/")
+def serve_index_root():
+    index_file = FRONTEND_DIST / "index.html"
+    if index_file.exists():
+        return FileResponse(index_file)
+    raise HTTPException(status_code=404, detail="Frontend build not found")
+
+@app.get("/{full_path:path}")
+def spa_fallback(full_path: str):
+    if full_path.startswith("api/"):
+        raise HTTPException(status_code=404, detail="Not found")
+    if "." in full_path:  # e.g. missing asset
+        raise HTTPException(status_code=404, detail="Asset not found")
+    index_file = FRONTEND_DIST / "index.html"
+    if index_file.exists():
+        return FileResponse(index_file)
+    raise HTTPException(status_code=404, detail="Frontend build not found")
+
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8001)  # Change port to 8001
+    uvicorn.run("main:app", host="0.0.0.0", port=8001, reload=True)
