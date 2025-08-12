@@ -4,8 +4,6 @@ import {
   Paper, Typography, Link, Checkbox, FormControlLabel, Divider, Box, Dialog, DialogTitle, DialogContent
 } from '@mui/material';
 import GoogleIcon from '@mui/icons-material/Google';
-import FacebookIcon from '@mui/icons-material/Facebook';
-import AppleIcon from '@mui/icons-material/Apple';
 import { useAuthCtx } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -92,11 +90,7 @@ export default function LoginForm() {
               {loading ? <CircularProgress size={20} color="inherit" /> : 'Sign in'}
             </Button>
             <Divider><Typography variant="caption" color="text.secondary">Or continue with</Typography></Divider>
-            <Stack direction="row" spacing={2} justifyContent="space-between">
-              <Button variant="outlined" fullWidth startIcon={<GoogleIcon />} sx={{ textTransform:'none', bgcolor:'#fff' }}>Google</Button>
-              <Button variant="outlined" fullWidth startIcon={<FacebookIcon />} sx={{ textTransform:'none', bgcolor:'#fff' }}>Facebook</Button>
-              <Button variant="outlined" fullWidth startIcon={<AppleIcon />} sx={{ textTransform:'none', bgcolor:'#fff' }}>Apple</Button>
-            </Stack>
+            <Button variant="outlined" fullWidth startIcon={<GoogleIcon />} sx={{ textTransform:'none', bgcolor:'#fff' }}>Continue with Google</Button>
             <Typography variant="body2" textAlign="center" sx={{ mt:1 }}>
               Don't have an account? <Link component="button" onClick={()=>setShowChoice(true)} sx={{ fontWeight:600 }}>Sign up</Link>
             </Typography>
