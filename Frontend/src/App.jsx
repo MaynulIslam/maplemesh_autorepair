@@ -8,6 +8,7 @@ import Services from './pages/Services';
 import Billing from './pages/Billing';
 import Profile from './pages/Profile';
 import { useAuthCtx } from './context/AuthContext';
+import TechnicianDashboard from './pages/TechnicianDashboard';
 
 function Protected({ children }) {
   const { user, ready } = useAuthCtx();
@@ -25,7 +26,8 @@ export default function App() {
         <Route path="/register" element={<RegisterChoice />} />
         <Route path="/register/customer" element={<RegisterCustomerForm />} />
         <Route path="/register/technician" element={<RegisterTechnicianForm />} />
-        <Route path="/dashboard" element={<Protected><Dashboard /></Protected>} />
+  <Route path="/dashboard" element={<Protected><Dashboard /></Protected>} />
+  <Route path="/technician-dashboard" element={<Protected><TechnicianDashboard /></Protected>} />
         <Route path="/services" element={<Protected><Services /></Protected>} />
         <Route path="/billing" element={<Protected><Billing /></Protected>} />
         <Route path="/profile" element={<Protected><Profile /></Protected>} />

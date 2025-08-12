@@ -22,6 +22,31 @@ const theme = createTheme({
     },
     MuiPaper: {
       styleOverrides: { root: { borderRadius: 16 } }
+    },
+    MuiInputBase: {
+      styleOverrides: {
+        input: {
+          '::placeholder': {
+            fontWeight: 600,
+            opacity: 1
+          }
+        }
+      }
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          transition: 'border-color 0.15s, box-shadow 0.15s',
+          '&:hover .MuiOutlinedInput-notchedOutline': {
+            borderColor: '#136F63',
+            boxShadow: '0 0 0 2px rgba(19,111,99,0.15)'
+          },
+          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+            borderColor: '#041B15',
+            boxShadow: '0 0 0 2px rgba(4,27,21,0.2)'
+          }
+        }
+      }
     }
   }
 });

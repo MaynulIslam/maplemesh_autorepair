@@ -16,15 +16,18 @@ export default function LoginForm() {
   const nav = useNavigate();
   const [showChoice,setShowChoice]=useState(false);
 
-  useEffect(()=>{ if (user) nav('/dashboard'); },[user,nav]);
+  useEffect(()=>{ if (user) {
+    if (user.user_type === 'technician') nav('/technician-dashboard');
+    else nav('/dashboard');
+  } },[user,nav]);
 
   const submit = async e => {
     e.preventDefault();
     setErr('');
     setLoading(true);
     try {
-      await signIn(email,password);
-      nav('/dashboard');
+  const u = await signIn(email,password);
+  if (u?.user_type === 'technician') nav('/technician-dashboard'); else nav('/dashboard');
     } catch (ex) {
       setErr(ex.response?.data?.detail || 'Login failed');
     } finally {
@@ -90,9 +93,9 @@ export default function LoginForm() {
               {loading ? <CircularProgress size={20} color="inherit" /> : 'Sign in'}
             </Button>
             <Divider><Typography variant="caption" color="text.secondary">Or continue with</Typography></Divider>
-            <Button variant="outlined" fullWidth startIcon={<GoogleIcon />} sx={{ textTransform:'none', bgcolor:'#fff' }}>Continue with Google</Button>
+            <Button type="button" variant="outlined" fullWidth startIcon={<GoogleIcon />} sx={{ textTransform:'none', bgcolor:'#fff' }}>Continue with Google</Button>
             <Typography variant="body2" textAlign="center" sx={{ mt:1 }}>
-              Don't have an account? <Link component="button" onClick={()=>setShowChoice(true)} sx={{ fontWeight:600 }}>Sign up</Link>
+              Don't have an account? <Link component="button" type="button" onClick={(e)=>{ e.preventDefault(); setShowChoice(true); }} sx={{ fontWeight:600 }}>Sign up</Link>
             </Typography>
           </Stack>
         </form>
