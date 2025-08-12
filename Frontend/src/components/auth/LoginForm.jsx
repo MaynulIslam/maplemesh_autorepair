@@ -37,11 +37,27 @@ export default function LoginForm() {
   return (
     <Box sx={{ minHeight:'100vh', bgcolor:'#041B15', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'flex-start', pt:8, pb:4 }}>
       <Box sx={{ textAlign:'center', mb:4 }}>
-        <Typography variant="h3" fontWeight={800} sx={{ color:'#fff', lineHeight:1 }}>MapleMesh</Typography>
-        <Typography variant="h5" fontWeight={600} sx={{ color:'#E2F5EE', mt:-0.5 }}>AutoRepair</Typography>
+        <Typography variant="h4" fontWeight={800} sx={{ color:'#fff', lineHeight:1 }}>MapleMesh</Typography>
+        <Typography variant="h6" fontWeight={800} sx={{ color:'#E2F5EE', mt:-0.5 }}>AutoRepair</Typography>
       </Box>
-      <Paper elevation={3} sx={{ width:'100%', maxWidth:430, p:5, borderRadius:2 }}>
-        <Typography variant="h6" fontWeight={700} textAlign="center" sx={{ mb:1 }}>Sign In</Typography>
+      <Paper
+        elevation={3}
+        sx={{
+          width:'100%',
+          maxWidth:430,
+          p:5,
+          borderRadius:2,
+          transform:'scale(.8)',
+          transformOrigin:'top center',
+          transition:'transform .35s ease, box-shadow .35s ease',
+          boxShadow:'0 4px 18px rgba(0,0,0,0.28)',
+          '&:hover': {
+            transform:'scale(1)',
+            boxShadow:'0 10px 34px rgba(0,0,0,0.38)'
+          }
+        }}
+      >
+        <Typography variant="h6" fontWeight={800} textAlign="center" sx={{ mb:1 }}>Sign In</Typography>
         <Typography variant="body2" textAlign="center" color="text.secondary" sx={{ mb:3 }}>Enter your credentials to access your account</Typography>
         <form onSubmit={submit} noValidate>
           <Stack spacing={2.2}>
