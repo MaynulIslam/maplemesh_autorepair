@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import {
   TextField, Button, Stack, Alert, CircularProgress,
-  Paper, Typography, Link, Checkbox, FormControlLabel, Divider, Box, IconButton
+  Paper, Typography, Link, Checkbox, FormControlLabel, Divider, Box, Dialog, DialogTitle, DialogContent
 } from '@mui/material';
 import GoogleIcon from '@mui/icons-material/Google';
 import FacebookIcon from '@mui/icons-material/Facebook';
@@ -16,6 +16,7 @@ export default function LoginForm() {
   const [err,setErr]=useState('');
   const [loading,setLoading]=useState(false);
   const nav = useNavigate();
+  const [showChoice,setShowChoice]=useState(false);
 
   useEffect(()=>{ if (user) nav('/dashboard'); },[user,nav]);
 
@@ -81,7 +82,7 @@ export default function LoginForm() {
               <Button variant="outlined" fullWidth startIcon={<AppleIcon />} sx={{ textTransform:'none', bgcolor:'#fff' }}>Apple</Button>
             </Stack>
             <Typography variant="body2" textAlign="center" sx={{ mt:1 }}>
-              Don't have an account? <Link component="button" onClick={()=>nav('/register')} sx={{ fontWeight:600 }}>Sign up</Link>
+              Don't have an account? <Link component="button" onClick={()=>setShowChoice(true)} sx={{ fontWeight:600 }}>Sign up</Link>
             </Typography>
           </Stack>
         </form>
@@ -89,6 +90,46 @@ export default function LoginForm() {
       <Typography variant="caption" color="#fff" sx={{ mt:5 }}>
         © 2025 MapleMesh AutoRepair. All rights reserved.
       </Typography>
+
+      <Dialog
+        open={showChoice}
+        onClose={()=>setShowChoice(false)}
+        maxWidth="sm"
+        fullWidth
+        componentsProps={{
+          backdrop: {
+            sx: {
+              backdropFilter: 'blur(8px)',
+              backgroundColor: 'rgba(0,0,0,0.55)' // darker + blur
+            }
+          }
+        }}
+        PaperProps={{ sx:{ borderRadius:3 } }}
+      >
+        <DialogTitle sx={{ fontWeight:800 }}>Create Your Account</DialogTitle>
+        <DialogContent dividers>
+          <Stack spacing={1.5}>
+            <Paper
+              variant="outlined"
+              onClick={()=>{ setShowChoice(false); nav('/register/customer'); }}
+              sx={{ p:2, cursor:'pointer', display:'flex', flexDirection:'column', gap:.75, transition:'all .25s', borderRadius:2,
+                '&:hover':{ borderColor:'#065f4c', boxShadow:'0 0 0 3px rgba(6,95,76,.15)', bgcolor:'#f1fdfa' } }}
+            >
+              <Typography variant="subtitle1" fontWeight={700}>I want to fix my vehicle</Typography>
+              <Typography variant="body2" color="text.secondary">Book services, manage vehicles, track service history.</Typography>
+            </Paper>
+            <Paper
+              variant="outlined"
+              onClick={()=>{ setShowChoice(false); nav('/register/technician'); }}
+              sx={{ p:2, cursor:'pointer', display:'flex', flexDirection:'column', gap:.75, transition:'all .25s', borderRadius:2,
+                '&:hover':{ borderColor:'#065f4c', boxShadow:'0 0 0 3px rgba(6,95,76,.15)', bgcolor:'#f1fdfa' } }}
+            >
+              <Typography variant="subtitle1" fontWeight={700}>I am a technician</Typography>
+              <Typography variant="body2" color="text.secondary">Offer services, manage jobs, build reputation and billing.</Typography>
+            </Paper>
+          </Stack>
+        </DialogContent>
+      </Dialog>
     </Box>
   );
 }
