@@ -1,99 +1,149 @@
-import { useState } from 'react';
-import { styled } from '@mui/material/styles';
-import {
-  Drawer, AppBar as MuiAppBar, Toolbar, List, CssBaseline, Typography, Divider,
-  IconButton, ListItem, ListItemButton, ListItemIcon, ListItemText, Box, Avatar, Tooltip
-} from '@mui/material';
-import {
-  Menu as MenuIcon, Dashboard, Build, ReceiptLong, Person, Logout
-} from '@mui/icons-material';
-import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuthCtx } from '../../context/AuthContext';
+import { useNavigate, NavLink, useLocation } from 'react-router-dom';
+import React, { useState, useRef } from 'react';
+import {
+  AppBar, Toolbar, Typography, Box, Button, Stack, Menu, MenuItem, Divider
+} from '@mui/material';
+import LogoutIcon from '@mui/icons-material/Logout';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import { styled, alpha } from '@mui/material/styles';
 
-const drawerWidth = 240;
-
-const AppBar = styled(MuiAppBar, { shouldForwardProp: p => p !== 'open' })(({ theme, open }) => ({
-  zIndex: theme.zIndex.drawer + 1,
-  transition: theme.transitions.create(['width','margin']),
-  ...(open && { marginLeft: drawerWidth, width: `calc(100% - ${drawerWidth}px)` })
+// Brand (two line)
+const Brand = styled('div')(({ theme }) => ({
+  fontWeight: 700,
+  fontSize: '1rem',
+  lineHeight: 1.05,
+  color: '#fff',
+  display: 'flex',
+  flexDirection: 'column',
+  letterSpacing: '.5px'
 }));
 
-const DrawerStyled = styled(Drawer, { shouldForwardProp: p => p !== 'open' })(({ open }) => ({
-  '& .MuiDrawer-paper': {
-    position: 'relative',
-    whiteSpace: 'nowrap',
-    width: drawerWidth,
-    transition: 'width .25s',
-    boxSizing: 'border-box',
-    ...(!open && { overflowX: 'hidden', width: 70 })
-  }
+const NavLinkButton = styled(Button)(({ theme }) => ({
+  color: '#fff',
+  textTransform: 'none',
+  fontWeight: 500,
+  fontSize: '.9rem',
+  letterSpacing: '.4px',
+  paddingInline: 16,
+  borderRadius: 0,
+  position: 'relative',
+  height: '100%',
+  '&.active': { fontWeight: 600, background: alpha('#ffffff',0.12) },
+  '&::after': {
+    content: '""',
+    position: 'absolute',
+    left: 12,
+    right: 12,
+    bottom: 3,
+    height: 3,
+    borderRadius: 2,
+    background: alpha('#fff',0),
+    transition: 'background .25s'
+  },
+  '&.active::after': { background: '#fff' },
+  '&:hover': { background: alpha('#ffffff',0.08) },
+  '&:hover::after': { background: alpha('#fff',.35) }
 }));
 
 export default function AppShell({ children }) {
-  const [open, setOpen] = useState(true);
+  const { user, signOut } = useAuthCtx();
   const nav = useNavigate();
   const loc = useLocation();
-  const { user, signOut } = useAuthCtx();
+  const [menuOpen,setMenuOpen] = useState(false);
+  const lastClickRef = useRef(0);
+  const OPEN_DELAY = 300; // ms delay before hover menu opens
+  const CLOSE_DELAY = 450; // existing close delay
+  const anchorRef = useRef(null);
+  const hoverTimeout = useRef(null);
 
-  const items = [
-    { label: 'Dashboard', icon: <Dashboard />, to: '/dashboard' },
-    { label: 'Services', icon: <Build />, to: '/services' },
-    { label: 'Billing', icon: <ReceiptLong />, to: '/billing' },
-    { label: 'Profile', icon: <Person />, to: '/profile' }
+  const firstName = (user?.first_name?.trim()) || (user?.email ? user.email.split('@')[0] : 'User');
+
+  const handleHoverOpen = () => {
+    if (Date.now() - lastClickRef.current < 250) return; // ignore right after click
+    clearTimeout(hoverTimeout.current);
+    hoverTimeout.current = setTimeout(()=> setMenuOpen(true), OPEN_DELAY);
+  };
+  const handleHoverClose = () => {
+    clearTimeout(hoverTimeout.current);
+    hoverTimeout.current = setTimeout(()=> setMenuOpen(false), CLOSE_DELAY);
+  };
+
+  const navItems = [
+    { label: 'Dashboard', to: '/dashboard' },
+    { label: 'Service', to: '/services' },
+    { label: 'Billing', to: '/billing' }
   ];
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      <CssBaseline />
-      <AppBar position="fixed" open={open} color="primary" sx={{ background: 'linear-gradient(135deg,#041B15,#0A3A2D)' }}>
-        <Toolbar sx={{ gap: 2 }}>
-          <IconButton color="inherit" edge="start" onClick={() => setOpen(o=>!o)}>
-            <MenuIcon />
-          </IconButton>
-            <Typography variant="h6" noWrap sx={{ flexGrow: 1 }}>
-              MapleMesh AutoRepair
-            </Typography>
+    <Box sx={{ minHeight:'100vh', bgcolor:'#f2f7fd', display:'flex', flexDirection:'column' }}>
+  <AppBar position="fixed" elevation={0} square sx={{ background:'#04221A', borderRadius:0 }}>
+        <Toolbar disableGutters sx={{ px:3, minHeight:70, display:'flex', alignItems:'stretch' }}>
+          {/* Left Section */}
+          <Box sx={{ display:'flex', alignItems:'center', gap:4 }}>
+            <Brand>
+              <Box onClick={()=>nav('/dashboard')} sx={{ cursor:'pointer', display:'flex', flexDirection:'column', px:1.5, py:1, ml:-1.5, '&:hover':{ background: alpha('#ffffff',0.08) } }}>
+                <span>MapleMesh</span>
+                <span style={{ fontWeight:400 }}>AutoRepair</span>
+              </Box>
+            </Brand>
+            <Stack direction="row" spacing={0}>
+              {navItems.map(item => (
+                <NavLink key={item.to} to={item.to} style={{ textDecoration:'none' }} end={item.to==='/dashboard'}>
+                  {({ isActive }) => (
+                    <NavLinkButton size="small" className={isActive ? 'active' : ''}>{item.label}</NavLinkButton>
+                  )}
+                </NavLink>
+              ))}
+            </Stack>
+          </Box>
+          {/* Center Tagline */}
+          <Box sx={{ flexGrow:1, textAlign:'center', display:'flex', flexDirection:'column', justifyContent:'center', pointerEvents:'none' }}>
+            <Typography variant="h6" sx={{ fontWeight:700, color:'#fff', lineHeight:1.1 }}>Welcome Back!</Typography>
+            <Typography variant="caption" sx={{ color:'#E2F5EE', letterSpacing:.5 }}>Your Trusted Online Auto Service Partner</Typography>
+          </Box>
+          {/* Right User Menu */}
+          <Box sx={{ display:'flex', alignItems:'center' }}>
             {user && (
-              <Tooltip title={user.email}>
-                <Avatar sx={{ bgcolor: 'secondary.main' }}>
-                  {user.email?.[0]?.toUpperCase()}
-                </Avatar>
-              </Tooltip>
+              <Box
+                onMouseEnter={handleHoverOpen}
+                onMouseLeave={handleHoverClose}
+                sx={{ display:'flex', alignItems:'center' }}
+              >
+                <Button
+                  ref={anchorRef}
+                  onClick={()=> { lastClickRef.current = Date.now(); setMenuOpen(false); nav('/profile'); }}
+                  sx={{ color:'#fff', textTransform:'none', fontWeight:600, fontSize:'.95rem', position:'relative', height:'100%', borderRadius:0, px:2, '&:hover':{ background: alpha('#ffffff',0.12) } }}
+                >
+                  {firstName}
+                </Button>
+                <Menu
+                  anchorEl={anchorRef.current}
+                  open={menuOpen}
+                  onClose={()=>setMenuOpen(false)}
+                  MenuListProps={{ dense:true }}
+                  anchorOrigin={{ vertical:'bottom', horizontal:'right' }}
+                  transformOrigin={{ vertical:'top', horizontal:'right' }}
+                  slotProps={{ paper:{ onMouseEnter:handleHoverOpen, onMouseLeave:handleHoverClose, sx:{ mt:1 } } }}
+                >
+                  <MenuItem onClick={()=>{ setMenuOpen(false); nav('/help'); }}>
+                    <HelpOutlineIcon fontSize="small" style={{ marginRight:8 }} /> Help & Support
+                  </MenuItem>
+                  <Divider />
+                  <MenuItem onClick={()=>{ setMenuOpen(false); signOut(); nav('/login'); }}>
+                    <LogoutIcon fontSize="small" style={{ marginRight:8 }} /> Sign Out
+                  </MenuItem>
+                </Menu>
+              </Box>
             )}
+          </Box>
         </Toolbar>
       </AppBar>
-      <DrawerStyled variant="permanent" open={open}>
-        <Toolbar />
-        <Divider />
-        <List sx={{ flexGrow: 1 }}>
-          {items.map(i => (
-            <ListItem key={i.to} disablePadding sx={{ display: 'block' }}>
-              <ListItemButton
-                selected={loc.pathname === i.to}
-                onClick={() => nav(i.to)}
-                sx={{ minHeight: 48, justifyContent: open ? 'initial' : 'center', px: 2.5 }}
-              >
-                <ListItemIcon sx={{ minWidth: 0, mr: open ? 2 : 'auto', color: 'primary.main' }}>
-                  {i.icon}
-                </ListItemIcon>
-                <ListItemText primary={i.label} sx={{ opacity: open ? 1 : 0 }} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-        <Divider />
-        <ListItem disablePadding>
-          <ListItemButton onClick={() => { signOut(); nav('/login'); }}>
-            <ListItemIcon sx={{ color: 'error.main' }}>
-              <Logout />
-            </ListItemIcon>
-            <ListItemText primary="Logout" />
-          </ListItemButton>
-        </ListItem>
-      </DrawerStyled>
-      <Box component="main" sx={{ flexGrow: 1, minHeight: '100vh', bgcolor: 'background.default' }}>
-        <Toolbar />
-        <Box sx={{ p: 3 }}>{children}</Box>
+      <Toolbar sx={{ minHeight:70 }} />
+      <Box sx={{ flexGrow:1, py:4 }}>
+        <Box sx={{ maxWidth:1400, mx:'auto', px:{ xs:2, md:4 } }}>
+          {children}
+        </Box>
       </Box>
     </Box>
   );
