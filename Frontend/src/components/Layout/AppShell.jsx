@@ -6,6 +6,7 @@ import {
 } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { styled, alpha } from '@mui/material/styles';
 
 // Brand (two line)
@@ -51,23 +52,12 @@ export default function AppShell({ children }) {
   const nav = useNavigate();
   const loc = useLocation();
   const [menuOpen,setMenuOpen] = useState(false);
-  const lastClickRef = useRef(0);
-  const OPEN_DELAY = 300; // ms delay before hover menu opens
-  const CLOSE_DELAY = 450; // existing close delay
   const anchorRef = useRef(null);
-  const hoverTimeout = useRef(null);
 
   const firstName = (user?.first_name?.trim()) || (user?.email ? user.email.split('@')[0] : 'User');
 
-  const handleHoverOpen = () => {
-    if (Date.now() - lastClickRef.current < 250) return; // ignore right after click
-    clearTimeout(hoverTimeout.current);
-    hoverTimeout.current = setTimeout(()=> setMenuOpen(true), OPEN_DELAY);
-  };
-  const handleHoverClose = () => {
-    clearTimeout(hoverTimeout.current);
-    hoverTimeout.current = setTimeout(()=> setMenuOpen(false), CLOSE_DELAY);
-  };
+  const toggleMenu = () => setMenuOpen(o=>!o);
+  const closeMenu = () => setMenuOpen(false);
 
   const navItems = [
     { label: 'Dashboard', to: '/dashboard' },
@@ -105,32 +95,43 @@ export default function AppShell({ children }) {
           {/* Right User Menu */}
           <Box sx={{ display:'flex', alignItems:'center' }}>
             {user && (
-              <Box
-                onMouseEnter={handleHoverOpen}
-                onMouseLeave={handleHoverClose}
-                sx={{ display:'flex', alignItems:'center' }}
-              >
-                <Button
-                  ref={anchorRef}
-                  onClick={()=> { lastClickRef.current = Date.now(); setMenuOpen(false); nav('/profile'); }}
-                  sx={{ color:'#fff', textTransform:'none', fontWeight:600, fontSize:'.95rem', position:'relative', height:'100%', borderRadius:0, px:2, '&:hover':{ background: alpha('#ffffff',0.12) } }}
+              <Box sx={{ display:'flex', alignItems:'center' }}>
+                <NavLinkButton
+                  onClick={()=> nav('/profile')}
+                  size="small"
+                  className={loc.pathname==='/profile' ? 'active' : ''}
                 >
                   {firstName}
+                </NavLinkButton>
+                <Button
+                  ref={anchorRef}
+                  onClick={toggleMenu}
+                  aria-haspopup="true"
+                  aria-expanded={menuOpen ? 'true' : undefined}
+                  sx={{
+                    minWidth:40, px:1, borderRadius:0, height:'100%', color:'#fff', fontWeight:500, fontSize:'.9rem', letterSpacing:'.4px',
+                    display:'flex', alignItems:'center', justifyContent:'center',
+                    '&:hover':{ background: alpha('#ffffff',0.08) },
+                    '& .arrow':{ transition:'transform .25s' },
+                    ...(menuOpen && { '& .arrow':{ transform:'rotate(180deg)' } })
+                  }}
+                >
+                  <KeyboardArrowDownIcon className="arrow" fontSize="small" />
                 </Button>
                 <Menu
                   anchorEl={anchorRef.current}
                   open={menuOpen}
-                  onClose={()=>setMenuOpen(false)}
+                  onClose={closeMenu}
                   MenuListProps={{ dense:true }}
                   anchorOrigin={{ vertical:'bottom', horizontal:'right' }}
                   transformOrigin={{ vertical:'top', horizontal:'right' }}
-                  slotProps={{ paper:{ onMouseEnter:handleHoverOpen, onMouseLeave:handleHoverClose, sx:{ mt:1 } } }}
+                  slotProps={{ paper:{ sx:{ mt:1 } } }}
                 >
-                  <MenuItem onClick={()=>{ setMenuOpen(false); nav('/help'); }}>
+                  <MenuItem onClick={()=>{ closeMenu(); nav('/help'); }}>
                     <HelpOutlineIcon fontSize="small" style={{ marginRight:8 }} /> Help & Support
                   </MenuItem>
                   <Divider />
-                  <MenuItem onClick={()=>{ setMenuOpen(false); signOut(); nav('/login'); }}>
+                  <MenuItem onClick={()=>{ closeMenu(); signOut(); nav('/login'); }}>
                     <LogoutIcon fontSize="small" style={{ marginRight:8 }} /> Sign Out
                   </MenuItem>
                 </Menu>
