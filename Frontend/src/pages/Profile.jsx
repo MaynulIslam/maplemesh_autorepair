@@ -82,7 +82,13 @@ export default function Profile(){
           <Card sx={{ height:'100%' }}>
             <CardContent sx={{ textAlign:'center', py:6 }}>
               <Avatar sx={{ width:80, height:80, mx:'auto', mb:2, bgcolor:'#2F4550' }}>{user?.email?.[0]?.toUpperCase()}</Avatar>
-              <Typography fontWeight={600}>{user?.email || 'Loading...'}</Typography>
+              <Typography fontWeight={600}>
+                {(() => {
+                  const fullName = [profile?.first_name, profile?.last_name].filter(Boolean).join(' ').trim();
+                  if(fullName) return fullName;
+                  return user?.email || 'Loading...';
+                })()}
+              </Typography>
               <Typography variant="caption" color="text.secondary" sx={{ display:'block', mt:1 }}>Customer since {profile?.member_since || '...'}</Typography>
               <Button size="small" variant="outlined" startIcon={<EditIcon />} sx={{ mt:2 }} disabled>Change Avatar</Button>
             </CardContent>
@@ -100,10 +106,10 @@ export default function Profile(){
                   <InfoDisplay label="Phone" value={profile?.phone} />
                   <InfoDisplay label="Address Line 1" value={profile?.address_line_1} half />
                   <InfoDisplay label="Address Line 2" value={profile?.address_line_2} half />
-                  <InfoDisplay label="City" value={profile?.city} third />
-                  <InfoDisplay label="Province/State" value={profile?.province} third />
-                  <InfoDisplay label="Postal Code" value={profile?.postal_code} third />
-                  <InfoDisplay label="Country" value={profile?.country} half />
+                  <InfoDisplay label="City" value={profile?.city} quarter />
+                  <InfoDisplay label="Province/State" value={profile?.province} quarter />
+                  <InfoDisplay label="Postal Code" value={profile?.postal_code} quarter />
+                  <InfoDisplay label="Country" value={profile?.country} quarter />
                 </Grid>
               )}
               {editMode && (
@@ -114,10 +120,10 @@ export default function Profile(){
                   <Grid item xs={12} sm={6}><TextField label="Phone" size="small" fullWidth value={form?.phone || ''} onChange={onChange('phone')} /></Grid>
                   <Grid item xs={12} sm={6}><TextField label="Address Line 1" size="small" fullWidth value={form?.address_line_1 || ''} onChange={onChange('address_line_1')} /></Grid>
                   <Grid item xs={12} sm={6}><TextField label="Address Line 2" size="small" fullWidth value={form?.address_line_2 || ''} onChange={onChange('address_line_2')} /></Grid>
-                  <Grid item xs={12} sm={4}><TextField label="City" size="small" fullWidth value={form?.city || ''} onChange={onChange('city')} /></Grid>
-                  <Grid item xs={12} sm={4}><TextField label="Province/State" size="small" fullWidth value={form?.province || ''} onChange={onChange('province')} /></Grid>
-                  <Grid item xs={12} sm={4}><TextField label="Postal Code" size="small" fullWidth value={form?.postal_code || ''} onChange={onChange('postal_code')} /></Grid>
-                  <Grid item xs={12} sm={6}><TextField label="Country" size="small" fullWidth value={form?.country || ''} onChange={onChange('country')} /></Grid>
+                  <Grid item xs={12} sm={3}><TextField label="City" size="small" fullWidth value={form?.city || ''} onChange={onChange('city')} /></Grid>
+                  <Grid item xs={12} sm={3}><TextField label="Province/State" size="small" fullWidth value={form?.province || ''} onChange={onChange('province')} /></Grid>
+                  <Grid item xs={12} sm={3}><TextField label="Postal Code" size="small" fullWidth value={form?.postal_code || ''} onChange={onChange('postal_code')} /></Grid>
+                  <Grid item xs={12} sm={3}><TextField label="Country" size="small" fullWidth value={form?.country || ''} onChange={onChange('country')} /></Grid>
                   <Grid item xs={12} sm={6}><TextField label="New Password" size="small" fullWidth type="password" disabled placeholder="(Not implemented)" /></Grid>
                 </Grid>
               )}
@@ -203,9 +209,9 @@ function PreferenceLabel({ title, desc }){
   );
 }
 
-function InfoDisplay({ label, value, half, third }){
+function InfoDisplay({ label, value, half, third, quarter }){
   return (
-    <Grid item xs={12} sm={third?4:(half?6:6)}>
+  <Grid item xs={12} sm={quarter?3:(third?4:(half?6:6))}>
       <Box sx={{border:'1px solid', borderColor:'divider', p:1, borderRadius:1, minHeight:48, display:'flex', alignItems:'center', fontSize:13, flexWrap:'wrap'}}>
         <Typography component='span' variant='caption' sx={{fontSize:11, letterSpacing:.5, mr:0.5, color:'text.secondary'}}>{label.toUpperCase()}</Typography>
         <Typography component='span' variant='body2' sx={{mx:0.25, color:'text.disabled'}}>-</Typography>
