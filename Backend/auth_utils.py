@@ -1,7 +1,10 @@
 from passlib.context import CryptContext
 from jose import JWTError, jwt
 from datetime import datetime, timedelta, timezone  # Add timezone import
-from db_config import JWT_SECRET_KEY, JWT_ALGORITHM, JWT_EXPIRATION_HOURS
+try:
+    from Backend.db_config import JWT_SECRET_KEY, JWT_ALGORITHM, JWT_EXPIRATION_HOURS
+except ModuleNotFoundError:
+    from db_config import JWT_SECRET_KEY, JWT_ALGORITHM, JWT_EXPIRATION_HOURS
 import secrets
 import re
 

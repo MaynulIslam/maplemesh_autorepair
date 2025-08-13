@@ -6,6 +6,8 @@ import {
   Divider, Table, TableHead, TableRow, TableCell, TableBody, Switch, FormControlLabel,
   Chip, Tooltip, IconButton, Dialog, DialogTitle, DialogContent, DialogActions
 } from '@mui/material';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 import DeleteIcon from '@mui/icons-material/DeleteOutline';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
@@ -20,7 +22,6 @@ export default function Profile(){
   const [loading,setLoading]=useState(false);
   const [saving,setSaving]=useState(false);
   const [error,setError]=useState('');
-  const [success,setSuccess]=useState(false);
   const [editMode,setEditMode]=useState(false);
   const [dirty,setDirty]=useState(false); // tracks if any field changed after entering edit
   const [vehicles,setVehicles]=useState([]);
@@ -32,6 +33,8 @@ export default function Profile(){
   const [vehEditing,setVehEditing]=useState(null); // null for add; object for edit
   const [vehForm,setVehForm]=useState({ make:'', model:'', year:'', color:'', license_plate:'', last_service_date:'', description:'' });
   const [vehSaving,setVehSaving]=useState(false);
+  const [snack,setSnack]=useState({ open:false, message:'', severity:'success' });
+  const openSnack = (message, severity='success')=> setSnack({ open:true, message, severity });
   const [prefs,setPrefs]=useState({ email:true, sms:true, marketing:false });
 
   useEffect(()=>{
@@ -66,15 +69,15 @@ export default function Profile(){
     return {...f,[k]:val};
   });
 
-  const beginEdit = ()=>{ setEditMode(true); setSuccess(false); setError(''); setForm(profile); setDirty(false); };
+  const beginEdit = ()=>{ setEditMode(true); setError(''); setForm(profile); setDirty(false); };
   const cancelEdit = ()=>{ setEditMode(false); setForm(profile); setDirty(false); };
   const watchedKeys = ['first_name','last_name','email','phone','address_line_1','address_line_2','city','province','postal_code','country'];
   const hasChanges = form && profile && watchedKeys.some(k=>form[k]!==profile[k]);
   useEffect(()=>{ if(editMode) setDirty(hasChanges); },[hasChanges, editMode]);
 
   const save = async ()=>{
-  if(!hasChanges) { setEditMode(false); return; }
-    setSaving(true); setError(''); setSuccess(false);
+  if(!hasChanges) { setEditMode(false); openSnack('No changes to save','info'); return; }
+    setSaving(true); setError('');
     try {
       const payload = {
         first_name: form.first_name||'',
@@ -89,17 +92,18 @@ export default function Profile(){
         country: form.country||''
       };
       const { data } = await api.put('/api/customer/profile', payload);
-      setProfile(data); setForm(data); setSuccess(true); setEditMode(false);
+      setProfile(data); setForm(data); setEditMode(false); openSnack('Profile updated','success');
     } catch(e){
-      setError(e.response?.data?.detail || 'Update failed');
+      const msg = e.response?.data?.detail || 'Update failed';
+      setError(msg);
+      openSnack(msg,'error');
     } finally { setSaving(false); }
   };
 
   return (
     <AppShell>
   <Typography variant="h5" fontWeight={700} sx={{ mb:3 }}>Profile Settings</Typography>
-  {error && <Typography variant="body2" color="error" sx={{mb:2}}>{error}</Typography>}
-  {success && <Typography variant="body2" color="success.main" sx={{mb:2}}>Profile updated successfully.</Typography>}
+  {/* inline status messages removed in favor of toasts */}
       <Grid container spacing={3}>
         <Grid item xs={12} md={4}>
           <Card sx={{ height:'100%' }}>
@@ -236,6 +240,9 @@ export default function Profile(){
               try {
                 await deleteVehicle(vehToDelete.vehicle_id);
                 setVehicles(prev => prev.filter(x=>x.vehicle_id !== vehToDelete.vehicle_id));
+                openSnack('Vehicle deleted','success');
+              } catch(err){
+                openSnack('Failed to delete vehicle','error');
               } finally {
                 setConfirmOpen(false); setVehToDelete(null);
               }
@@ -274,16 +281,26 @@ export default function Profile(){
                 if(vehEditing){
                   await updateVehicle(vehEditing.vehicle_id, payload);
                   setVehicles(prev => prev.map(x=> x.vehicle_id===vehEditing.vehicle_id ? { ...x, ...payload, year: payload.year ?? x.year } : x));
+                  openSnack('Vehicle updated','success');
                 } else {
                   const res = await createVehicle(payload);
                   // append new item to list by reloading or optimistic append (minimal fields)
                   setVehicles(prev => [...prev, { vehicle_id: res.vehicle_id, created_at: new Date().toISOString(), updated_at: new Date().toISOString(), ...payload }]);
+                  openSnack('Vehicle added','success');
                 }
                 setVehDialogOpen(false); setVehEditing(null);
+              } catch(err){
+                openSnack('Operation failed','error');
               } finally { setVehSaving(false); }
             }}>{vehEditing? 'Save Changes' : 'Add Vehicle'}</Button>
           </DialogActions>
         </Dialog>
+
+        <Snackbar open={snack.open} autoHideDuration={2500} onClose={()=>setSnack(s=>({...s, open:false}))} anchorOrigin={{ vertical:'bottom', horizontal:'center' }}>
+          <MuiAlert onClose={()=>setSnack(s=>({...s, open:false}))} elevation={6} variant="filled" severity={snack.severity} sx={{ width: '100%' }}>
+            {snack.message}
+          </MuiAlert>
+        </Snackbar>
 
         {/* Contact Preferences */}
         <Grid item xs={12}>

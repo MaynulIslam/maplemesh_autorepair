@@ -5,9 +5,14 @@ from pathlib import Path
 import pathlib, os
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi.middleware.cors import CORSMiddleware
-from models import CustomerRegistration, TechnicianRegistration, UserLogin, UserResponse, Token, VehicleCreate, VehicleUpdate, VehicleResponse, VehicleListResponse
-from auth_utils import hash_password, verify_password, create_access_token, verify_token
-from db_config import user_auth_collection, customer_profile_collection, technician_profile_collection, client, vehicles_collection, customer_service_list_collection, db
+try:
+    from Backend.models import CustomerRegistration, TechnicianRegistration, UserLogin, UserResponse, Token, VehicleCreate, VehicleUpdate, VehicleResponse, VehicleListResponse
+    from Backend.auth_utils import hash_password, verify_password, create_access_token, verify_token
+    from Backend.db_config import user_auth_collection, customer_profile_collection, technician_profile_collection, client, vehicles_collection, customer_service_list_collection, db
+except ModuleNotFoundError:
+    from models import CustomerRegistration, TechnicianRegistration, UserLogin, UserResponse, Token, VehicleCreate, VehicleUpdate, VehicleResponse, VehicleListResponse
+    from auth_utils import hash_password, verify_password, create_access_token, verify_token
+    from db_config import user_auth_collection, customer_profile_collection, technician_profile_collection, client, vehicles_collection, customer_service_list_collection, db
 from datetime import datetime, timezone
 from bson import ObjectId
 import logging
@@ -124,6 +129,149 @@ async def get_current_user_info(current_user: dict = Depends(get_current_user)):
         raise
     except Exception as e:
         logging.error(f"Get user info error: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+# ===================== CUSTOMER PROFILE ENDPOINTS =====================
+@app.get("/api/customer/profile", response_model=ProfileResponse)
+async def get_customer_profile(current_user: dict = Depends(get_current_user)):
+    try:
+        user_id = current_user["user_id"]
+        auth_doc = user_auth_collection.find_one({"_id": ObjectId(user_id)})
+        if not auth_doc:
+            raise HTTPException(status_code=404, detail="User not found")
+        if auth_doc.get("user_type") != "customer":
+            raise HTTPException(status_code=403, detail="Not a customer account")
+
+        profile_doc = customer_profile_collection.find_one({"user_id": user_id})
+        # Auto-create minimal profile if missing to avoid 404 on first visit
+        if not profile_doc:
+            now = datetime.now(timezone.utc)
+            empty_profile = {
+                "user_id": user_id,
+                "personal_information": {
+                    "first_name": "",
+                    "last_name": "",
+                    "username": auth_doc.get("username", ""),
+                    "phone_number": ""
+                },
+                "address_information": {
+                    "address_line1": "",
+                    "address_line2": None,
+                    "city": "",
+                    "province_state": "",
+                    "postal_zip_code": "",
+                    "country": ""
+                },
+                "created_at": now,
+                "updated_at": now
+            }
+            customer_profile_collection.insert_one(empty_profile)
+            profile_doc = empty_profile
+
+        pi = profile_doc.get("personal_information", {})
+        ai = profile_doc.get("address_information", {})
+        member_since_dt = auth_doc.get("created_at") or profile_doc.get("created_at")
+        if isinstance(member_since_dt, datetime):
+            member_since = str(member_since_dt.year)
+        else:
+            member_since = datetime.now(timezone.utc).strftime("%Y")
+        return ProfileResponse(
+            user_id=user_id,
+            first_name=pi.get("first_name", ""),
+            last_name=pi.get("last_name", ""),
+            username=pi.get("username", auth_doc.get("username", "")),
+            email=auth_doc.get("email", ""),
+            phone=pi.get("phone_number", ""),
+            address_line_1=ai.get("address_line1", ""),
+            address_line_2=ai.get("address_line2"),
+            city=ai.get("city", ""),
+            province=ai.get("province_state", ""),
+            postal_code=ai.get("postal_zip_code", ""),
+            country=ai.get("country", ""),
+            member_since=member_since
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Get customer profile error: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+@app.put("/api/customer/profile", response_model=ProfileResponse)
+async def update_customer_profile(payload: ProfileUpdateRequest, current_user: dict = Depends(get_current_user)):
+    try:
+        user_id = current_user["user_id"]
+        auth_doc = user_auth_collection.find_one({"_id": ObjectId(user_id)})
+        if not auth_doc:
+            raise HTTPException(status_code=404, detail="User not found")
+        if auth_doc.get("user_type") != "customer":
+            raise HTTPException(status_code=403, detail="Not a customer account")
+
+        # email change uniqueness check
+        new_email = payload.email.strip().lower()
+        old_email = (auth_doc.get("email", "") or "").lower()
+        if new_email != old_email:
+            if user_auth_collection.find_one({"email": new_email}):
+                raise HTTPException(status_code=400, detail="Email already in use")
+            user_auth_collection.update_one({"_id": auth_doc["_id"]}, {"$set": {"email": new_email, "updated_at": datetime.now(timezone.utc)}})
+
+        # Ensure profile exists (create if missing)
+        profile_doc = customer_profile_collection.find_one({"user_id": user_id})
+        if not profile_doc:
+            customer_profile_collection.insert_one({
+                "user_id": user_id,
+                "personal_information": {},
+                "address_information": {},
+                "created_at": datetime.now(timezone.utc),
+                "updated_at": datetime.now(timezone.utc)
+            })
+
+        # Update profile document
+        customer_profile_collection.update_one(
+            {"user_id": user_id},
+            {"$set": {
+                "personal_information.first_name": payload.first_name.strip(),
+                "personal_information.last_name": payload.last_name.strip(),
+                "personal_information.phone_number": payload.phone.strip(),
+                # username immutable for now
+                "address_information.address_line1": payload.address_line_1.strip(),
+                "address_information.address_line2": payload.address_line_2.strip() if payload.address_line_2 else None,
+                "address_information.city": payload.city.strip(),
+                "address_information.province_state": payload.province.strip(),
+                "address_information.postal_zip_code": payload.postal_code.strip(),
+                "address_information.country": payload.country.strip(),
+                "updated_at": datetime.now(timezone.utc)
+            }}
+        )
+
+        # Return updated profile
+        updated_profile = customer_profile_collection.find_one({"user_id": user_id})
+        pi = updated_profile.get("personal_information", {})
+        ai = updated_profile.get("address_information", {})
+        member_since_dt = auth_doc.get("created_at") or updated_profile.get("created_at")
+        if isinstance(member_since_dt, datetime):
+            member_since = str(member_since_dt.year)
+        else:
+            member_since = datetime.now(timezone.utc).strftime("%Y")
+        auth_doc = user_auth_collection.find_one({"_id": ObjectId(user_id)})  # refresh email
+        return ProfileResponse(
+            user_id=user_id,
+            first_name=pi.get("first_name", ""),
+            last_name=pi.get("last_name", ""),
+            username=pi.get("username", auth_doc.get("username", "")),
+            email=auth_doc.get("email", ""),
+            phone=pi.get("phone_number", ""),
+            address_line_1=ai.get("address_line1", ""),
+            address_line_2=ai.get("address_line2"),
+            city=ai.get("city", ""),
+            province=ai.get("province_state", ""),
+            postal_code=ai.get("postal_zip_code", ""),
+            country=ai.get("country", ""),
+            member_since=member_since
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Update customer profile error: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
 
 @app.post("/api/auth/register/customer")
