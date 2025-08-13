@@ -4,12 +4,14 @@ import AppShell from '../components/Layout/AppShell';
 import {
   Box, Grid, Card, CardContent, Typography, Avatar, TextField, Button, Stack,
   Divider, Table, TableHead, TableRow, TableCell, TableBody, Switch, FormControlLabel,
-  Chip, Tooltip, IconButton
+  Chip, Tooltip, IconButton, Dialog, DialogTitle, DialogContent, DialogActions
 } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/DeleteOutline';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
 import SaveIcon from '@mui/icons-material/Save';
 import api from '../api/client';
+import { listVehicles, createVehicle, updateVehicle, deleteVehicle } from '../api/vehicles';
 
 export default function Profile(){
   const { user } = useAuthCtx();
@@ -22,6 +24,14 @@ export default function Profile(){
   const [editMode,setEditMode]=useState(false);
   const [dirty,setDirty]=useState(false); // tracks if any field changed after entering edit
   const [vehicles,setVehicles]=useState([]);
+  const [vehLoading,setVehLoading]=useState(false);
+  const [vehError,setVehError]=useState('');
+  const [confirmOpen,setConfirmOpen]=useState(false);
+  const [vehToDelete,setVehToDelete]=useState(null);
+  const [vehDialogOpen,setVehDialogOpen]=useState(false);
+  const [vehEditing,setVehEditing]=useState(null); // null for add; object for edit
+  const [vehForm,setVehForm]=useState({ make:'', model:'', year:'', color:'', license_plate:'', last_service_date:'', description:'' });
+  const [vehSaving,setVehSaving]=useState(false);
   const [prefs,setPrefs]=useState({ email:true, sms:true, marketing:false });
 
   useEffect(()=>{
@@ -36,6 +46,19 @@ export default function Profile(){
       } finally { setLoading(false); }
     };
     load();
+  },[]);
+
+  useEffect(()=>{
+    const loadVehicles = async ()=>{
+      setVehLoading(true); setVehError('');
+      try {
+        const items = await listVehicles();
+        setVehicles(items);
+      } catch(e){
+        setVehError('Failed to load vehicles');
+      } finally { setVehLoading(false); }
+    };
+    loadVehicles();
   },[]);
 
   const onChange = (k)=> e => setForm(f=>{
@@ -148,7 +171,7 @@ export default function Profile(){
             <CardContent sx={{ p:0 }}>
               <Box sx={{ px:2, py:1, bgcolor:'#041B15', color:'#fff', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
                 <Typography fontWeight={600}>Registered Vehicles</Typography>
-                <Button size="small" variant="contained" startIcon={<AddIcon />} sx={{ bgcolor:'#022E24','&:hover':{bgcolor:'#034433'} }} disabled>Add Vehicle</Button>
+                <Button size="small" variant="contained" startIcon={<AddIcon />} sx={{ bgcolor:'#022E24','&:hover':{bgcolor:'#034433'} }} onClick={()=>{ setVehEditing(null); setVehForm({ make:'', model:'', year:'', color:'', license_plate:'', last_service_date:'', description:'' }); setVehDialogOpen(true); }}>Add Vehicle</Button>
               </Box>
               <Table size="small" sx={{ '& td, & th':{ whiteSpace:'nowrap' } }}>
                 <TableHead>
@@ -162,14 +185,105 @@ export default function Profile(){
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {vehicles.length === 0 && (
+                  {vehLoading && (
+                    <TableRow><TableCell colSpan={6} style={{ color:'#666' }}>Loading...</TableCell></TableRow>
+                  )}
+                  {!vehLoading && vehicles.length === 0 && (
                     <TableRow><TableCell colSpan={6} style={{ color:'#666' }}>No vehicles yet</TableCell></TableRow>
                   )}
+                  {!vehLoading && vehicles.map(v => (
+                    <TableRow key={v.vehicle_id}>
+                      <TableCell>{v.make} {v.model}</TableCell>
+                      <TableCell>{v.year}</TableCell>
+                      <TableCell>{v.license_plate || '—'}</TableCell>
+                      <TableCell>{v.last_service_date || '—'}</TableCell>
+                      <TableCell>{v.description || '—'}</TableCell>
+                      <TableCell>
+                        <Tooltip title="Edit"><span>
+                          <IconButton size="small" onClick={()=>{ setVehEditing(v); setVehForm({ make:v.make||'', model:v.model||'', year:String(v.year||''), color:v.color||'', license_plate:v.license_plate||'', last_service_date:v.last_service_date||'', description:v.description||'' }); setVehDialogOpen(true); }}>
+                            <EditIcon fontSize="small" />
+                          </IconButton>
+                        </span></Tooltip>
+                        <Tooltip title="Delete"><span>
+                          <IconButton size="small" color="error" onClick={()=>{ setVehToDelete(v); setConfirmOpen(true); }}>
+                            <DeleteIcon fontSize="small" />
+                          </IconButton>
+                        </span></Tooltip>
+                      </TableCell>
+                    </TableRow>
+                  ))}
                 </TableBody>
               </Table>
             </CardContent>
           </Card>
         </Grid>
+
+        {/* Delete confirm dialog */}
+        <Dialog open={confirmOpen} onClose={()=>setConfirmOpen(false)}>
+          <DialogTitle>Delete Vehicle</DialogTitle>
+          <DialogContent>
+            <Typography>Are you sure you want to delete this vehicle?</Typography>
+            {vehToDelete && (
+              <Typography variant="body2" color="text.secondary" sx={{ mt:1 }}>
+                {vehToDelete.make} {vehToDelete.model} • {vehToDelete.year}
+              </Typography>
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={()=>setConfirmOpen(false)}>No</Button>
+            <Button color="error" variant="contained" onClick={async()=>{
+              if(!vehToDelete) return;
+              try {
+                await deleteVehicle(vehToDelete.vehicle_id);
+                setVehicles(prev => prev.filter(x=>x.vehicle_id !== vehToDelete.vehicle_id));
+              } finally {
+                setConfirmOpen(false); setVehToDelete(null);
+              }
+            }}>Yes, Delete</Button>
+          </DialogActions>
+        </Dialog>
+
+        {/* Add/Edit vehicle dialog */}
+        <Dialog open={vehDialogOpen} onClose={()=>!vehSaving && setVehDialogOpen(false)} fullWidth maxWidth="sm">
+          <DialogTitle>{vehEditing? 'Edit Vehicle' : 'Add Vehicle'}</DialogTitle>
+          <DialogContent>
+            <Grid container spacing={2} sx={{ mt:0.5 }}>
+              <Grid item xs={12} sm={6}><TextField label="Make" size="small" fullWidth value={vehForm.make} onChange={e=>setVehForm(f=>({...f, make:e.target.value}))} /></Grid>
+              <Grid item xs={12} sm={6}><TextField label="Model" size="small" fullWidth value={vehForm.model} onChange={e=>setVehForm(f=>({...f, model:e.target.value}))} /></Grid>
+              <Grid item xs={12} sm={4}><TextField label="Year" size="small" type="number" fullWidth value={vehForm.year} onChange={e=>setVehForm(f=>({...f, year:e.target.value}))} /></Grid>
+              <Grid item xs={12} sm={4}><TextField label="Color" size="small" fullWidth value={vehForm.color} onChange={e=>setVehForm(f=>({...f, color:e.target.value}))} /></Grid>
+              <Grid item xs={12} sm={4}><TextField label="License Plate" size="small" fullWidth value={vehForm.license_plate} onChange={e=>setVehForm(f=>({...f, license_plate:e.target.value}))} /></Grid>
+              <Grid item xs={12} sm={6}><TextField label="Last Service Date" placeholder="YYYY-MM-DD" size="small" fullWidth value={vehForm.last_service_date} onChange={e=>setVehForm(f=>({...f, last_service_date:e.target.value}))} /></Grid>
+              <Grid item xs={12} sm={6}><TextField label="Description" size="small" fullWidth value={vehForm.description} onChange={e=>setVehForm(f=>({...f, description:e.target.value}))} /></Grid>
+            </Grid>
+          </DialogContent>
+          <DialogActions>
+            <Button disabled={vehSaving} onClick={()=>setVehDialogOpen(false)}>Cancel</Button>
+            <Button variant="contained" disabled={vehSaving} onClick={async()=>{
+              setVehSaving(true);
+              try {
+                const payload = {
+                  make: vehForm.make.trim(),
+                  model: vehForm.model.trim(),
+                  year: parseInt(vehForm.year, 10) || undefined,
+                  color: vehForm.color?.trim() || undefined,
+                  license_plate: vehForm.license_plate?.trim() || undefined,
+                  last_service_date: vehForm.last_service_date?.trim() || undefined,
+                  description: vehForm.description?.trim() || undefined,
+                };
+                if(vehEditing){
+                  await updateVehicle(vehEditing.vehicle_id, payload);
+                  setVehicles(prev => prev.map(x=> x.vehicle_id===vehEditing.vehicle_id ? { ...x, ...payload, year: payload.year ?? x.year } : x));
+                } else {
+                  const res = await createVehicle(payload);
+                  // append new item to list by reloading or optimistic append (minimal fields)
+                  setVehicles(prev => [...prev, { vehicle_id: res.vehicle_id, created_at: new Date().toISOString(), updated_at: new Date().toISOString(), ...payload }]);
+                }
+                setVehDialogOpen(false); setVehEditing(null);
+              } finally { setVehSaving(false); }
+            }}>{vehEditing? 'Save Changes' : 'Add Vehicle'}</Button>
+          </DialogActions>
+        </Dialog>
 
         {/* Contact Preferences */}
         <Grid item xs={12}>
