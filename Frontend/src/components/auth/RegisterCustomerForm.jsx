@@ -4,6 +4,7 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import api from '../../api/client';
+import { useToastCtx } from '../../context/ToastContext';
 import { useNavigate } from 'react-router-dom';
 
 // Lightweight static datasets for instant suggestions (can be expanded later)
@@ -45,6 +46,7 @@ const CUSTOMER_STEPS = ['Personal','Address','Vehicle','Review'];
 
 export default function RegisterCustomerForm() {
   const nav = useNavigate();
+  const toast = useToastCtx();
   const [form, setForm] = useState({
   first_name:'', last_name:'', username:'', email:'', password:'', confirm_password:'',
     phone:'', dob:'', address_line_1:'', address_line_2:'',
@@ -156,12 +158,15 @@ export default function RegisterCustomerForm() {
     try {
       const yearNum = parseInt(form.vehicle_year,10);
       const payload = { ...form, vehicle_year: yearNum };
-      await api.post('/api/auth/register/customer', payload);
+  await api.post('/api/auth/register/customer', payload);
       setOk(true); setStatus('success');
+  toast?.success('Registration successful');
       setTimeout(()=>nav('/login'), 1200);
     } catch(ex){
-      const detail = ex.response?.data?.detail;
-      setErr(detail ? (typeof detail==='string'? detail : JSON.stringify(detail)) : 'Registration failed');
+  const detail = ex.response?.data?.detail;
+  const msg = detail ? (typeof detail==='string'? detail : JSON.stringify(detail)) : 'Registration failed';
+  setErr(msg);
+  toast?.error(msg);
       setStatus('error');
     } finally { setLoading(false); }
   };

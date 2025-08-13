@@ -13,7 +13,7 @@ export default function NavBar() {
         <Typography variant="h6" sx={{ flexGrow: 1 }}>MapleMesh AutoRepair</Typography>
         <Stack direction="row" spacing={2} alignItems="center">
           {user && <Typography variant="body2">{user.email}</Typography>}
-          {user && <Button color="inherit" onClick={signOut}>Logout</Button>}
+          {user && <Button color="inherit" onClick={()=>{ signOut(); }}>Logout</Button>}
         </Stack>
       </Toolbar>
     </AppBar>

@@ -9,7 +9,7 @@ export default function TechnicianDashboard() {
     <Box sx={{ p:4 }}>
       <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb:2 }}>
         <Typography variant="h4" fontWeight={700}>Technician Dashboard</Typography>
-        <Button variant="outlined" color="error" size="small" onClick={()=>{ signOut(); nav('/login'); }}>Sign Out</Button>
+  <Button variant="outlined" color="error" size="small" onClick={()=>{ signOut(); nav('/login'); }}>Sign Out</Button>
       </Stack>
       <Typography variant="body1" color="text.secondary" gutterBottom>
         Welcome{user?.email ? `, ${user.email}` : ''}. This is a placeholder dashboard for technician accounts.

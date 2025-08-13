@@ -4,6 +4,7 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import api from '../../api/client';
+import { useToastCtx } from '../../context/ToastContext';
 import { useNavigate } from 'react-router-dom';
 
 const STEPS = [
@@ -16,6 +17,7 @@ const STEPS = [
 
 export default function RegisterTechnicianForm() {
   const nav = useNavigate();
+  const toast = useToastCtx();
   const [form, setForm] = useState({
     first_name:'', last_name:'', dob:'', phone:'', username:'',
     email:'', password:'', confirm_password:'',
@@ -126,11 +128,14 @@ export default function RegisterTechnicianForm() {
         areas_of_expertise: form.areas_of_expertise,
         is_certified: form.is_certified === 'yes' ? 'true' : 'false'
       };
-      await api.post('/api/auth/register/technician', payload);
+  await api.post('/api/auth/register/technician', payload);
       setOk(true);
+  toast?.success('Registration submitted');
       setTimeout(()=>nav('/login'), 1300);
     } catch (ex) {
-      setErr(ex.response?.data?.detail || 'Registration failed');
+  const msg = ex.response?.data?.detail || 'Registration failed';
+  setErr(msg);
+  toast?.error(msg);
     } finally { setLoading(false); }
   };
 

@@ -5,10 +5,12 @@ import {
 } from '@mui/material';
 import GoogleIcon from '@mui/icons-material/Google';
 import { useAuthCtx } from '../../context/AuthContext';
+import { useToastCtx } from '../../context/ToastContext';
 import { useNavigate } from 'react-router-dom';
 
 export default function LoginForm() {
   const { signIn, user } = useAuthCtx();
+  const toast = useToastCtx();
   const [email,setEmail]=useState('');
   const [password,setPassword]=useState('');
   const [err,setErr]=useState('');
@@ -29,7 +31,9 @@ export default function LoginForm() {
   const u = await signIn(email,password);
   if (u?.user_type === 'technician') nav('/technician-dashboard'); else nav('/dashboard');
     } catch (ex) {
-      setErr(ex.response?.data?.detail || 'Login failed');
+  const msg = ex.response?.data?.detail || 'Login failed';
+  setErr(msg);
+  toast?.error(msg);
     } finally {
       setLoading(false);
     }
