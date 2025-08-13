@@ -206,9 +206,10 @@ function PreferenceLabel({ title, desc }){
 function InfoDisplay({ label, value, half, third }){
   return (
     <Grid item xs={12} sm={third?4:(half?6:6)}>
-      <Box sx={{border:'1px solid', borderColor:'divider', p:1, borderRadius:1, minHeight:56, display:'flex', flexDirection:'column', justifyContent:'center'}}>
-        <Typography variant='caption' color='text.secondary' sx={{fontSize:11, letterSpacing:.5}}>{label.toUpperCase()}</Typography>
-        <Typography variant='body2' sx={{fontWeight:500, mt:0.25}}>{value || '—'}</Typography>
+      <Box sx={{border:'1px solid', borderColor:'divider', p:1, borderRadius:1, minHeight:48, display:'flex', alignItems:'center', fontSize:13, flexWrap:'wrap'}}>
+        <Typography component='span' variant='caption' sx={{fontSize:11, letterSpacing:.5, mr:0.5, color:'text.secondary'}}>{label.toUpperCase()}</Typography>
+        <Typography component='span' variant='body2' sx={{mx:0.25, color:'text.disabled'}}>-</Typography>
+        <Typography component='span' variant='body2'>{value || '—'}</Typography>
       </Box>
     </Grid>
   );
