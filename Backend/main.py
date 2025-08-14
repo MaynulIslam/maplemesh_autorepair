@@ -14,6 +14,7 @@ except ModuleNotFoundError:
     from auth_utils import hash_password, verify_password, create_access_token, verify_token
     from db_config import user_auth_collection, customer_profile_collection, technician_profile_collection, client, vehicles_collection, customer_service_list_collection, db
 from datetime import datetime, timezone
+from enum import Enum
 from bson import ObjectId
 import logging
 from pydantic import BaseModel, EmailStr
@@ -646,11 +647,28 @@ class ServiceCatalogItem(BaseModel):
     category: Optional[str] = None
     estimated_minutes: Optional[int] = None
 
+class Urgency(str, Enum):
+    Urgent = "Urgent"
+    Soon = "Soon"
+    Regular = "Regular"
+
 class ServiceRequestCreate(BaseModel):
     vehicle_id: str
     odometer_km: int
     services: List[str]  # list of catalog item ids or names
     description: Optional[str] = None
+    urgency: Optional[Urgency] = None
+    schedule_from: Optional[datetime] = None
+    schedule_to: Optional[datetime] = None
+
+class ServiceRequestUpdate(BaseModel):
+    vehicle_id: Optional[str] = None
+    odometer_km: Optional[int] = None
+    services: Optional[List[str]] = None
+    description: Optional[str] = None
+    urgency: Optional[Urgency] = None
+    schedule_from: Optional[datetime] = None
+    schedule_to: Optional[datetime] = None
 
 class ServiceRequestResponse(BaseModel):
     id: str
@@ -659,6 +677,9 @@ class ServiceRequestResponse(BaseModel):
     odometer_km: int
     services: List[str]
     description: Optional[str] = None
+    urgency: Optional[Urgency] = None
+    schedule_from: Optional[datetime] = None
+    schedule_to: Optional[datetime] = None
     status: str
     created_at: datetime
     updated_at: datetime
@@ -831,6 +852,9 @@ async def list_customer_services(current_user: dict = Depends(get_current_user))
                 odometer_km=doc.get("odometer_km", 0),
                 services=doc.get("services", []),
                 description=doc.get("description"),
+                urgency=doc.get("urgency"),
+                schedule_from=doc.get("schedule_from"),
+                schedule_to=doc.get("schedule_to"),
                 status=doc.get("status", "Pending"),
                 created_at=doc.get("created_at", datetime.now(timezone.utc)),
                 updated_at=doc.get("updated_at", datetime.now(timezone.utc))
@@ -848,6 +872,16 @@ async def create_customer_service(req: ServiceRequestCreate, current_user: dict 
         if not vehicle:
             raise HTTPException(status_code=404, detail="Vehicle not found")
 
+        # Validate schedule window if provided
+        def _aware(dt: Optional[datetime]) -> Optional[datetime]:
+            if not dt:
+                return None
+            return dt if dt.tzinfo is not None else dt.replace(tzinfo=timezone.utc)
+        sched_from = _aware(req.schedule_from)
+        sched_to = _aware(req.schedule_to)
+        if sched_from and sched_to and sched_from > sched_to:
+            raise HTTPException(status_code=400, detail="schedule_from must be before schedule_to")
+
         now = datetime.now(timezone.utc)
         doc = {
             "user_id": current_user["user_id"],
@@ -855,6 +889,9 @@ async def create_customer_service(req: ServiceRequestCreate, current_user: dict 
             "odometer_km": req.odometer_km,
             "services": req.services,
             "description": req.description,
+            "urgency": req.urgency,
+            "schedule_from": sched_from,
+            "schedule_to": sched_to,
             "status": "Pending",
             "created_at": now,
             "updated_at": now
@@ -868,6 +905,9 @@ async def create_customer_service(req: ServiceRequestCreate, current_user: dict 
             odometer_km=created.get("odometer_km", 0),
             services=created.get("services", []),
             description=created.get("description"),
+            urgency=created.get("urgency"),
+            schedule_from=created.get("schedule_from"),
+            schedule_to=created.get("schedule_to"),
             status=created.get("status", "Pending"),
             created_at=created.get("created_at", now),
             updated_at=created.get("updated_at", now)
@@ -876,6 +916,47 @@ async def create_customer_service(req: ServiceRequestCreate, current_user: dict 
         raise
     except Exception as e:
         logging.error(f"Create service error: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
+# Update a customer service request
+@app.patch("/api/customer/services/{service_id}", response_model=ServiceRequestResponse)
+async def update_customer_service(service_id: str, req: ServiceRequestUpdate, current_user: dict = Depends(get_current_user)):
+    try:
+        doc = customer_service_list_collection.find_one({"_id": ObjectId(service_id), "user_id": current_user["user_id"]})
+        if not doc:
+            raise HTTPException(status_code=404, detail="Service request not found")
+        # Only update provided fields
+        update_data = {k: v for k, v in req.dict().items() if v is not None}
+        # Normalize datetimes to aware
+        def _aware(dt: Optional[datetime]) -> Optional[datetime]:
+            if not dt:
+                return None
+            return dt if dt.tzinfo is not None else dt.replace(tzinfo=timezone.utc)
+        if "schedule_from" in update_data:
+            update_data["schedule_from"] = _aware(update_data["schedule_from"])
+        if "schedule_to" in update_data:
+            update_data["schedule_to"] = _aware(update_data["schedule_to"])
+        update_data["updated_at"] = datetime.now(timezone.utc)
+        customer_service_list_collection.update_one({"_id": ObjectId(service_id)}, {"$set": update_data})
+        updated = customer_service_list_collection.find_one({"_id": ObjectId(service_id)})
+        return ServiceRequestResponse(
+            id=str(updated["_id"]),
+            user_id=updated["user_id"],
+            vehicle_id=updated["vehicle_id"],
+            odometer_km=updated.get("odometer_km", 0),
+            services=updated.get("services", []),
+            description=updated.get("description"),
+            urgency=updated.get("urgency"),
+            schedule_from=updated.get("schedule_from"),
+            schedule_to=updated.get("schedule_to"),
+            status=updated.get("status", "Pending"),
+            created_at=updated.get("created_at", datetime.now(timezone.utc)),
+            updated_at=updated.get("updated_at", datetime.now(timezone.utc))
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Update service error: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
 
 @app.post("/api/auth/logout")

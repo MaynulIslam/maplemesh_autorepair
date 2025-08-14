@@ -1,5 +1,10 @@
 import api from './client';
 
+export async function updateCustomerService(id, payload) {
+  const { data } = await api.patch(`/api/customer/services/${id}`, payload);
+  return data;
+}
+
 export async function fetchCustomerServices() {
   const { data } = await api.get('/api/customer/services');
   return data.services || [];
