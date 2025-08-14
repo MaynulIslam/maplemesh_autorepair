@@ -959,6 +959,20 @@ async def update_customer_service(service_id: str, req: ServiceRequestUpdate, cu
         logging.error(f"Update service error: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
 
+# Delete a customer service request
+@app.delete("/api/customer/services/{service_id}")
+async def delete_customer_service(service_id: str, current_user: dict = Depends(get_current_user)):
+    try:
+        res = customer_service_list_collection.delete_one({"_id": ObjectId(service_id), "user_id": current_user["user_id"]})
+        if res.deleted_count == 0:
+            raise HTTPException(status_code=404, detail="Service request not found")
+        return {"message": "Deleted"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Delete service error: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
 @app.post("/api/auth/logout")
 async def logout():
     return {"message": "Logged out"}

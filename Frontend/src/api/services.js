@@ -24,3 +24,8 @@ export async function createCustomerService(payload) {
   const { data } = await api.post('/api/customer/services', payload);
   return data;
 }
+
+export async function deleteCustomerService(id) {
+  const { data } = await api.delete(`/api/customer/services/${id}`);
+  return data;
+}

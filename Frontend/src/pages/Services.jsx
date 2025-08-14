@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { Box, Typography, Grid, Paper, Button, Stack, Chip, Table, TableBody, TableCell, TableHead, TableRow, TextField, LinearProgress, Alert, Dialog, DialogTitle, DialogContent, DialogActions, Autocomplete, CircularProgress, FormControl, InputLabel, Select, MenuItem, IconButton } from '@mui/material';
+import { Box, Typography, Grid, Paper, Button, Stack, Chip, Table, TableBody, TableCell, TableHead, TableRow, TableContainer, TextField, LinearProgress, Alert, Dialog, DialogTitle, DialogContent, DialogActions, Autocomplete, CircularProgress, FormControl, InputLabel, Select, MenuItem, IconButton } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import SearchIcon from '@mui/icons-material/Search';
-import { fetchCustomerServices, fetchServiceCatalog, createCustomerService, fetchVehicles, updateCustomerService } from '../api/services';
+import { fetchCustomerServices, fetchServiceCatalog, createCustomerService, fetchVehicles, updateCustomerService, deleteCustomerService } from '../api/services';
 import AppShell from '../components/Layout/AppShell';
 import { useToastCtx } from '../context/ToastContext';
 
@@ -219,18 +219,6 @@ export default function Services(){
               </IconButton>
             )}
             <Box sx={{ px:3, pb:2, pt:1, display:'flex', justifyContent:'flex-end', gap:1 }}>
-              <Button
-                variant="outlined"
-                size="small"
-                startIcon={<EditIcon />}
-                sx={{ textTransform:'none', borderRadius:1 }}
-                disabled={services.length===0}
-                onClick={() => {
-                  const latest = services[0];
-                  setEditService({ ...latest });
-                  setEditOpen(true);
-                }}
-              >Edit Service</Button>
       {/* Edit Service Dialog */}
       <Dialog open={editOpen} onClose={()=>setEditOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle sx={{ fontWeight: 700, fontSize: 20 }}>Edit Service</DialogTitle>
@@ -351,9 +339,26 @@ export default function Services(){
             </form>
           )}
         </DialogContent>
-        <DialogActions>
-          <Button onClick={()=>setEditOpen(false)}>Cancel</Button>
-          <Button type="submit" form="edit-service-form" variant="contained">Save Changes</Button>
+        <DialogActions sx={{ justifyContent:'space-between' }}>
+          <Button color="error" onClick={async ()=>{
+            if (!editService?.id) return;
+            const ok = window.confirm('Delete this service request? This action cannot be undone.');
+            if (!ok) return;
+            try{
+              await deleteCustomerService(editService.id);
+              setServices(prev => prev.filter(s => s.id !== editService.id));
+              toast?.success('Service deleted');
+              setEditOpen(false);
+            }catch(e){
+              const msg = e?.response?.data?.detail || e?.message || 'Failed to delete service';
+              setEditErr(msg);
+              toast?.error(msg);
+            }
+          }}>Delete</Button>
+          <Box>
+            <Button onClick={()=>setEditOpen(false)} sx={{ mr:1 }}>Cancel</Button>
+            <Button type="submit" form="edit-service-form" variant="contained">Save Changes</Button>
+          </Box>
         </DialogActions>
       </Dialog>
               <Button onClick={openAdd} variant="contained" size="small" startIcon={<AddIcon />} sx={{ textTransform:'none', fontWeight:600, background:'#04221A', '&:hover':{ background:'#063428' }, borderRadius:1 }}>Add Service</Button>
@@ -386,10 +391,12 @@ export default function Services(){
               </Box>
             </Box>
             <Box sx={{ mt:1 }}>
-              <Table size="small" sx={{ '& thead th':{ background:'#04221A', color:'#fff', fontSize:'.75rem', fontWeight:600, letterSpacing:.5 }, '& td, & th':{ borderBottom:'1px solid rgba(0,0,0,0.08)' } }}>
+              <TableContainer sx={{ maxHeight: 240, overflowY:'auto', borderRadius: 1 }}>
+              <Table stickyHeader size="small" sx={{ '& thead th':{ background:'#04221A', color:'#fff', fontSize:'.75rem', fontWeight:600, letterSpacing:.5 }, '& td, & th':{ borderBottom:'1px solid rgba(0,0,0,0.08)' }, '& tbody tr': { height: 44 } }}>
                 <TableHead>
                   <TableRow>
-                    <TableCell>SERVICE DATE</TableCell>
+                    <TableCell>DATE CREATED</TableCell>
+                    <TableCell>VEHICLE</TableCell>
                     <TableCell>SERVICE TYPE</TableCell>
                     <TableCell>TECHNICIAN</TableCell>
                     <TableCell>STATUS</TableCell>
@@ -400,24 +407,34 @@ export default function Services(){
                 </TableHead>
                 <TableBody>
                   {error && (
-                    <TableRow><TableCell colSpan={7}><Typography variant="body2" color="error">Failed to load services</Typography></TableCell></TableRow>
+                    <TableRow><TableCell colSpan={8}><Typography variant="body2" color="error">Failed to load services</Typography></TableCell></TableRow>
                   )}
                   {!error && filtered.length===0 && !loading && (
-                    <TableRow><TableCell colSpan={7}><Typography variant="body2" color="text.secondary">No matching services.</Typography></TableCell></TableRow>
+                    <TableRow><TableCell colSpan={8}><Typography variant="body2" color="text.secondary">No matching services.</Typography></TableCell></TableRow>
                   )}
           {!error && filtered.map(s=> (
                     <TableRow key={s.id} hover>
                       <TableCell>{formatDate(s.created_at)}</TableCell>
+                      <TableCell>{(() => { const veh = vehicles.find(v => v.vehicle_id === s.vehicle_id); return veh ? `${veh.year||''} ${veh.make||''} ${veh.model||''}`.trim() : `#${s.vehicle_id}`; })()}</TableCell>
                       <TableCell>{(s.services||[]).map(serviceName).join(', ')}</TableCell>
                       <TableCell>-</TableCell>
                       <TableCell>{s.status}</TableCell>
             <TableCell>{s.urgency || '-'}</TableCell>
             <TableCell>{(s.schedule_from || s.schedule_to) ? `${s.schedule_from ? formatDateTime(s.schedule_from) : ''}${s.schedule_to ? ` → ${formatDateTime(s.schedule_to)}` : ''}` : '-'}</TableCell>
-                      <TableCell><Button size="small" variant="text" sx={{ textTransform:'none' }}>View</Button></TableCell>
+                      <TableCell>
+                        <Button
+                          size="small"
+                          variant="outlined"
+                          startIcon={<EditIcon />}
+                          sx={{ textTransform:'none', borderRadius:1 }}
+                          onClick={() => { setEditService({ ...s }); setEditOpen(true); }}
+                        >Edit</Button>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
+              </TableContainer>
             </Box>
           </Paper>
         </Grid>
