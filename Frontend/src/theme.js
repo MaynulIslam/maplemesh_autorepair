@@ -23,6 +23,16 @@ const theme = createTheme({
     MuiPaper: {
       styleOverrides: { root: { borderRadius: 16 } }
     },
+    // Apply a blurred backdrop to all popups (Dialogs/Modals)
+    MuiBackdrop: {
+      styleOverrides: {
+        root: {
+          backdropFilter: 'blur(6px)',
+          WebkitBackdropFilter: 'blur(6px)',
+          backgroundColor: 'rgba(245, 249, 251, 0.5)'
+        }
+      }
+    },
     MuiInputBase: {
       styleOverrides: {
         input: {

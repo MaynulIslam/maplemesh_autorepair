@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useMemo } from 'react';
-import { Box, Typography, Grid, Paper, Button, Stack, Chip, Table, TableBody, TableCell, TableHead, TableRow, TableContainer, TextField, LinearProgress, Alert, Dialog, DialogTitle, DialogContent, DialogActions, Autocomplete, CircularProgress, FormControl, InputLabel, Select, MenuItem, IconButton } from '@mui/material';
+import React, { useEffect, useState, useMemo, useRef } from 'react';
+import { Box, Typography, Grid, Paper, Button, Stack, Chip, Table, TableBody, TableCell, TableHead, TableRow, TableContainer, TextField, LinearProgress, Alert, Dialog, DialogTitle, DialogContent, DialogActions, Autocomplete, CircularProgress, FormControl, InputLabel, Select, MenuItem, IconButton, Snackbar } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -30,6 +30,9 @@ export default function Services(){
   const [req, setReq] = useState(initialReq);
   const [reqErr, setReqErr] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  // Undoable delete state
+  const [snackOpen, setSnackOpen] = useState(false);
+  const pendingDeleteRef = useRef(null); // { id, snapshot, index }
 
   useEffect(()=>{
     let active=true;
@@ -68,11 +71,28 @@ export default function Services(){
     return found ? found.name : idOrName;
   };
 
-  const filtered = useMemo(()=> services.filter(s=>{
-    if(!search.trim()) return true;
-  return (s.services||[]).some(id=> serviceName(id).toLowerCase().includes(search.toLowerCase())) ||
-           (s.status||'').toLowerCase().includes(search.toLowerCase());
-  }), [services, search]);
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return services;
+    return services.filter(s => {
+      const serviceNames = (s.services || []).map(serviceName).join(' ');
+      const veh = vehicles.find(v => v.vehicle_id === s.vehicle_id);
+      const vehicleText = veh ? `${veh.year || ''} ${veh.make || ''} ${veh.model || ''}`.trim() : String(s.vehicle_id || '');
+      const fields = [
+        serviceNames,
+        s.status || '',
+        s.urgency || '',
+        s.description || '',
+        vehicleText,
+        String(s.odometer_km ?? ''),
+        formatDate(s.created_at) || '',
+        s.schedule_from ? formatDateTime(s.schedule_from) : '',
+        s.schedule_to ? formatDateTime(s.schedule_to) : '',
+        s.id || ''
+      ].join(' ').toLowerCase();
+      return fields.includes(q);
+    });
+  }, [services, search, catalog, vehicles]);
 
   function formatDate(d){
     try { return new Date(d).toLocaleDateString(undefined,{ month:'short', day:'numeric', year:'numeric'}); } catch{ return '-'; }
@@ -145,6 +165,52 @@ export default function Services(){
       toast?.error(msg);
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  // Finalize a pending delete by calling backend. If it fails, restore snapshot.
+  const finalizePendingDelete = async () => {
+    const pending = pendingDeleteRef.current;
+    if (!pending) return;
+    try {
+      await deleteCustomerService(pending.id);
+    } catch (e) {
+      // Restore the item since backend delete failed
+      setServices(prev => {
+        const idx = Math.min(pending.index, prev.length);
+        const next = [...prev];
+        next.splice(idx, 0, pending.snapshot);
+        return next;
+      });
+      const msg = e?.response?.data?.detail || e?.message || 'Failed to delete service. Restored.';
+      toast?.error(msg);
+    } finally {
+      pendingDeleteRef.current = null;
+    }
+  };
+
+  const handleUndo = () => {
+    const pending = pendingDeleteRef.current;
+    if (!pending) { setSnackOpen(false); return; }
+    // Restore snapshot at original position
+    setServices(prev => {
+      const idx = Math.min(pending.index, prev.length);
+      const next = [...prev];
+      next.splice(idx, 0, pending.snapshot);
+      return next;
+    });
+    pendingDeleteRef.current = null;
+    setSnackOpen(false);
+    toast?.success('Delete undone');
+  };
+
+  const handleSnackClose = async (event, reason) => {
+    // Ignore clickaway so it doesn't accidentally finalize early
+    if (reason === 'clickaway') return;
+    setSnackOpen(false);
+    // If closed due to timeout or escapeKeyDown, finalize the delete
+    if (reason !== 'undo') {
+      await finalizePendingDelete();
     }
   };
 
@@ -342,18 +408,27 @@ export default function Services(){
         <DialogActions sx={{ justifyContent:'space-between' }}>
           <Button color="error" onClick={async ()=>{
             if (!editService?.id) return;
-            const ok = window.confirm('Delete this service request? This action cannot be undone.');
+            const ok = window.confirm('Delete this service request? You can undo for a few seconds.');
             if (!ok) return;
-            try{
-              await deleteCustomerService(editService.id);
-              setServices(prev => prev.filter(s => s.id !== editService.id));
-              toast?.success('Service deleted');
-              setEditOpen(false);
-            }catch(e){
-              const msg = e?.response?.data?.detail || e?.message || 'Failed to delete service';
-              setEditErr(msg);
-              toast?.error(msg);
+            // If another delete is pending, finalize it first to avoid conflicts
+            if (pendingDeleteRef.current) {
+              await finalizePendingDelete();
             }
+            // Optimistically remove the service and show undo Snackbar
+            const toDeleteId = editService.id;
+            setServices(prev => {
+              const idx = prev.findIndex(s => s.id === toDeleteId);
+              if (idx === -1) return prev;
+              const snapshot = prev[idx];
+              // Stash pending info
+              pendingDeleteRef.current = { id: toDeleteId, snapshot, index: idx };
+              const next = [...prev];
+              next.splice(idx, 1);
+              return next;
+            });
+            setSnackOpen(true);
+            setEditOpen(false);
+            setEditErr('');
           }}>Delete</Button>
           <Box>
             <Button onClick={()=>setEditOpen(false)} sx={{ mr:1 }}>Cancel</Button>
@@ -577,6 +652,19 @@ export default function Services(){
         </DialogActions>
       </Dialog>
   </Box>
+  {/* Undo Snackbar for delete */}
+  <Snackbar
+    open={snackOpen}
+    autoHideDuration={5000}
+    onClose={handleSnackClose}
+    message="Service deleted"
+    anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+    action={
+      <Button color="secondary" size="small" onClick={handleUndo}>
+        Undo
+      </Button>
+    }
+  />
   </AppShell>
   );
 }
