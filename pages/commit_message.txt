@@ -1,1 +1,0 @@
-Refactor customer dashboard: Add service request button, transform sales by country to service history table, and streamline table display.
