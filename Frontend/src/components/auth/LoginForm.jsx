@@ -25,13 +25,14 @@ export default function LoginForm() {
 
   const submit = async e => {
     e.preventDefault();
+    if (loading) return;
     setErr('');
     setLoading(true);
     try {
   const u = await signIn(email,password);
   if (u?.user_type === 'technician') nav('/technician-dashboard'); else nav('/dashboard');
     } catch (ex) {
-  const msg = ex.response?.data?.detail || 'Login failed';
+  const msg = ex.response?.data?.detail || ex.message || 'Login failed';
   setErr(msg);
   toast?.error(msg);
     } finally {
