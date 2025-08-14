@@ -1,0 +1,828 @@
+<!--
+=========================================================
+* MapleMesh AutoRepair Dashboard - v2.1.0
+=========================================================
+* Last Updated: July 28, 2025
+* Developed by MapleMesh Development Team
+=========================================================
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>MapleMesh AutoRepair - Technician Schedule</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome -->
+    <script
+      src="https://kit.fontawesome.com/42d5adcbca.js"
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Custom CSS -->
+    <link href="../assets/custom/css/style.css" rel="stylesheet" />
+    <link href="../assets/custom/css/components.css" rel="stylesheet" />
+  </head>
+
+  <body class="bg-gray-100">
+    <!-- ===================== HEADER / NAVIGATION BAR ===================== -->
+    <header>
+      <!-- ...existing header code... -->
+      <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+          <a
+            class="navbar-brand fw-bold me-3 d-flex flex-column align-items-start p-0"
+            href="technician_dashboard.html"
+          >
+            <span>MapleMesh</span>
+            <span>AutoRepair</span>
+          </a>
+
+          <div class="navbar-nav d-none d-lg-flex me-auto">
+            <a class="nav-link fw-bold" href="technician_dashboard.html"
+              >Dashboard</a
+            >
+            <a class="nav-link fw-bold" href="technician_jobs.html">Jobs</a>
+            <a class="nav-link fw-bold active" href="technician_schedule.html"
+              >Schedule</a
+            >
+          </div>
+
+          <div
+            class="navbar-text d-none d-lg-block mx-auto text-center text-white"
+          >
+            <h4 class="mb-0 fw-bold">Schedule Management</h4>
+            <small>Manage Your Availability & Appointments</small>
+          </div>
+
+          <div class="collapse navbar-collapse flex-grow-0" id="mainNavbar">
+            <ul class="navbar-nav align-items-center">
+              <li class="nav-item dropdown hover-dropdown">
+                <a
+                  class="nav-link fw-bold"
+                  href="technician_profile.html"
+                  id="profileLink"
+                  >Profile</a
+                >
+                <div
+                  class="dropdown-menu dropdown-menu-end"
+                  aria-labelledby="profileLink"
+                >
+                  <div class="dropdown-header d-flex align-items-center p-3">
+                    <div class="avatar-circle me-3">
+                      <img
+                        src="../assets/img/avatar-placeholder.jpg"
+                        alt="Profile"
+                        class="avatar-img"
+                      />
+                    </div>
+                    <div>
+                      <h6 class="mb-0" id="tech-name">Loading...</h6>
+                      <small class="text-muted" id="tech-id">Loading...</small>
+                    </div>
+                  </div>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="technician_profile.html">
+                    <i class="fas fa-user me-2 text-primary"></i>My Profile
+                  </a>
+                  <a class="dropdown-item" href="technician_wallet.html">
+                    <i class="fas fa-wallet me-2 text-primary"></i>Wallet
+                  </a>
+                  <a class="dropdown-item" href="technician_jobs.html">
+                    <i class="fas fa-history me-2 text-primary"></i>Job History
+                  </a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="#">
+                    <i class="fas fa-question-circle me-2 text-primary"></i>Help
+                    & Support
+                  </a>
+                  <a class="dropdown-item" href="../index.html">
+                    <i class="fas fa-sign-out-alt me-2 text-danger"></i>Sign Out
+                  </a>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#mainNavbar"
+            aria-controls="mainNavbar"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        </div>
+      </nav>
+    </header>
+    <!-- ===================== END HEADER / NAVIGATION BAR ===================== -->
+
+    <!-- Tab Navigation -->
+    <div class="content-wrapper">
+      <div class="container-fluid py-3">
+        <ul
+          class="nav nav-tabs justify-content-center mb-4"
+          id="scheduleTabs"
+          role="tablist"
+        >
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="dashboard-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#dashboard"
+              type="button"
+              role="tab"
+              onclick="location.href='technician_dashboard.html'"
+            >
+              Dashboard
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="jobs-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#jobs"
+              type="button"
+              role="tab"
+              onclick="location.href='technician_jobs.html'"
+            >
+              Jobs
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link active"
+              id="schedule-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#schedule"
+              type="button"
+              role="tab"
+            >
+              Schedule
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="profile-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#profile"
+              type="button"
+              role="tab"
+              onclick="location.href='technician_profile.html'"
+            >
+              Profile
+            </button>
+          </li>
+        </ul>
+
+        <!-- Schedule Controls -->
+        <div class="row mb-4">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-body">
+                <div class="row align-items-center">
+                  <div class="col-md-6">
+                    <div class="d-flex align-items-center">
+                      <button
+                        class="btn btn-outline-primary me-2"
+                        onclick="previousMonth()"
+                      >
+                        <i class="fas fa-chevron-left"></i>
+                      </button>
+                      <h5 class="mb-0 me-2" id="current-month-year">
+                        Loading...
+                      </h5>
+                      <button
+                        class="btn btn-outline-primary me-3"
+                        onclick="nextMonth()"
+                      >
+                        <i class="fas fa-chevron-right"></i>
+                      </button>
+                      <button class="btn btn-primary" onclick="goToToday()">
+                        Today
+                      </button>
+                    </div>
+                  </div>
+                  <div class="col-md-6 text-md-end">
+                    <div class="btn-group me-2">
+                      <button
+                        class="btn btn-outline-secondary"
+                        onclick="setAvailability('available')"
+                      >
+                        <i class="fas fa-check text-success"></i> Available
+                      </button>
+                      <button
+                        class="btn btn-outline-secondary"
+                        onclick="setAvailability('busy')"
+                      >
+                        <i class="fas fa-times text-danger"></i> Busy
+                      </button>
+                      <button
+                        class="btn btn-outline-secondary"
+                        onclick="setAvailability('break')"
+                      >
+                        <i class="fas fa-coffee text-warning"></i> Break
+                      </button>
+                    </div>
+                    <button
+                      class="btn btn-success"
+                      data-bs-toggle="modal"
+                      data-bs-target="#availabilityModal"
+                    >
+                      <i class="fas fa-plus me-1"></i>Set Availability
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Calendar and Schedule View -->
+        <div class="row g-4">
+          <!-- Calendar -->
+          <div class="col-md-8">
+            <div class="card">
+              <div class="card-header">
+                <h5 class="mb-0">Schedule Calendar</h5>
+              </div>
+              <div class="card-body p-0">
+                <div id="calendar-container">
+                  <table class="table table-bordered mb-0" id="calendar-table">
+                    <thead class="bg-light">
+                      <tr>
+                        <th>Sun</th>
+                        <th>Mon</th>
+                        <th>Tue</th>
+                        <th>Wed</th>
+                        <th>Thu</th>
+                        <th>Fri</th>
+                        <th>Sat</th>
+                      </tr>
+                    </thead>
+                    <tbody id="calendar-body">
+                      <!-- Calendar days will be generated here -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Today's Schedule -->
+          <div class="col-md-4">
+            <div class="card">
+              <div class="card-header">
+                <h5 class="mb-0">Today's Schedule</h5>
+                <small class="text-muted" id="today-date">Loading...</small>
+              </div>
+              <div class="card-body">
+                <div id="today-schedule">
+                  <div class="text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                      <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2 text-muted">Loading schedule...</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Weekly Overview -->
+            <div class="card mt-4">
+              <div class="card-header">
+                <h5 class="mb-0">Weekly Overview</h5>
+              </div>
+              <div class="card-body">
+                <div class="row text-center">
+                  <div class="col-6">
+                    <h4 class="text-primary mb-0" id="weekly-appointments">
+                      0
+                    </h4>
+                    <small class="text-muted">Appointments</small>
+                  </div>
+                  <div class="col-6">
+                    <h4 class="text-success mb-0" id="weekly-hours">0h</h4>
+                    <small class="text-muted">Total Hours</small>
+                  </div>
+                </div>
+                <hr />
+                <div class="row text-center">
+                  <div class="col-6">
+                    <h4 class="text-warning mb-0" id="available-slots">0</h4>
+                    <small class="text-muted">Available Slots</small>
+                  </div>
+                  <div class="col-6">
+                    <h4 class="text-info mb-0" id="pending-requests">0</h4>
+                    <small class="text-muted">Pending</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Set Availability Modal -->
+    <div class="modal fade" id="availabilityModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Set Availability</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="availability-form">
+              <div class="mb-3">
+                <label class="form-label">Date</label>
+                <input
+                  type="date"
+                  class="form-control"
+                  id="availability-date"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Start Time</label>
+                <input
+                  type="time"
+                  class="form-control"
+                  id="availability-start"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">End Time</label>
+                <input
+                  type="time"
+                  class="form-control"
+                  id="availability-end"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Status</label>
+                <select class="form-select" id="availability-status" required>
+                  <option value="available">Available</option>
+                  <option value="busy">Busy</option>
+                  <option value="break">Break</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Notes (Optional)</label>
+                <textarea
+                  class="form-control"
+                  id="availability-notes"
+                  rows="2"
+                ></textarea>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              onclick="saveAvailability()"
+            >
+              Save Availability
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle (includes Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script>
+      let currentDate = new Date();
+      let scheduleData = {};
+      let selectedDate = null;
+
+      document.addEventListener("DOMContentLoaded", function () {
+        loadTechnicianProfile();
+        generateCalendar();
+        loadScheduleData();
+        updateTodaySchedule();
+        updateWeeklyOverview();
+      });
+
+      async function loadTechnicianProfile() {
+        try {
+          const token = localStorage.getItem("access_token");
+          if (!token) {
+            window.location.href = "sign-in.html";
+            return;
+          }
+
+          const response = await fetch(
+            "http://localhost:8001/api/technician/profile",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          if (response.ok) {
+            const profile = await response.json();
+            document.getElementById(
+              "tech-name"
+            ).textContent = `${profile.first_name} ${profile.last_name}`;
+            document.getElementById(
+              "tech-id"
+            ).textContent = `ID: ${profile.technician_id}`;
+          }
+        } catch (error) {
+          console.error("Error loading profile:", error);
+        }
+      }
+
+      function generateCalendar() {
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
+
+        document.getElementById("current-month-year").textContent =
+          currentDate.toLocaleDateString("en-US", {
+            month: "long",
+            year: "numeric",
+          });
+
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        const startDate = new Date(firstDay);
+        startDate.setDate(startDate.getDate() - firstDay.getDay());
+
+        const calendarBody = document.getElementById("calendar-body");
+        calendarBody.innerHTML = "";
+
+        let currentWeek = document.createElement("tr");
+        const today = new Date();
+
+        for (
+          let date = new Date(startDate);
+          date <= new Date(startDate.getTime() + 41 * 24 * 60 * 60 * 1000);
+          date.setDate(date.getDate() + 1)
+        ) {
+          if (date.getDay() === 0 && currentWeek.children.length > 0) {
+            calendarBody.appendChild(currentWeek);
+            currentWeek = document.createElement("tr");
+          }
+
+          const cell = document.createElement("td");
+          cell.className = "calendar-day";
+          cell.style.height = "100px";
+          cell.style.verticalAlign = "top";
+          cell.style.padding = "5px";
+          cell.style.cursor = "pointer";
+
+          const dateStr = date.toISOString().split("T")[0];
+          const isCurrentMonth = date.getMonth() === month;
+          const isToday = date.toDateString() === today.toDateString();
+
+          if (!isCurrentMonth) {
+            cell.style.backgroundColor = "#f8f9fa";
+            cell.style.color = "#6c757d";
+          }
+
+          if (isToday) {
+            cell.style.backgroundColor = "#e3f2fd";
+            cell.style.border = "2px solid #2196f3";
+          }
+
+          cell.innerHTML = `
+          <div class="d-flex justify-content-between">
+            <strong>${date.getDate()}</strong>
+            <span class="availability-indicator" id="indicator-${dateStr}"></span>
+          </div>
+          <div class="mt-1 small" id="schedule-${dateStr}">
+            <!-- Schedule items will be added here -->
+          </div>
+        `;
+
+          cell.addEventListener("click", () => selectDate(dateStr));
+          currentWeek.appendChild(cell);
+        }
+
+        if (currentWeek.children.length > 0) {
+          calendarBody.appendChild(currentWeek);
+        }
+      }
+
+      function selectDate(dateStr) {
+        selectedDate = dateStr;
+        document.getElementById("availability-date").value = dateStr;
+
+        // Highlight selected date
+        document.querySelectorAll(".calendar-day").forEach((cell) => {
+          cell.style.border = cell.style.border.includes("2px solid #2196f3")
+            ? "2px solid #2196f3"
+            : "1px solid #dee2e6";
+        });
+
+        const selectedCell = document.querySelector(
+          `#schedule-${dateStr}`
+        ).parentElement;
+        if (!selectedCell.style.border.includes("#2196f3")) {
+          selectedCell.style.border = "2px solid #007bff";
+        }
+      }
+
+      function previousMonth() {
+        currentDate.setMonth(currentDate.getMonth() - 1);
+        generateCalendar();
+        loadScheduleData();
+      }
+
+      function nextMonth() {
+        currentDate.setMonth(currentDate.getMonth() + 1);
+        generateCalendar();
+        loadScheduleData();
+      }
+
+      function goToToday() {
+        currentDate = new Date();
+        generateCalendar();
+        loadScheduleData();
+      }
+
+      async function loadScheduleData() {
+        try {
+          const token = localStorage.getItem("access_token");
+          const year = currentDate.getFullYear();
+          const month = currentDate.getMonth() + 1;
+
+          const response = await fetch(
+            `http://localhost:8001/api/technician/schedule?year=${year}&month=${month}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          if (response.ok) {
+            scheduleData = await response.json();
+            updateCalendarWithSchedule();
+          }
+        } catch (error) {
+          console.error("Error loading schedule:", error);
+        }
+      }
+
+      function updateCalendarWithSchedule() {
+        Object.keys(scheduleData).forEach((dateStr) => {
+          const scheduleContainer = document.getElementById(
+            `schedule-${dateStr}`
+          );
+          const indicator = document.getElementById(`indicator-${dateStr}`);
+
+          if (scheduleContainer && indicator) {
+            const daySchedule = scheduleData[dateStr];
+
+            // Update indicator
+            const availableSlots = daySchedule.filter(
+              (item) => item.status === "available"
+            ).length;
+            const busySlots = daySchedule.filter(
+              (item) => item.status === "busy"
+            ).length;
+
+            if (availableSlots > 0) {
+              indicator.innerHTML =
+                '<i class="fas fa-circle text-success" title="Available"></i>';
+            } else if (busySlots > 0) {
+              indicator.innerHTML =
+                '<i class="fas fa-circle text-danger" title="Busy"></i>';
+            }
+
+            // Update schedule items
+            scheduleContainer.innerHTML = daySchedule
+              .slice(0, 2)
+              .map(
+                (item) => `
+            <div class="badge bg-${getStatusColor(
+              item.status
+            )} mb-1 d-block text-truncate" title="${item.notes || ""}">
+              ${item.start_time} - ${item.end_time}
+            </div>
+          `
+              )
+              .join("");
+
+            if (daySchedule.length > 2) {
+              scheduleContainer.innerHTML += `<small class="text-muted">+${
+                daySchedule.length - 2
+              } more</small>`;
+            }
+          }
+        });
+      }
+
+      function getStatusColor(status) {
+        const colors = {
+          available: "success",
+          busy: "danger",
+          break: "warning",
+        };
+        return colors[status] || "secondary";
+      }
+
+      function updateTodaySchedule() {
+        const today = new Date().toISOString().split("T")[0];
+        const todaySchedule = scheduleData[today] || [];
+
+        document.getElementById("today-date").textContent =
+          new Date().toLocaleDateString("en-US", {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          });
+
+        const container = document.getElementById("today-schedule");
+
+        if (todaySchedule.length === 0) {
+          container.innerHTML = `
+          <div class="text-center py-4">
+            <i class="fas fa-calendar-day fa-3x text-muted mb-3"></i>
+            <p class="text-muted">No schedule for today</p>
+            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#availabilityModal">
+              Add Availability
+            </button>
+          </div>
+        `;
+          return;
+        }
+
+        container.innerHTML = todaySchedule
+          .map(
+            (item) => `
+        <div class="d-flex justify-content-between align-items-center mb-2 p-2 border rounded">
+          <div>
+            <div class="fw-medium">${item.start_time} - ${item.end_time}</div>
+            <small class="text-muted">${item.notes || "No notes"}</small>
+          </div>
+          <span class="badge bg-${getStatusColor(item.status)}">${
+              item.status
+            }</span>
+        </div>
+      `
+          )
+          .join("");
+      }
+
+      function updateWeeklyOverview() {
+        // Calculate weekly stats
+        const startOfWeek = new Date();
+        startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+
+        let weeklyAppointments = 0;
+        let weeklyHours = 0;
+        let availableSlots = 0;
+        let pendingRequests = 0;
+
+        for (let i = 0; i < 7; i++) {
+          const date = new Date(startOfWeek);
+          date.setDate(date.getDate() + i);
+          const dateStr = date.toISOString().split("T")[0];
+          const daySchedule = scheduleData[dateStr] || [];
+
+          weeklyAppointments += daySchedule.filter(
+            (item) => item.status === "busy"
+          ).length;
+          availableSlots += daySchedule.filter(
+            (item) => item.status === "available"
+          ).length;
+
+          daySchedule.forEach((item) => {
+            const start = new Date(`2000-01-01T${item.start_time}`);
+            const end = new Date(`2000-01-01T${item.end_time}`);
+            weeklyHours += (end - start) / (1000 * 60 * 60);
+          });
+        }
+
+        document.getElementById("weekly-appointments").textContent =
+          weeklyAppointments;
+        document.getElementById(
+          "weekly-hours"
+        ).textContent = `${weeklyHours.toFixed(1)}h`;
+        document.getElementById("available-slots").textContent = availableSlots;
+        document.getElementById("pending-requests").textContent =
+          pendingRequests;
+      }
+
+      async function saveAvailability() {
+        const formData = {
+          date: document.getElementById("availability-date").value,
+          start_time: document.getElementById("availability-start").value,
+          end_time: document.getElementById("availability-end").value,
+          status: document.getElementById("availability-status").value,
+          notes: document.getElementById("availability-notes").value,
+        };
+
+        try {
+          const token = localStorage.getItem("access_token");
+          const response = await fetch(
+            "http://localhost:8001/api/technician/availability",
+            {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(formData),
+            }
+          );
+
+          if (response.ok) {
+            bootstrap.Modal.getInstance(
+              document.getElementById("availabilityModal")
+            ).hide();
+            await loadScheduleData();
+            updateTodaySchedule();
+            updateWeeklyOverview();
+
+            // Reset form
+            document.getElementById("availability-form").reset();
+          } else {
+            throw new Error("Failed to save availability");
+          }
+        } catch (error) {
+          console.error("Error saving availability:", error);
+          alert("Failed to save availability. Please try again.");
+        }
+      }
+
+      function setAvailability(status) {
+        if (!selectedDate) {
+          alert("Please select a date first");
+          return;
+        }
+
+        document.getElementById("availability-status").value = status;
+        new bootstrap.Modal(
+          document.getElementById("availabilityModal")
+        ).show();
+      }
+    </script>
+
+    <style>
+      .calendar-day {
+        transition: all 0.2s ease;
+      }
+
+      .calendar-day:hover {
+        background-color: #f8f9fa !important;
+      }
+
+      .availability-indicator {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+      }
+
+      #calendar-table td {
+        position: relative;
+      }
+
+      .badge {
+        font-size: 0.7rem;
+      }
+    </style>
+  </body>
+</html>
