@@ -133,13 +133,30 @@ export default function Dashboard() {
 
   const primaryVehicle = vehicles && vehicles[0];
 
+  // Vehicle hero card background and contrast helpers
+  const heroBgColors = ['#022E24', '#0B3C49', '#2F3C7E', '#8A2BE2', '#0F766E', '#3D82F4'];
+  const pickBg = (index) => heroBgColors[index % heroBgColors.length];
+  const currentBg = pickBg(vehicleIndex);
+  const contrastFor = (hex) => {
+    if (!hex || typeof hex !== 'string') return '#000';
+    let c = hex.replace('#','');
+    if (c.length === 3) c = c.split('').map(ch=>ch+ch).join('');
+    const r = parseInt(c.substring(0,2),16);
+    const g = parseInt(c.substring(2,4),16);
+    const b = parseInt(c.substring(4,6),16);
+    const yiq = (r*299 + g*587 + b*114) / 1000;
+    return yiq >= 140 ? '#000' : '#fff';
+  };
+  const onBg = contrastFor(currentBg);
+  const rgbaOnBg = (a) => onBg === '#fff' ? `rgba(255,255,255,${a})` : `rgba(0,0,0,${a})`;
+
   return (
     <AppShell>
       <Box sx={{ px:{xs:0,md:2}, pb:4 }}>
         <Grid container spacing={3}>
           {/* Vehicle hero card – shows each vehicle and its latest services */}
           <Grid item xs={12} md={4}>
-            <Card sx={{ height: '100%', position: 'relative' }}>
+            <Card sx={{ height: '100%', position: 'relative', bgcolor: currentBg, color: onBg }}>
               <CardContent>
                 {vehicles && vehicles.length ? (
                   (() => {
@@ -151,7 +168,13 @@ export default function Dashboard() {
                       ? { mr:0.5, mb:0.5, '& .MuiChip-label': { fontSize: 11, px: 0.75 } }
                       : { mr:0.5, mb:0.5 };
                     const chips = (latest?.services || []).map(id => (
-                      <Chip key={id} label={serviceName(id)} size="small" sx={chipSx} />
+                      <Chip
+                        key={id}
+                        label={serviceName(id)}
+                        size="small"
+                        variant="outlined"
+                        sx={{ ...chipSx, color: onBg, borderColor: rgbaOnBg(0.4) }}
+                      />
                     ));
                     return (
                       <>
@@ -159,15 +182,10 @@ export default function Dashboard() {
                         {latest && (
                           <Stack direction="row" spacing={1} sx={{ mt:0.5 }}>
                             {latest.urgency && (
-                              <Chip
-                                size="small"
-                                label={latest.urgency}
-                                color={latest.urgency==='Urgent' ? 'error' : latest.urgency==='Soon' ? 'warning' : 'default'}
-                                sx={{ height: 22 }}
-                              />
+                              <Chip size="small" label={latest.urgency} variant="outlined" sx={{ height: 22, color: onBg, borderColor: rgbaOnBg(0.45) }} />
                             )}
                             {latest.status && (
-                              <Chip size="small" label={latest.status} variant="outlined" sx={{ height: 22 }} />
+                              <Chip size="small" label={latest.status} variant="outlined" sx={{ height: 22, color: onBg, borderColor: rgbaOnBg(0.45) }} />
                             )}
                           </Stack>
                         )}
@@ -177,7 +195,7 @@ export default function Dashboard() {
                               {chips}
                             </Stack>
                           ) : (
-                            <Typography variant="body2" color="text.secondary">No service added on this vehicle.</Typography>
+                            <Typography variant="body2" sx={{ color: rgbaOnBg(0.8) }}>No service added on this vehicle.</Typography>
                           )}
                         </Box>
                         {/* Action moved to bottom-right corner */}
@@ -185,7 +203,7 @@ export default function Dashboard() {
                     );
                   })()
                 ) : (
-                  <Skeleton variant="rounded" height={120} />
+                  <Skeleton variant="rounded" height={120} sx={{ bgcolor: rgbaOnBg(0.12) }} />
                 )}
               </CardContent>
               {vehicles && vehicles.length > 1 && (
@@ -200,7 +218,7 @@ export default function Dashboard() {
                     transform: 'translateY(-50%)',
                     bgcolor: 'transparent',
                     '&:hover': { bgcolor: 'transparent' },
-                    color: 'text.secondary'
+                    color: rgbaOnBg(0.75)
                   }}
                 >
                   <ArrowForwardIos fontSize="inherit" />
@@ -209,14 +227,14 @@ export default function Dashboard() {
               {vehicles && vehicles.length > 0 && (
                 <Typography
                   variant="caption"
-                  sx={{ position:'absolute', left: 8, bottom: 10, color: 'text.secondary' }}
+                  sx={{ position:'absolute', left: 8, bottom: 10, color: rgbaOnBg(0.7) }}
                 >
                   Showing {vehicleIndex+1} of {vehicles.length}
                 </Typography>
               )}
               {vehicles && vehicles.length > 0 && (
                 <Button
-                  variant="contained"
+                  variant="outlined"
                   size="small"
                   onClick={()=> openAdd(vehicles[vehicleIndex])}
                   sx={{
@@ -225,8 +243,9 @@ export default function Dashboard() {
                     bottom: 8,
                     textTransform: 'none',
                     borderRadius: 1,
-                    bgcolor:'#022E24',
-                    '&:hover':{ bgcolor:'#034433' }
+                    color: onBg,
+                    borderColor: rgbaOnBg(0.6),
+                    '&:hover':{ borderColor: rgbaOnBg(0.85), backgroundColor: rgbaOnBg(0.08) }
                   }}
                 >
                   Service Request
